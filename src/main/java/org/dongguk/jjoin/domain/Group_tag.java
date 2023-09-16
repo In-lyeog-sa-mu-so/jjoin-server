@@ -1,6 +1,7 @@
 package org.dongguk.jjoin.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,4 +24,10 @@ public class Group_tag {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_id", nullable = false)
     private Tag tag;
+
+    @Builder
+    public Group_tag(Group group, Tag tag) {
+        this.group = group;
+        this.tag = tag;
+    }
 }

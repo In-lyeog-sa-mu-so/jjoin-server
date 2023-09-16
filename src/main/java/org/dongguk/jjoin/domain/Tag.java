@@ -1,6 +1,7 @@
 package org.dongguk.jjoin.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,4 +25,9 @@ public class Tag {
 
     @OneToMany(mappedBy = "Group_tag", fetch = FetchType.LAZY)
     List<Group_tag> groupTags = new ArrayList<>();
+
+    @Builder
+    public Tag(String name) {
+        this.name = name;
+    }
 }

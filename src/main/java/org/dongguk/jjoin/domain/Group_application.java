@@ -1,11 +1,13 @@
 package org.dongguk.jjoin.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -28,4 +30,11 @@ public class Group_application {
 
     @Column(name = "request_date", nullable = false)
     private Timestamp requestDate;
+
+    @Builder
+    public Group_application(User user, Group group) {
+        this.user = user;
+        this.group = group;
+        requestDate = Timestamp.valueOf(LocalDateTime.now());
+    }
 }

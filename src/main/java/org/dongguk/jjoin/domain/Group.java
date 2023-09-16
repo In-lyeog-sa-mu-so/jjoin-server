@@ -1,12 +1,14 @@
 package org.dongguk.jjoin.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.dongguk.jjoin.domain.type.DependentType;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,4 +51,15 @@ public class Group {
 
     @OneToMany(mappedBy = "Group_member", fetch = FetchType.LAZY)
     List<Group_member> group_members = new ArrayList<>();
+
+    @Builder
+    public Group(String name, String introduction, Long leaderId, DependentType dependent, Long groupProfile, Long backgroundImage) {
+        this.name = name;
+        this.introduction = introduction;
+        this.leaderId = leaderId;
+        this.dependent = dependent;
+        this.createdDate = Timestamp.valueOf(LocalDateTime.now());;
+        this.groupProfile = groupProfile;
+        this.backgroundImage = backgroundImage;
+    }
 }

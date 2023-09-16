@@ -1,12 +1,14 @@
 package org.dongguk.jjoin.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.dongguk.jjoin.domain.type.RankType;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -33,4 +35,12 @@ public class Group_member {
 
     @Column(name = "register_date", nullable = false)
     private Timestamp registerDate;
+
+    @Builder
+    public Group_member(User user, Group group, RankType rankType) {
+        this.user = user;
+        this.group = group;
+        this.rankType = rankType;
+        registerDate = Timestamp.valueOf(LocalDateTime.now());
+    }
 }
