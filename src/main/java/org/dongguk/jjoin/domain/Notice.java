@@ -47,7 +47,7 @@ public class Notice {
     //--------------------------
 
     @OneToMany(mappedBy = "notice", fetch = FetchType.LAZY)
-    List<Notice> notices = new ArrayList<>();
+    List<Image> notices = new ArrayList<>();
 
     @Builder
     public Notice(String title, boolean isPrivate, String content, Group group) {
