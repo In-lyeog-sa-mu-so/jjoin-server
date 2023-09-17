@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -31,8 +33,13 @@ public class Album {
     @Column(name = "created_date", nullable = false)
     private Timestamp createDate;
 
+    //--------------------------------------
+
+    @OneToMany(mappedBy = "album", fetch = FetchType.LAZY)
+    List<Image> images = new ArrayList<>();
+
     @Builder
-    public Album(Group group, User user, Timestamp createDate) {
+    public Album(Group group, User user) {
         this.group = group;
         this.user = user;
         this.createDate = Timestamp.valueOf(LocalDateTime.now());

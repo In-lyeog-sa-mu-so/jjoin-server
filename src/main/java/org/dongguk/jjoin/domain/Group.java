@@ -50,14 +50,23 @@ public class Group {
 
     //--------------------------------------------------------
 
-    @OneToMany(mappedBy = "Group_tag", fetch = FetchType.LAZY)
-    List<Group_tag> groupTags = new ArrayList<>();
+    @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY)
+    List<GroupTag> tags = new ArrayList<>();
 
-    @OneToMany(mappedBy = "Group_member", fetch = FetchType.LAZY)
-    List<Group_member> group_members = new ArrayList<>();
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    List<GroupMember> members = new ArrayList<>();
+
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    List<Event> events = new ArrayList<>();
+
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    List<Notice> notices = new ArrayList<>();
+
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    List<Album> albums = new ArrayList<>();
 
     @Builder
-    public Group(String name, String introduction, User leader, DependentType dependent, Long groupProfile, Long backgroundImage) {
+    public Group(String name, String introduction, User leader, DependentType dependent, Image groupProfile, Image backgroundImage) {
         this.name = name;
         this.introduction = introduction;
         this.leader = leader;

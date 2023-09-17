@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @Table(name = "group_member")
-public class Group_member {
+public class GroupMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -37,7 +37,7 @@ public class Group_member {
     private Timestamp registerDate;
 
     @Builder
-    public Group_member(User user, Group group, RankType rankType) {
+    public GroupMember(User user, Group group, RankType rankType) {
         this.user = user;
         this.group = group;
         this.rankType = rankType;

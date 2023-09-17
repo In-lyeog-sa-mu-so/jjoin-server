@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Table(name = "group_tag")
-public class Group_tag {
+public class GroupTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -26,7 +26,7 @@ public class Group_tag {
     private Tag tag;
 
     @Builder
-    public Group_tag(Group group, Tag tag) {
+    public GroupTag(Group group, Tag tag) {
         this.group = group;
         this.tag = tag;
     }

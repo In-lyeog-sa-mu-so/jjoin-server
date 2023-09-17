@@ -61,8 +61,20 @@ public class User {
 
     //--------------------------------------------------------
 
-    @OneToMany(mappedBy = "Group_member", fetch = FetchType.LAZY)
-    List<Group_member> group_members = new ArrayList<>();
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    List<GroupMember> groups = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    List<Schedule> schedules = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    List<Album> albums = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    List<Image> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    List<Enrollment> enrollments = new ArrayList<>();
 
     @Builder
     public User(ELoginProvider provider, String serialId, String password, String name,

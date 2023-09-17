@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @Table(name = "group_application")
-public class Group_application {
+public class GroupApplication {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -32,7 +32,7 @@ public class Group_application {
     private Timestamp requestDate;
 
     @Builder
-    public Group_application(User user, Group group) {
+    public GroupApplication(User user, Group group) {
         this.user = user;
         this.group = group;
         requestDate = Timestamp.valueOf(LocalDateTime.now());
