@@ -29,8 +29,9 @@ public class Group {
     @Column(name = "introduction")
     private String introduction;
 
-    @Column(name = "leader_id", nullable = false)
-    private Long leaderId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "leader_id", nullable = false)
+    private User leader;
 
     @Column(name = "dependent", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -53,10 +54,10 @@ public class Group {
     List<Group_member> group_members = new ArrayList<>();
 
     @Builder
-    public Group(String name, String introduction, Long leaderId, DependentType dependent, Long groupProfile, Long backgroundImage) {
+    public Group(String name, String introduction, User leader, DependentType dependent, Long groupProfile, Long backgroundImage) {
         this.name = name;
         this.introduction = introduction;
-        this.leaderId = leaderId;
+        this.leader = leader;
         this.dependent = dependent;
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());;
         this.groupProfile = groupProfile;
