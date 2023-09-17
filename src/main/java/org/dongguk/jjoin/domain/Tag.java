@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name="tag")
+@Table(name="tags")
 public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class Tag {
     private String name;
 
     @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY)
-    List<GroupTag> groupTags = new ArrayList<>();
+    List<ClubTag> clubTags = new ArrayList<>();
 
     @Builder
     public Tag(String name) {

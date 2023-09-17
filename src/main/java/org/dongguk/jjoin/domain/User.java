@@ -17,7 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "user")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,8 +61,8 @@ public class User {
 
     //--------------------------------------------------------
 
-    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
-    List<GroupMember> groups = new ArrayList<>();
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    List<ClubMember> groups = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     List<Schedule> schedules = new ArrayList<>();

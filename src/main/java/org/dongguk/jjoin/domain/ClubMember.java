@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "group_member")
-public class GroupMember {
+@Table(name = "club_member")
+public class ClubMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -26,10 +26,10 @@ public class GroupMember {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id", nullable = false)
-    private Group group;
+    @JoinColumn(name = "club_id", nullable = false)
+    private Club club;
 
-    @Column(name = "rank", nullable = false)
+    @Column(name = "ranks", nullable = false)
     @Enumerated(EnumType.STRING)
     private RankType rankType;
 
@@ -37,10 +37,10 @@ public class GroupMember {
     private Timestamp registerDate;
 
     @Builder
-    public GroupMember(User user, Group group, RankType rankType) {
+    public ClubMember(User user, Club club, RankType rankType) {
         this.user = user;
-        this.group = group;
+        this.club = club;
         this.rankType = rankType;
-        registerDate = Timestamp.valueOf(LocalDateTime.now());
+        this.registerDate = Timestamp.valueOf(LocalDateTime.now());
     }
 }

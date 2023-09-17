@@ -16,14 +16,14 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "group")
-public class Group {
+@Table(name = "club")
+public class Club {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "club_name", nullable = false)
     private String name;
 
     @Column(name = "introduction")
@@ -50,23 +50,23 @@ public class Group {
 
     //--------------------------------------------------------
 
-    @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY)
-    List<GroupTag> tags = new ArrayList<>();
+    @OneToMany(mappedBy = "club", fetch = FetchType.LAZY)
+    List<ClubTag> tags = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    List<GroupMember> members = new ArrayList<>();
+    @OneToMany(mappedBy = "club", fetch = FetchType.LAZY)
+    List<ClubMember> members = new ArrayList<>();
 
-    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
-    List<Event> events = new ArrayList<>();
+    @OneToMany(mappedBy = "club", fetch = FetchType.LAZY)
+    List<Plans> plans = new ArrayList<>();
 
-    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "club", fetch = FetchType.LAZY)
     List<Notice> notices = new ArrayList<>();
 
-    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "club", fetch = FetchType.LAZY)
     List<Album> albums = new ArrayList<>();
 
     @Builder
-    public Group(String name, String introduction, User leader, DependentType dependent, Image groupProfile, Image backgroundImage) {
+    public Club(String name, String introduction, User leader, DependentType dependent, Image groupProfile, Image backgroundImage) {
         this.name = name;
         this.introduction = introduction;
         this.leader = leader;

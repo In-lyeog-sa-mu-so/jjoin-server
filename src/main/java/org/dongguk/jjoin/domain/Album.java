@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "album")
+@Table(name = "albums")
 public class Album {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +23,8 @@ public class Album {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id", nullable = false)
-    private Group group;
+    @JoinColumn(name = "club_id", nullable = false)
+    private Club club;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -39,8 +39,8 @@ public class Album {
     List<Image> images = new ArrayList<>();
 
     @Builder
-    public Album(Group group, User user) {
-        this.group = group;
+    public Album(Club club, User user) {
+        this.club = club;
         this.user = user;
         this.createDate = Timestamp.valueOf(LocalDateTime.now());
     }

@@ -15,16 +15,16 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "event")
-public class Event {
+@Table(name = "plans")
+public class Plans {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id", nullable = false)
-    private Group group;
+    @JoinColumn(name = "club_id", nullable = false)
+    private Club club;
 
     @Column(name = "created_date", nullable = false)
     private Timestamp createdDate;
@@ -46,12 +46,12 @@ public class Event {
 
     //--------------------------------------------------------
 
-    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "plan", fetch = FetchType.LAZY)
     List<Schedule> schedules = new ArrayList<>();
 
     @Builder
-    public Event(Group group, Timestamp startDate, Timestamp endDate, String title, String content) {
-        this.group = group;
+    public Plans(Club club, Timestamp startDate, Timestamp endDate, String title, String content) {
+        this.club = club;
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());
         this.startDate = startDate;
         this.endDate = endDate;
