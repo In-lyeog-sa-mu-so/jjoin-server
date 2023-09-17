@@ -31,7 +31,6 @@ public class User {
     @Column(name ="serial_id")
     private String serialId;
 
-
     @Column(name = "password", nullable = false)
     private String password;
 
@@ -50,14 +49,18 @@ public class User {
 
     @Column(name = "created_date")
     private Timestamp createdDate;
+
     @Column(name = "is_login", nullable = false)
     private Boolean isLogin;
+
     @Column(name = "refresh_token")
     private String refreshToken;
+
     @Column(name = "device_token")
     private String deviceToken;
 
     //--------------------------------------------------------
+
     @OneToMany(mappedBy = "Group_member", fetch = FetchType.LAZY)
     List<Group_member> group_members = new ArrayList<>();
 

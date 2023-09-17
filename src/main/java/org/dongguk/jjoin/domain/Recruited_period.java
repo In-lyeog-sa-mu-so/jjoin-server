@@ -20,7 +20,7 @@ public class Recruited_period {
     private Long id;
 
     @OneToOne
-    @Column(name = "group_id", nullable = false)
+    @JoinColumn(name = "group_id", nullable = false)
     private Group group;
 
     @Column(name = "start_date", nullable = false)

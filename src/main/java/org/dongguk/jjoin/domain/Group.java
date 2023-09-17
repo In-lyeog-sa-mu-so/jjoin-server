@@ -40,13 +40,16 @@ public class Group {
     @Column(name = "created_date")
     private Timestamp createdDate;
 
-    @Column(name = "group_profile")
-    private Long groupProfile;
+    @OneToOne
+    @JoinColumn(name = "group_profile")
+    private Image groupProfile;
 
-    @Column(name = "background_image")
-    private Long backgroundImage;
+    @OneToOne
+    @JoinColumn(name = "background_image")
+    private Image backgroundImage;
 
     //--------------------------------------------------------
+
     @OneToMany(mappedBy = "Group_tag", fetch = FetchType.LAZY)
     List<Group_tag> groupTags = new ArrayList<>();
 
