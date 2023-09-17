@@ -23,10 +23,10 @@ public class Schedule {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plan_id")
-    private Plans plan;
+    private Plan plan;
 
     @Builder
-    public Schedule(User user, Plans plans) {
+    public Schedule(User user, Plan plans) {
         this.user = user;
         this.plan = plans;
     }

@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "group_deletion")
+@Table(name = "club_deletions")
 public class ClubDeletion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Table(name = "plans")
-public class Plans {
+public class Plan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -50,7 +50,7 @@ public class Plans {
     List<Schedule> schedules = new ArrayList<>();
 
     @Builder
-    public Plans(Club club, Timestamp startDate, Timestamp endDate, String title, String content) {
+    public Plan(Club club, Timestamp startDate, Timestamp endDate, String title, String content) {
         this.club = club;
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());
         this.startDate = startDate;

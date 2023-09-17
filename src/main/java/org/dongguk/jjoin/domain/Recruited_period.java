@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "recruited_period")
+@Table(name = "recruited_periods")
 public class Recruited_period {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
