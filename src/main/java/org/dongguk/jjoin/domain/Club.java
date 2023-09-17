@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "club")
+@Table(name = "clubs")
 public class Club {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,8 +41,8 @@ public class Club {
     private Timestamp createdDate;
 
     @OneToOne
-    @JoinColumn(name = "group_profile")
-    private Image groupProfile;
+    @JoinColumn(name = "club_image")
+    private Image clubImage;
 
     @OneToOne
     @JoinColumn(name = "background_image")
@@ -57,7 +57,7 @@ public class Club {
     List<ClubMember> members = new ArrayList<>();
 
     @OneToMany(mappedBy = "club", fetch = FetchType.LAZY)
-    List<Plans> plans = new ArrayList<>();
+    List<Plan> plans = new ArrayList<>();
 
     @OneToMany(mappedBy = "club", fetch = FetchType.LAZY)
     List<Notice> notices = new ArrayList<>();
@@ -66,13 +66,13 @@ public class Club {
     List<Album> albums = new ArrayList<>();
 
     @Builder
-    public Club(String name, String introduction, User leader, DependentType dependent, Image groupProfile, Image backgroundImage) {
+    public Club(String name, String introduction, User leader, DependentType dependent, Image clubImage, Image backgroundImage) {
         this.name = name;
         this.introduction = introduction;
         this.leader = leader;
         this.dependent = dependent;
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());;
-        this.groupProfile = groupProfile;
+        this.clubImage = clubImage;
         this.backgroundImage = backgroundImage;
     }
 }

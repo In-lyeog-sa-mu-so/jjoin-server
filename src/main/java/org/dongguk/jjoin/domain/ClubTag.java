@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "club_tag")
+@Table(name = "club_tags")
 public class ClubTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -34,7 +34,7 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "user_name", nullable = false)
     private String name;
 
     @Column(name = "introduction")
@@ -43,7 +43,7 @@ public class User {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "role", nullable = false)
+    @Column(name = "roles", nullable = false)
     @Enumerated(EnumType.STRING)
     private EUserRole role;
 
