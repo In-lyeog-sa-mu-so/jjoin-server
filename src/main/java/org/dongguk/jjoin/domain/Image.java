@@ -30,18 +30,23 @@ public class Image {
     @JoinColumn(name = "notice_id")
     private Notice notice;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "origin_name", nullable = false)
+    private String originName;
+
+    @Column(name = "uuid_name", nullable = false)
+    private String uuidName;
 
     @Column(name = "type", nullable = false)
+    @Enumerated(EnumType.STRING)
     private ImageType type;
 
     @Builder
-    public Image(User user, Album album, Notice notice, String name, ImageType type) {
+    public Image(User user, Album album, Notice notice, String originName, String uuidName, ImageType type) {
         this.user = user;
         this.album = album;
         this.notice = notice;
-        this.name = name;
+        this.originName = originName;
+        this.uuidName = uuidName;
         this.type = type;
     }
 }
