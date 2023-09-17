@@ -6,29 +6,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Timestamp;
-
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @Table(name = "group_deletion")
-public class GroupDeletion {
+public class ClubDeletion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "group_id", nullable = false)
-    private Group group;
+    @JoinColumn(name = "club_id", nullable = false)
+    private Club club;
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
 
     @Builder
-    public GroupDeletion(Group group, boolean isDeleted) {
-        this.group = group;
+    public ClubDeletion(Club club, boolean isDeleted) {
+        this.club = club;
         this.isDeleted = false;
     }
 }

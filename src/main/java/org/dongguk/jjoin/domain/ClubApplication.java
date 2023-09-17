@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "group_application")
-public class GroupApplication {
+@Table(name = "club_application")
+public class ClubApplication {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -25,16 +25,16 @@ public class GroupApplication {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id", nullable = false)
-    private Group group;
+    @JoinColumn(name = "club_id", nullable = false)
+    private Club club;
 
     @Column(name = "request_date", nullable = false)
     private Timestamp requestDate;
 
     @Builder
-    public GroupApplication(User user, Group group) {
+    public ClubApplication(User user, Club club) {
         this.user = user;
-        this.group = group;
+        this.club = club;
         requestDate = Timestamp.valueOf(LocalDateTime.now());
     }
 }

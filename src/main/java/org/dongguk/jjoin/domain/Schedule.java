@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "schedule")
+@Table(name = "schedules")
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,12 +22,12 @@ public class Schedule {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "event_id")
-    private Event event;
+    @JoinColumn(name = "plan_id")
+    private Plans plan;
 
     @Builder
-    public Schedule(User user, Event event) {
+    public Schedule(User user, Plans plans) {
         this.user = user;
-        this.event = event;
+        this.plan = plans;
     }
 }

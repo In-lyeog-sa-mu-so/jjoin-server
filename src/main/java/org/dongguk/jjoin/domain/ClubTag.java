@@ -10,24 +10,24 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "group_tag")
-public class GroupTag {
+@Table(name = "club_tag")
+public class ClubTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id", nullable = false)
-    private Group group;
+    @JoinColumn(name = "club_id", nullable = false)
+    private Club club;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_id", nullable = false)
     private Tag tag;
 
     @Builder
-    public GroupTag(Group group, Tag tag) {
-        this.group = group;
+    public ClubTag(Club club, Tag tag) {
+        this.club = club;
         this.tag = tag;
     }
 }

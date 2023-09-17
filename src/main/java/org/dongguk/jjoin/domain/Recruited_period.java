@@ -20,8 +20,8 @@ public class Recruited_period {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "group_id", nullable = false)
-    private Group group;
+    @JoinColumn(name = "club_id", nullable = false)
+    private Club club;
 
     @Column(name = "start_date", nullable = false)
     private Timestamp startDate;
@@ -33,8 +33,8 @@ public class Recruited_period {
     private Boolean isFinished;
 
     @Builder
-    public Recruited_period(Group group, Timestamp startDate, Timestamp endDate) {
-        this.group = group;
+    public Recruited_period(Club club, Timestamp startDate, Timestamp endDate) {
+        this.club = club;
         this.startDate = startDate;
         this.endDate = endDate;
         isFinished = false;

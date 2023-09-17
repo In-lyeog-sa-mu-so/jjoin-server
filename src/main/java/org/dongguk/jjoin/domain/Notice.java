@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "notice")
+@Table(name = "notices")
 public class Notice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,8 +32,8 @@ public class Notice {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id", nullable = false)
-    private Group group;
+    @JoinColumn(name = "club_id", nullable = false)
+    private Club club;
 
     @Column(name = "created_date", nullable = false)
     private Timestamp createdDate;
@@ -50,11 +50,11 @@ public class Notice {
     List<Image> notices = new ArrayList<>();
 
     @Builder
-    public Notice(String title, boolean isPrivate, String content, Group group) {
+    public Notice(String title, boolean isPrivate, String content, Club club) {
         this.title = title;
         this.isPrivate = isPrivate;
         this.content = content;
-        this.group = group;
+        this.club = club;
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());
         this.isDeleted = false;
     }

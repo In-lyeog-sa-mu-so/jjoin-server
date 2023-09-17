@@ -11,7 +11,7 @@ import org.dongguk.jjoin.domain.type.ImageType;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "image")
+@Table(name = "images")
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +36,7 @@ public class Image {
     @Column(name = "uuid_name", nullable = false)
     private String uuidName;
 
-    @Column(name = "type", nullable = false)
+    @Column(name = "image_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private ImageType type;
 
