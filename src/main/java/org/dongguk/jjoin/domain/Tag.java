@@ -23,8 +23,8 @@ public class Tag {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "Group_tag", fetch = FetchType.LAZY)
-    List<Group_tag> groupTags = new ArrayList<>();
+    @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY)
+    List<GroupTag> groupTags = new ArrayList<>();
 
     @Builder
     public Tag(String name) {

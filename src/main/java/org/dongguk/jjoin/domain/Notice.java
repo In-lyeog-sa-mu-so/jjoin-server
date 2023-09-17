@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,7 +22,7 @@ public class Notice {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "is_boolean", nullable = false)
@@ -42,8 +44,13 @@ public class Notice {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
 
+    //--------------------------
+
+    @OneToMany(mappedBy = "notice", fetch = FetchType.LAZY)
+    List<Notice> notices = new ArrayList<>();
+
     @Builder
-    public Notice(String title, boolean isPrivate, String content, Group group, Timestamp createdDate, boolean isDeleted) {
+    public Notice(String title, boolean isPrivate, String content, Group group) {
         this.title = title;
         this.isPrivate = isPrivate;
         this.content = content;

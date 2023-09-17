@@ -9,6 +9,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+
 @NoArgsConstructor
 @Table(name = "schedule")
 public class Schedule {

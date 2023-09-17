@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -42,8 +44,13 @@ public class Event {
     @Column(name = "content", nullable = false)
     private String content;
 
+    //--------------------------------------------------------
+
+    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
+    List<Schedule> schedules = new ArrayList<>();
+
     @Builder
-    public Event(Group group, Timestamp createdDate, Timestamp startDate, Timestamp endDate, String title, String content) {
+    public Event(Group group, Timestamp startDate, Timestamp endDate, String title, String content) {
         this.group = group;
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());
         this.startDate = startDate;
