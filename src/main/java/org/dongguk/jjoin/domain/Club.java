@@ -42,7 +42,7 @@ public class Club {
 
     @OneToOne
     @JoinColumn(name = "club_image")
-    private Image groupImage;
+    private Image clubImage;
 
     @OneToOne
     @JoinColumn(name = "background_image")
@@ -66,13 +66,13 @@ public class Club {
     List<Album> albums = new ArrayList<>();
 
     @Builder
-    public Club(String name, String introduction, User leader, DependentType dependent, Image groupImage, Image backgroundImage) {
+    public Club(String name, String introduction, User leader, DependentType dependent, Image clubImage, Image backgroundImage) {
         this.name = name;
         this.introduction = introduction;
         this.leader = leader;
         this.dependent = dependent;
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());;
-        this.groupImage = groupImage;
+        this.clubImage = clubImage;
         this.backgroundImage = backgroundImage;
     }
 }
