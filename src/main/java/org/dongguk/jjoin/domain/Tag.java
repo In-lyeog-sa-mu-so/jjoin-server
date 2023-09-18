@@ -20,7 +20,7 @@ public class Tag {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "tag_name", nullable = false)
     private String name;
 
     @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY)

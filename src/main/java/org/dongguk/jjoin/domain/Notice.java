@@ -25,7 +25,7 @@ public class Notice {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "is_boolean", nullable = false)
+    @Column(name = "is_private", nullable = false)
     private boolean isPrivate;
 
     @Column(name = "content", nullable = false)
