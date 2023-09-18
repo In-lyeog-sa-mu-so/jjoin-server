@@ -25,7 +25,7 @@ public class Notice {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "is_boolean", nullable = false)
+    @Column(name = "is_private", nullable = false)
     private boolean isPrivate;
 
     @Column(name = "content", nullable = false)
@@ -55,7 +55,7 @@ public class Notice {
         this.isPrivate = isPrivate;
         this.content = content;
         this.club = club;
-        this.createdDate = Timestamp.valueOf(LocalDateTime.now());
+        this.createdDate = this.updatedDate = Timestamp.valueOf(LocalDateTime.now());
         this.isDeleted = false;
     }
 }
