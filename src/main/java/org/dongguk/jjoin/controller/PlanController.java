@@ -1,9 +1,12 @@
 package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.dongguk.jjoin.dto.response.PlanDto;
+import org.dongguk.jjoin.dto.response.ResponseDto;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
