@@ -65,4 +65,8 @@ public class Notice {
         this.content = noticeRequestDto.getContent();
         this.updatedDate = Timestamp.valueOf(LocalDateTime.now());
     }
+
+    public void deleteNotice(){
+        this.isDeleted = true;
+    }
 }
