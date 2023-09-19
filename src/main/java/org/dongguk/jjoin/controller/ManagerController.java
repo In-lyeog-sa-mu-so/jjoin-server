@@ -23,4 +23,9 @@ public class ManagerController {
     public NoticeDto readNotice(@PathVariable Long clubId, @PathVariable Long noticeId){
         return managerService.readNotice(clubId, noticeId);
     }
+
+    @PutMapping("/club/{clubId}/notice/{noticeId}")
+    public void updateNotice(@PathVariable Long clubId, @PathVariable Long noticeId, @RequestBody NoticeRequestDto noticeRequestDto){
+        managerService.updateNotice(clubId, noticeId, noticeRequestDto);
+    }
 }

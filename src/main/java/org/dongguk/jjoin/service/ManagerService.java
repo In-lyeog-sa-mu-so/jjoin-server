@@ -22,6 +22,15 @@ public class ManagerService {
     private final ClubRepository clubRepository;
     private final NoticeRepository noticeRepository;
 
+    // clubId와 noticeId를 이용해 공지글 찾는 메소드 (readNotice, updateNotice)
+    public Notice searchNotice(Long clubId, Long noticeId){
+        Club club = clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("no match clubId"));
+        Notice notice = club.getNotices().stream()
+                .filter(n -> n.getId().equals(noticeId)).findAny()
+                .orElseThrow(() -> new RuntimeException("No match noticeId"));
+        return notice;
+    }
+
     public void createNotice(Long userId, Long clubId, NoticeRequestDto noticeRequestDto){
         // 유저 유무, 클럽 존재유무 확인
         //User user = userRepository.findById(userId).orElseThrow(()-> new RuntimeException("createNotice club없음!"));
@@ -35,10 +44,7 @@ public class ManagerService {
     }
 
     public NoticeDto readNotice(Long clubId, Long noticeId){
-        Club club = clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("readNotice club없음"));
-        Notice notice = club.getNotices().stream()
-                            .filter(n -> n.getId().equals(noticeId)).findAny()
-                            .orElseThrow(() -> new RuntimeException("No match noticeId"));
+        Notice notice = searchNotice(clubId, noticeId);
 
         return NoticeDto.builder()
                         .id(notice.getId())
@@ -46,5 +52,11 @@ public class ManagerService {
                         .content(notice.getContent())
                         .createdDate(notice.getCreatedDate())
                         .updatedDate(notice.getUpdatedDate()).build();
+    }
+
+    public void updateNotice(Long clubId, Long noticeId, NoticeRequestDto noticeRequestDto){
+        Notice notice = searchNotice(clubId, noticeId);
+
+        notice.updateNotice(noticeRequestDto);
     }
 }
