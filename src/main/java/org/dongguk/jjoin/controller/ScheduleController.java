@@ -2,6 +2,7 @@ package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.dongguk.jjoin.dto.response.ScheduleDayDto;
+import org.dongguk.jjoin.dto.response.ScheduleWeekDto;
 import org.dongguk.jjoin.service.ScheduleService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +20,9 @@ public class ScheduleController {
         return scheduleService.readDaySchedules(userId, targetDate);
     }
 
-//    @GetMapping("/calendar")
-//    public ResponseDto<List<PlanDayDto>> readWeekPlans(@RequestParam("startDate") Timestamp startDate, @RequestParam("endDate") Timestamp endDate) {
-//        return new ResponseDto<List<PlanDayDto>>(planService.readWeekPlans(startDate, endDate));
-//    }
+    @GetMapping("/calendar")
+    public List<ScheduleWeekDto> readWeekPlans(@RequestParam("week") String weekNum) {
+        Long userId = 1L;
+        return scheduleService.readWeekSchedules(userId, weekNum);
+    }
 }

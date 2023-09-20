@@ -16,6 +16,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     Schedule findByUserAndPlan(@Param("user") User user, @Param("planId") Plan plan);
 
+
     @Query(value = "SELECT p FROM Schedule AS s INNER JOIN Plan AS p ON s.plan = p " +
             "WHERE s.user = :user and p.startDate <= :targetDate and p.endDate >= :targetDate")
     List<Plan> findPlansByDate(@Param("user") User user, @Param("targetDate") Timestamp targetDate);
