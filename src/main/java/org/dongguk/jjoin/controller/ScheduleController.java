@@ -11,16 +11,17 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/schedule")
 public class ScheduleController {
     private final ScheduleService scheduleService;
 
-    @GetMapping("/calendar/{targetDate}")
+    @GetMapping("/{targetDate}")
     public List<ScheduleDayDto> readDayPlans(@PathVariable String targetDate) {
         Long userId = 1L;
         return scheduleService.readDaySchedules(userId, targetDate);
     }
 
-    @GetMapping("/calendar")
+    @GetMapping("")
     public List<ScheduleWeekDto> readWeekPlans(@RequestParam("week") String weekNum) {
         Long userId = 1L;
         return scheduleService.readWeekSchedules(userId, weekNum);
