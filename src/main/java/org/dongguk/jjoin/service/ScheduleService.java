@@ -6,7 +6,6 @@ import org.dongguk.jjoin.domain.Schedule;
 import org.dongguk.jjoin.domain.User;
 import org.dongguk.jjoin.dto.response.ScheduleDayDto;
 import org.dongguk.jjoin.dto.response.ScheduleDaysDto;
-import org.dongguk.jjoin.repository.ClubRepository;
 import org.dongguk.jjoin.repository.ScheduleRepository;
 import org.dongguk.jjoin.repository.UserRepository;
 import org.dongguk.jjoin.util.DateUtil;
@@ -23,14 +22,15 @@ import java.util.List;
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
-    private final ClubRepository clubRepository;
 
-
-    public List<ScheduleDayDto> readDaySchedules(Long userId, String targetDate) {
+    public List<ScheduleDayDto> readDaySchedules(Long userId, String targetDate, boolean readUnplans) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
         Timestamp date = DateUtil.stringToTimestamp(targetDate);
 
-        List<Plan> scheduleList = scheduleRepository.findPlansByDate(user, date);
+        List<Plan> scheduleList = scheduleRepository.findAgreedPlansByDate(user, date);
+        if (readUnplans == true)
+            scheduleList.addAll(scheduleRepository.findUnplansByDate(user, date));
+
         List<ScheduleDayDto> scheduleDayDtoList = new ArrayList<>();
         for (Plan plan : scheduleList) {
             Schedule schedule = scheduleRepository.findByUserAndPlan(user, plan);
@@ -56,7 +56,7 @@ public class ScheduleService {
         for (Timestamp date : timestampList) {
             scheduleDaysDtoList.add(ScheduleDaysDto.builder()
                     .date(date)
-                    .scheduleDayDtoList(readDaySchedules(userId, DateUtil.timestampToString(date)))
+                    .scheduleDayDtoList(readDaySchedules(userId, DateUtil.timestampToString(date), true))
                     .build());
         }
 
@@ -71,7 +71,7 @@ public class ScheduleService {
         for (Timestamp date : timestampList) {
             scheduleDaysDtoList.add(ScheduleDaysDto.builder()
                     .date(date)
-                    .scheduleDayDtoList(readDaySchedules(userId, DateUtil.timestampToString(date)))
+                    .scheduleDayDtoList(readDaySchedules(userId, DateUtil.timestampToString(date), false))
                     .build());
         }
 

@@ -14,21 +14,21 @@ import java.util.List;
 public class ScheduleController {
     private final ScheduleService scheduleService;
 
-    @GetMapping("/{targetDate}")
-    public List<ScheduleDayDto> readDayPlans(@PathVariable String targetDate) {
+    @GetMapping("/days/{day}")
+    public List<ScheduleDayDto> readDayPlans(@PathVariable String day) {
         Long userId = 1L;
-        return scheduleService.readDaySchedules(userId, targetDate);
+        return scheduleService.readDaySchedules(userId, day, true);
     }
 
-//    @GetMapping("")
-//    public List<ScheduleDaysDto> readWeekPlans(@RequestParam("week") String weekNum) {
-//        Long userId = 1L;
-//        return scheduleService.readWeekSchedules(userId, weekNum);
-//    }
-
-    @GetMapping("")
-    public List<ScheduleDaysDto> readMonthPlans(@RequestParam("month") String monthNum) {
+    @GetMapping("/weeks/{week}")
+    public List<ScheduleDaysDto> readWeekPlans(@PathVariable String week) {
         Long userId = 1L;
-        return scheduleService.readMonthSchedules(userId, monthNum);
+        return scheduleService.readWeekSchedules(userId, week);
+    }
+
+    @GetMapping("/months/{month}")
+    public List<ScheduleDaysDto> readMonthPlans(@PathVariable String month) {
+        Long userId = 1L;
+        return scheduleService.readMonthSchedules(userId, month);
     }
 }
