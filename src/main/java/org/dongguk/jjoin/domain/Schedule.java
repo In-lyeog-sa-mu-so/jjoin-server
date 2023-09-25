@@ -25,9 +25,13 @@ public class Schedule {
     @JoinColumn(name = "plan_id")
     private Plan plan;
 
+    @Column(name = "is_agreed")
+    private Boolean isAgreed;
+
     @Builder
     public Schedule(User user, Plan plans) {
         this.user = user;
         this.plan = plans;
+        this.isAgreed = false;
     }
 }
