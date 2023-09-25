@@ -62,4 +62,22 @@ public class DateUtil {
 
         return timestampList;
     }
+
+    // 월에 해당하는 모든 날짜를 순서대로 저장한 List<Timestamp> 객체 반환
+    public static List<Timestamp> monthDays(String dateMonth) {
+        Timestamp startDate = stringToTimestamp(dateMonth + "02");
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(startDate);
+        cal.add(Calendar.MONTH, 1);
+        Timestamp endDate = new Timestamp(cal.getTime().getTime());
+        cal.setTime(startDate);
+
+        List<Timestamp> timestampList = new ArrayList<>();
+        while (cal.getTime().getTime() < endDate.getTime()) {
+            timestampList.add(new Timestamp(cal.getTime().getTime()));
+            cal.add(Calendar.DATE, 1);
+        }
+
+        return timestampList;
+    }
 }

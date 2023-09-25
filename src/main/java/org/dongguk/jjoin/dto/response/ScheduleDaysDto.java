@@ -7,12 +7,12 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Getter
-    public class ScheduleWeekDto {
+    public class ScheduleDaysDto {
         private Timestamp date;
         private List<ScheduleDayDto> scheduleDayDtoList;
 
         @Builder
-        public ScheduleWeekDto(Timestamp date, List<ScheduleDayDto> scheduleDayDtoList) {
+        public ScheduleDaysDto(Timestamp date, List<ScheduleDayDto> scheduleDayDtoList) {
             this.date = date;
             this.scheduleDayDtoList = scheduleDayDtoList;
         }
