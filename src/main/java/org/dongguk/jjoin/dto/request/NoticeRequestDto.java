@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class NoticeRequestDto {
     private String title;
     private String content;
+    private Boolean isPrivate;
 }

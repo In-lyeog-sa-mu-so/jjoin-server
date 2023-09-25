@@ -56,7 +56,7 @@ public class ManagerService {
 
         noticeRepository.save(Notice.builder()
                         .title(noticeRequestDto.getTitle())
-                        .isPrivate(true)
+                        .isPrivate(noticeRequestDto.getIsPrivate())
                         .content(noticeRequestDto.getContent())
                         .club(club).build());
     }
