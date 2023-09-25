@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.dongguk.jjoin.dto.request.NoticeRequestDto;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -55,7 +56,17 @@ public class Notice {
         this.isPrivate = isPrivate;
         this.content = content;
         this.club = club;
-        this.createdDate = Timestamp.valueOf(LocalDateTime.now());
+        this.createdDate = this.updatedDate = Timestamp.valueOf(LocalDateTime.now());
         this.isDeleted = false;
+    }
+
+    public void updateNotice(NoticeRequestDto noticeRequestDto){
+        this.title = noticeRequestDto.getTitle();
+        this.content = noticeRequestDto.getContent();
+        this.updatedDate = Timestamp.valueOf(LocalDateTime.now());
+    }
+
+    public void deleteNotice(){
+        this.isDeleted = true;
     }
 }
