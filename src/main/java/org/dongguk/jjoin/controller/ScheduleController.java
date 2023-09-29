@@ -31,4 +31,10 @@ public class ScheduleController {
         Long userId = 1L;
         return scheduleService.readMonthSchedules(userId, month);
     }
+
+    @PatchMapping("/{scheduleId}")
+    public Boolean updateUserSchedule(@PathVariable Long scheduleId, @RequestParam Boolean acceptCheck) {
+        Long userId = 1L;
+        return scheduleService.updateSchedule(scheduleId, acceptCheck);
+    }
 }

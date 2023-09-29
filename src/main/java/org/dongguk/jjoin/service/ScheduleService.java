@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -76,5 +77,12 @@ public class ScheduleService {
         }
 
         return scheduleDaysDtoList;
+    }
+
+    public Boolean updateSchedule(Long scheduleId, Boolean acceptCheck) {
+        Schedule schedule = scheduleRepository.findById(scheduleId).get();
+        schedule.setIsAgreed(acceptCheck);
+
+        return true;
     }
 }
