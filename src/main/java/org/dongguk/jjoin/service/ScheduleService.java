@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.dongguk.jjoin.domain.Plan;
 import org.dongguk.jjoin.domain.Schedule;
 import org.dongguk.jjoin.domain.User;
+import org.dongguk.jjoin.dto.request.ScheduleDecideDto;
 import org.dongguk.jjoin.dto.response.ScheduleDayDto;
 import org.dongguk.jjoin.dto.response.ScheduleDaysDto;
 import org.dongguk.jjoin.repository.ScheduleRepository;
@@ -79,9 +80,9 @@ public class ScheduleService {
         return scheduleDaysDtoList;
     }
 
-    public Boolean updateSchedule(Long scheduleId, Boolean acceptCheck) {
+    public Boolean updateSchedule(Long scheduleId, ScheduleDecideDto scheduleDecideDto) {
         Schedule schedule = scheduleRepository.findById(scheduleId).get();
-        schedule.setIsAgreed(acceptCheck);
+        schedule.setIsAgreed(scheduleDecideDto.getAcceptCheck());
 
         return true;
     }
