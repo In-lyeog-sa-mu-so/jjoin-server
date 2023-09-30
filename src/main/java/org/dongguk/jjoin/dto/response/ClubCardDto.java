@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class ClubDto {
+public class ClubCardDto {
     private Long clubId;
     private String clubName;
     private String introduction;
@@ -15,7 +15,7 @@ public class ClubDto {
     private String newestNotice;
 
     @Builder
-    public ClubDto(Long clubId, String clubName, String introduction, String leaderName, Long userNumber, String dependent, String profileImageUuid, String newestNotice) {
+    public ClubCardDto(Long clubId, String clubName, String introduction, String leaderName, Long userNumber, String dependent, String profileImageUuid, String newestNotice) {
         this.clubId = clubId;
         this.clubName = clubName;
         this.introduction = introduction;

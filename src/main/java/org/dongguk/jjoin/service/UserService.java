@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.domain.Club;
 import org.dongguk.jjoin.domain.ClubMember;
 import org.dongguk.jjoin.domain.User;
-import org.dongguk.jjoin.dto.response.ClubDto;
+import org.dongguk.jjoin.dto.response.ClubCardDto;
 import org.dongguk.jjoin.repository.ClubMemberRepository;
 import org.dongguk.jjoin.repository.ClubRepository;
 import org.dongguk.jjoin.repository.NoticeRepository;
@@ -26,14 +26,14 @@ public class UserService {
     private final ClubRepository clubRepository;
     private final NoticeRepository noticeRepository;
 
-    public List<ClubDto> readUserClubs(Long userId) {
+    public List<ClubCardDto> readUserClubs(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
         List<ClubMember> clubList = clubMemberRepository.findAllByUser(user);
-        List<ClubDto> clubDtoList = new ArrayList<>();
+
+        List<ClubCardDto> clubCardDtoList = new ArrayList<>();
         for (ClubMember clubMember : clubList) {
             Club club = clubRepository.findById(clubMember.getClub().getId()).get();
-            log.info("진입2");
-            clubDtoList.add(ClubDto.builder()
+            clubCardDtoList.add(ClubCardDto.builder()
                     .clubId(club.getId())
                     .clubName(club.getName())
                     .introduction(club.getIntroduction())
@@ -45,6 +45,6 @@ public class UserService {
                     .build());
         }
 
-        return clubDtoList;
+        return clubCardDtoList;
     }
 }

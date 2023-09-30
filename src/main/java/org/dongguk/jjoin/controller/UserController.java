@@ -2,7 +2,7 @@ package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dongguk.jjoin.dto.response.ClubDto;
+import org.dongguk.jjoin.dto.response.ClubCardDto;
 import org.dongguk.jjoin.dto.response.ScheduleDayDto;
 import org.dongguk.jjoin.service.ScheduleService;
 import org.dongguk.jjoin.service.UserService;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class UserController {
     private final ScheduleService scheduleService;
 
     @GetMapping("/clubs")
-    public List<ClubDto> readUserClubs() {
+    public List<ClubCardDto> readUserClubs() {
         Long userId = 1L;
         return userService.readUserClubs(userId);
     }
