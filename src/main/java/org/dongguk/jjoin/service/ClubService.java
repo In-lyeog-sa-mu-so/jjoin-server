@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -28,19 +29,16 @@ public class ClubService {
         List<Club> userClubs = clubMemberRepository.findUserClubsByUser(user);
         List<ClubTag> clubRecommendList = new ArrayList<>();
         userTagDtoList.forEach(clubTag ->
-                clubRecommendList.addAll(clubTagRepository.findByTagId(clubTag.getId())));
+                clubRecommendList.addAll(clubTagRepository.findByTagIdNotInUserClub(clubTag.getId(), userClubs)));
 
-        List<ClubRecommendDto> clubRecommendDtoList = new ArrayList<>();
+        Map<Long, ClubRecommendDto> clubRecommendDtoMap = new HashMap<>();
         for (ClubTag clubTag : clubRecommendList) {
             Club club = clubTag.getClub();
-            if (userClubs.contains(club))
-                continue;
-
             List<String> clubTagList = new ArrayList<>();
             clubTagRepository.findByClub(club).forEach(clubTag1 ->
                     clubTagList.add(clubTag1.getTag().getName()));
 
-            clubRecommendDtoList.add(ClubRecommendDto.builder()
+            clubRecommendDtoMap.put(club.getId(), ClubRecommendDto.builder()
                     .clubId(club.getId())
                     .clubName(club.getName())
                     .introduction(club.getIntroduction())
@@ -50,6 +48,7 @@ public class ClubService {
                             .tags(clubTagList)
                     .build());
         }
+        List<ClubRecommendDto> clubRecommendDtoList= new ArrayList<>(clubRecommendDtoMap.values());
         clubRecommendDtoList.sort(Comparator.comparing(ClubRecommendDto::getUserNumber).reversed());
 
         return clubRecommendDtoList;
