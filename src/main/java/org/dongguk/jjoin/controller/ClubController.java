@@ -22,7 +22,7 @@ public class ClubController {
 
     @GetMapping("/recommends")
     public List<ClubRecommendDto> readClubRecommend(@RequestBody List<UserTagDto> userTagDtoList) {
-        Long userId = 1L;
+        Long userId = 2L;
         return clubService.readClubRecommend(userId, userTagDtoList);
     }
 }

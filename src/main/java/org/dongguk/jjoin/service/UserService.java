@@ -3,7 +3,6 @@ package org.dongguk.jjoin.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.domain.Club;
-import org.dongguk.jjoin.domain.ClubMember;
 import org.dongguk.jjoin.domain.User;
 import org.dongguk.jjoin.dto.response.ClubCardDto;
 import org.dongguk.jjoin.repository.ClubMemberRepository;
@@ -28,11 +27,10 @@ public class UserService {
 
     public List<ClubCardDto> readUserClubs(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
-        List<ClubMember> clubList = clubMemberRepository.findAllByUser(user);
-
+        List<Club> clubList = clubMemberRepository.findUserClubsByUser(user);
         List<ClubCardDto> clubCardDtoList = new ArrayList<>();
-        for (ClubMember clubMember : clubList) {
-            Club club = clubRepository.findById(clubMember.getClub().getId()).get();
+
+        for (Club club : clubList) {
             clubCardDtoList.add(ClubCardDto.builder()
                     .clubId(club.getId())
                     .clubName(club.getName())
