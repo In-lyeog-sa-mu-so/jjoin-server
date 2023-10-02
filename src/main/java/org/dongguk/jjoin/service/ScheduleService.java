@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.dongguk.jjoin.domain.Plan;
 import org.dongguk.jjoin.domain.Schedule;
 import org.dongguk.jjoin.domain.User;
+import org.dongguk.jjoin.dto.request.ScheduleDecideDto;
 import org.dongguk.jjoin.dto.response.ScheduleDayDto;
 import org.dongguk.jjoin.dto.response.ScheduleDaysDto;
 import org.dongguk.jjoin.repository.ScheduleRepository;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -76,5 +78,12 @@ public class ScheduleService {
         }
 
         return scheduleDaysDtoList;
+    }
+
+    public Boolean updateSchedule(Long scheduleId, ScheduleDecideDto scheduleDecideDto) {
+        Schedule schedule = scheduleRepository.findById(scheduleId).get();
+        schedule.setIsAgreed(scheduleDecideDto.getAcceptCheck());
+
+        return true;
     }
 }

@@ -1,6 +1,7 @@
 package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.dongguk.jjoin.dto.request.ScheduleDecideDto;
 import org.dongguk.jjoin.dto.response.ScheduleDayDto;
 import org.dongguk.jjoin.dto.response.ScheduleDaysDto;
 import org.dongguk.jjoin.service.ScheduleService;
@@ -30,5 +31,11 @@ public class ScheduleController {
     public List<ScheduleDaysDto> readMonthPlans(@PathVariable String month) {
         Long userId = 1L;
         return scheduleService.readMonthSchedules(userId, month);
+    }
+
+    @PatchMapping("/{scheduleId}")
+    public Boolean updateUserSchedule(@PathVariable Long scheduleId, @RequestBody ScheduleDecideDto scheduleDecideDto) {
+        Long userId = 1L;
+        return scheduleService.updateSchedule(scheduleId, scheduleDecideDto);
     }
 }
