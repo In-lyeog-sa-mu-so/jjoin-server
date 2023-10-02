@@ -7,6 +7,7 @@ import org.dongguk.jjoin.domain.Notice;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
 import org.dongguk.jjoin.dto.response.NoticeDto;
 import org.dongguk.jjoin.dto.response.NoticeListDto;
+import org.dongguk.jjoin.dto.response.NoticeListDtoByApp;
 import org.dongguk.jjoin.repository.ClubRepository;
 import org.dongguk.jjoin.repository.NoticeRepository;
 import org.springframework.data.domain.Page;
@@ -31,20 +32,17 @@ public class ManagerService {
     public List<NoticeListDto> showNoticeList(Long clubId, Integer page, Integer size){
         Club club = clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("no match clubId"));
         List<Notice> notices = Optional.ofNullable(club.getNotices()).orElseThrow(()-> new RuntimeException("Notice Not found!"));
+        notices.removeIf(notice -> notice.isDeleted());
         notices.sort(Comparator.comparing(Notice::getUpdatedDate).reversed());
 
-        PageRequest pageRequest = PageRequest.of(page, size);
-        Page<Notice> noticePage = new PageImpl<>(notices, pageRequest, notices.size());
+        int startIdx = page * size;
+        List<Notice> showNotices = notices.subList(startIdx, Math.min(startIdx + size, notices.size()));
         List<NoticeListDto> noticeListDtos = new ArrayList<>();
-        int startIndex = (int) (page * size);
-        int endIndex = Math.min(startIndex + size, notices.size());
-        for (int i = startIndex; i < endIndex; i++) {
-            Notice n = noticePage.getContent().get(i);
+        for (Notice n : showNotices){
             noticeListDtos.add(NoticeListDto.builder()
-                            .id(n.getId())
-                            .title(n.getTitle())
-                            .updatedDate(n.getUpdatedDate())
-                            .build());
+                    .id(n.getId())
+                    .title(n.getTitle())
+                    .updatedDate(n.getUpdatedDate()).build());
         }
         return noticeListDtos;
     }
