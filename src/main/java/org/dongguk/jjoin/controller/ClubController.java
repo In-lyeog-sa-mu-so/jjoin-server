@@ -1,6 +1,7 @@
 package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.dongguk.jjoin.dto.response.ClubDetailDto;
 import org.dongguk.jjoin.dto.response.NoticeDto;
 import org.dongguk.jjoin.dto.response.NoticeListDtoByApp;
 import org.dongguk.jjoin.service.ClubService;
@@ -17,6 +18,11 @@ import java.util.List;
 @RequestMapping("/clubs")
 public class ClubController {
     private final ClubService clubService;
+
+    @GetMapping("/{clubId}")
+    public ClubDetailDto showClub(@PathVariable Long clubId) {
+        return clubService.showClub(clubId);
+    }
 
     // 동아리 게시글(공지, 홍보) 목록을 보여주는 API
     @GetMapping("/{clubId}/notices")

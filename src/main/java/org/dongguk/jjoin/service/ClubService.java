@@ -5,17 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.dongguk.jjoin.domain.Club;
 import org.dongguk.jjoin.domain.Notice;
+import org.dongguk.jjoin.dto.response.ClubDetailDto;
 import org.dongguk.jjoin.dto.response.NoticeDto;
 import org.dongguk.jjoin.dto.response.NoticeListDtoByApp;
-import org.dongguk.jjoin.repository.ClubRepository;
+import org.dongguk.jjoin.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.dongguk.jjoin.domain.*;
 import org.dongguk.jjoin.dto.request.UserTagDto;
 import org.dongguk.jjoin.dto.response.ClubRecommendDto;
-import org.dongguk.jjoin.repository.ClubMemberRepository;
-import org.dongguk.jjoin.repository.ClubTagRepository;
-import org.dongguk.jjoin.repository.UserRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,6 +27,7 @@ public class ClubService {
     private final ClubMemberRepository clubMemberRepository;
     private final ClubTagRepository clubTagRepository;
     private final UserRepository userRepository;
+    private final RecruitedPeriodRepository recruitedPeriodRepository;
 
     // 동아리 게시글(공지, 홍보) 목록을 보여주는 API
     public List<NoticeListDtoByApp> showNoticeList(Long clubId, Integer page, Integer size){
@@ -94,5 +93,27 @@ public class ClubService {
         clubRecommendDtoList.sort(Comparator.comparing(ClubRecommendDto::getUserNumber).reversed());
 
         return clubRecommendDtoList;
+    }
+
+    public ClubDetailDto showClub(Long clubId) {
+        Club club = clubRepository.findById(clubId).get();
+        Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClub(club);
+        List<String> tags = new ArrayList<>();
+        club.getTags().forEach(clubTag -> tags.add(clubTag.getTag().getName()));
+
+        return ClubDetailDto.builder()
+                .clubId(club.getId())
+                .clubName(club.getName())
+                .tag(tags)
+                .introduction(club.getIntroduction())
+                .leaderName(club.getLeader().getName())
+                .userNumber(clubMemberRepository.countAllByClub(club))
+                .dependent(club.getDependent().toString())
+                .backgroundImageUuid(club.getBackgroundImage().getUuidName())
+                .profileImageUuid(club.getClubImage().getUuidName())
+                .createdDate(club.getCreatedDate())
+                .startDate(recruitedPeriod.getStartDate())
+                .endDate(recruitedPeriod.getEndDate())
+                .build();
     }
 }
