@@ -51,8 +51,8 @@ public class ClubService {
     }
 
     // 동아리 게시글 상세정보를 보여주는 API
-    public NoticeDto readNotice(Long clubId, Long noticeId){
-        Club club = clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("no match clubId"));
+    public NoticeDto readNotice(Long clubId, Long noticeId) {
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("no match clubId"));
         Notice notice = club.getNotices().stream()
                 .filter(n -> n.getId().equals(noticeId)).findAny()
                 .orElseThrow(() -> new RuntimeException("No match noticeId"));
@@ -63,6 +63,7 @@ public class ClubService {
                 .content(notice.getContent())
                 .createdDate(notice.getCreatedDate())
                 .updatedDate(notice.getUpdatedDate()).build();
+    }
   
     public List<ClubRecommendDto> readClubRecommend(Long userId, List<UserTagDto> userTagDtoList) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정

@@ -28,8 +28,8 @@ public class ClubController {
     @GetMapping("/{clubId}/notices/{noticeId}")
     public NoticeDto readNotice(@PathVariable Long clubId, @PathVariable Long noticeId){
         return clubService.readNotice(clubId, noticeId);
-      
-      
+    }
+
     @GetMapping("/recommends")
     public List<ClubRecommendDto> readClubRecommend(@RequestBody List<UserTagDto> userTagDtoList) {
         Long userId = 2L;
