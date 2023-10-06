@@ -2,6 +2,7 @@ package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.dongguk.jjoin.dto.response.*;
+import org.dongguk.jjoin.service.AlbumService;
 import org.dongguk.jjoin.service.ClubService;
 import org.dongguk.jjoin.service.ScheduleService;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import java.util.List;
 public class ClubController {
     private final ClubService clubService;
     private final ScheduleService scheduleService;
+    private final AlbumService albumService;
 
     @GetMapping("/{clubId}")
     public ClubDetailDto showClub(@PathVariable Long clubId) {
@@ -39,6 +41,11 @@ public class ClubController {
     public List<ClubScheduleDto> readClubScheduleList(@PathVariable Long clubId, @RequestParam("page") Long page) {
         Long userId = 1L;
         return scheduleService.readClubSchedules(userId, clubId, page);
+    }
+
+    @GetMapping("/{clubId}/albums")
+    public List<ClubAlbumDto> readClubAlbumList(@PathVariable Long clubId, @RequestParam("page") Long page) {
+        return albumService.readClubAlbumList(clubId, page);
     }
 
     @GetMapping("/recommends")
