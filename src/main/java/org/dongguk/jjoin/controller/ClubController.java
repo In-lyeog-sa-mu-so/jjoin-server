@@ -1,12 +1,12 @@
 package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.dongguk.jjoin.dto.response.NoticeDto;
-import org.dongguk.jjoin.dto.response.NoticeListDtoByApp;
+import org.dongguk.jjoin.dto.response.*;
+import org.dongguk.jjoin.service.AlbumService;
 import org.dongguk.jjoin.service.ClubService;
+import org.dongguk.jjoin.service.ScheduleService;
 import org.springframework.web.bind.annotation.*;
 import org.dongguk.jjoin.dto.request.UserTagDto;
-import org.dongguk.jjoin.dto.response.ClubRecommendDto;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -17,6 +17,13 @@ import java.util.List;
 @RequestMapping("/clubs")
 public class ClubController {
     private final ClubService clubService;
+    private final ScheduleService scheduleService;
+    private final AlbumService albumService;
+
+    @GetMapping("/{clubId}")
+    public ClubDetailDto showClub(@PathVariable Long clubId) {
+        return clubService.showClub(clubId);
+    }
 
     // 동아리 게시글(공지, 홍보) 목록을 보여주는 API
     @GetMapping("/{clubId}/notices")
@@ -28,8 +35,19 @@ public class ClubController {
     @GetMapping("/{clubId}/notices/{noticeId}")
     public NoticeDto readNotice(@PathVariable Long clubId, @PathVariable Long noticeId){
         return clubService.readNotice(clubId, noticeId);
-      
-      
+    }
+
+    @GetMapping("/{clubId}/schedules")
+    public List<ClubScheduleDto> readClubScheduleList(@PathVariable Long clubId, @RequestParam("page") Long page) {
+        Long userId = 1L;
+        return scheduleService.readClubSchedules(userId, clubId, page);
+    }
+
+    @GetMapping("/{clubId}/albums")
+    public List<ClubAlbumDto> readClubAlbumList(@PathVariable Long clubId, @RequestParam("page") Long page) {
+        return albumService.readClubAlbumList(clubId, page);
+    }
+
     @GetMapping("/recommends")
     public List<ClubRecommendDto> readClubRecommend(@RequestBody List<UserTagDto> userTagDtoList) {
         Long userId = 2L;

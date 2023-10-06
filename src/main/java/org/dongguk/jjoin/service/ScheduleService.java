@@ -1,12 +1,16 @@
 package org.dongguk.jjoin.service;
 
 import lombok.RequiredArgsConstructor;
+import org.dongguk.jjoin.domain.Club;
 import org.dongguk.jjoin.domain.Plan;
 import org.dongguk.jjoin.domain.Schedule;
 import org.dongguk.jjoin.domain.User;
 import org.dongguk.jjoin.dto.request.ScheduleDecideDto;
+import org.dongguk.jjoin.dto.response.ClubScheduleDto;
 import org.dongguk.jjoin.dto.response.ScheduleDayDto;
 import org.dongguk.jjoin.dto.response.ScheduleDaysDto;
+import org.dongguk.jjoin.repository.ClubRepository;
+import org.dongguk.jjoin.repository.PlanRepository;
 import org.dongguk.jjoin.repository.ScheduleRepository;
 import org.dongguk.jjoin.repository.UserRepository;
 import org.dongguk.jjoin.util.DateUtil;
@@ -16,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +27,8 @@ import java.util.Optional;
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
+    private final ClubRepository clubRepository;
+    private final PlanRepository planRepository;
 
     public List<ScheduleDayDto> readDaySchedules(Long userId, String targetDate, boolean readUnplans) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
@@ -37,13 +42,13 @@ public class ScheduleService {
         for (Plan plan : scheduleList) {
             Schedule schedule = scheduleRepository.findByUserAndPlan(user, plan);
             scheduleDayDtoList.add(ScheduleDayDto.builder()
-                    .plan_id(plan.getId())
-                    .club_name(plan.getClub().getName())
-                    .start_date(plan.getStartDate())
-                    .end_date(plan.getEndDate())
+                    .planId(plan.getId())
+                    .clubName(plan.getClub().getName())
+                    .startDate(plan.getStartDate())
+                    .endDate(plan.getEndDate())
                     .title(plan.getTitle())
                     .content(plan.getContent())
-                    .is_agreed(schedule.getIsAgreed())
+                    .isAgreed(schedule.getIsAgreed())
                     .build());
         }
 
@@ -85,5 +90,26 @@ public class ScheduleService {
         schedule.setIsAgreed(scheduleDecideDto.getAcceptCheck());
 
         return true;
+    }
+
+    public List<ClubScheduleDto> readClubSchedules(Long userId, Long clubId, Long page) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
+        Club club = clubRepository.findById(clubId).get();
+        List<Plan> planList = planRepository.findByClub(club);
+        List<ClubScheduleDto> clubScheduleDtoList = new ArrayList<>();
+
+        for (Plan plan : planList) {
+            Schedule schedule = scheduleRepository.findByUserAndPlan(user, plan);
+            clubScheduleDtoList.add(ClubScheduleDto.builder()
+                            .planId(plan.getId())
+                            .startDate(plan.getStartDate())
+                            .endDate(plan.getEndDate())
+                            .title(plan.getTitle())
+                            .content(plan.getContent())
+                            .isAgreed(schedule.getIsAgreed())
+                    .build());
+        }
+
+        return clubScheduleDtoList;
     }
 }

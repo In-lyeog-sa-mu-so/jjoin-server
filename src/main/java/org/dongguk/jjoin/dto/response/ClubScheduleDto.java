@@ -6,9 +6,8 @@ import lombok.Getter;
 import java.sql.Timestamp;
 
 @Getter
-public class ScheduleDayDto {
+public class ClubScheduleDto {
     private Long planId;
-    private String clubName;
     private Timestamp startDate;
     private Timestamp endDate;
     private String title;
@@ -16,9 +15,8 @@ public class ScheduleDayDto {
     private Boolean isAgreed;
 
     @Builder
-    public ScheduleDayDto(Long planId, String clubName, Timestamp startDate, Timestamp endDate, String title, String content, Boolean isAgreed) {
+    public ClubScheduleDto(Long planId, Timestamp startDate, Timestamp endDate, String title, String content, Boolean isAgreed) {
         this.planId = planId;
-        this.clubName = clubName;
         this.startDate = startDate;
         this.endDate = endDate;
         this.title = title;
