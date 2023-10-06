@@ -1,13 +1,11 @@
 package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.dongguk.jjoin.dto.response.ClubDetailDto;
-import org.dongguk.jjoin.dto.response.NoticeDto;
-import org.dongguk.jjoin.dto.response.NoticeListDtoByApp;
+import org.dongguk.jjoin.dto.response.*;
 import org.dongguk.jjoin.service.ClubService;
+import org.dongguk.jjoin.service.ScheduleService;
 import org.springframework.web.bind.annotation.*;
 import org.dongguk.jjoin.dto.request.UserTagDto;
-import org.dongguk.jjoin.dto.response.ClubRecommendDto;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -18,6 +16,7 @@ import java.util.List;
 @RequestMapping("/clubs")
 public class ClubController {
     private final ClubService clubService;
+    private final ScheduleService scheduleService;
 
     @GetMapping("/{clubId}")
     public ClubDetailDto showClub(@PathVariable Long clubId) {
@@ -34,6 +33,12 @@ public class ClubController {
     @GetMapping("/{clubId}/notices/{noticeId}")
     public NoticeDto readNotice(@PathVariable Long clubId, @PathVariable Long noticeId){
         return clubService.readNotice(clubId, noticeId);
+    }
+
+    @GetMapping("/{clubId}/schedules")
+    public List<ClubScheduleDto> readClubScheduleList(@PathVariable Long clubId, @RequestParam("page") Long page) {
+        Long userId = 1L;
+        return scheduleService.readClubSchedules(userId, clubId, page);
     }
 
     @GetMapping("/recommends")
