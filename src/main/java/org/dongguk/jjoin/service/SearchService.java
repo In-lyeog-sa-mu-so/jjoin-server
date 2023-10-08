@@ -3,11 +3,10 @@ package org.dongguk.jjoin.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.domain.Club;
+import org.dongguk.jjoin.domain.Recruited_period;
 import org.dongguk.jjoin.domain.Tag;
-import org.dongguk.jjoin.repository.ClubMemberRepository;
-import org.dongguk.jjoin.repository.ClubRepository;
-import org.dongguk.jjoin.repository.ClubTagRepository;
-import org.dongguk.jjoin.repository.TagRepository;
+import org.dongguk.jjoin.dto.response.SearchClubDto;
+import org.dongguk.jjoin.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,24 +21,43 @@ public class SearchService {
     private final ClubRepository clubRepository;
     private final ClubMemberRepository clubMemberRepository;
     private final TagRepository tagRepository;
-    private final ClubTagRepository clubTagRepository;
+    private final RecruitedPeriodRepository recruitedPeriodRepository;
 
     // 동아리 검색창 (태그 검색, 키워드 검색, 태그 + 키워드 검색, 검색 옵션 X 결과 화면 제공)
-    public void searchClubs(String keyword, List<String> tags, Integer page, Integer size){
-        List<Club> clubList;
-
+    public List<SearchClubDto> searchClubs(String keyword, List<String> tags, Integer page, Integer size){
+        List<Club> clubs = new ArrayList<>();
         // 태그 검색
         if (!tags.isEmpty()) {
             List<Tag> tagList = tagRepository.findByNames(tags);
             if (!keyword.isEmpty()) { // 태그 + 키워드 검색
-                clubList = clubRepository.findClubsByTagsAndKeyword(tagList, keyword);
+                clubs = clubRepository.findClubsByTagsAndKeyword(tagList, keyword);
             } else {
-                clubList = clubRepository.findClubsByTags(tagList);
+                clubs = clubRepository.findClubsByTags(tagList);
             }
         } else if (!keyword.isEmpty()) { // 키워드 검색
-            clubList = clubRepository.findClubsByNameContainingOrIntroductionContaining(keyword, keyword);
+            clubs = clubRepository.findClubsByNameContainingOrIntroductionContaining(keyword, keyword);
         } else { // 검색 옵션 X
-            clubList = clubRepository.findAll();
+            clubs = clubRepository.findAll();
         }
+
+        // 페이지네이션 결과로 보여줄 클럽 개수만큼만 정보 담아서 반환
+        int startIdx = page * size;
+        List<Club> neededClubs = clubs.subList(startIdx, Math.min(startIdx + size, clubs.size()));
+        List<SearchClubDto> searchClubDtos = new ArrayList<>();
+        for (Club club : neededClubs){
+            Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClub(club);
+            searchClubDtos.add(SearchClubDto.builder()
+                            .clubId(club.getId())
+                            .clubName(club.getName())
+                            .introduction(club.getIntroduction())
+                            .userNumber(clubMemberRepository.countAllByClub(club))
+                            .dependent(club.getDependent().toString())
+                            .profileImageUuid(club.getClubImage().getUuidName())
+                            .isFinished(recruitedPeriod.isFinished())
+                            .startDate(recruitedPeriod.getStartDate())
+                            .endDate(recruitedPeriod.getEndDate())
+                    .build());
+        }
+        return searchClubDtos;
     }
 }
