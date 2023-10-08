@@ -13,7 +13,7 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     @Query("SELECT c FROM Club AS c JOIN ClubTag AS ct ON ct.club = c WHERE ct.tag IN :tagList")
     List<Club> findClubsByTags(List<Tag> tagList);
 
-    @Query("SELECT c FROM Club AS c JOIN ClubTag AS ct ON ct.tag IN :tagList WHERE c.name LIKE %:keyword% OR c.introduction LIKE %:keyword%")
+    @Query("SELECT c FROM Club AS c JOIN ClubTag AS ct ON ct.club = c WHERE ct.tag IN :tagList AND (c.name LIKE %:keyword% OR c.introduction LIKE %:keyword%)")
     List<Club> findClubsByTagsAndKeyword(List<Tag> tagList, String keyword);
 
     // 검색 키워드로 클럽 검색
