@@ -17,6 +17,4 @@ public interface ClubTagRepository extends JpaRepository<ClubTag, Long> {
     List<ClubTag> findByTagIdNotInUserClub(@Param("tagId") Long tagId, @Param("userClubs") List<Club> userClubs);
 
     List<ClubTag> findByClub(Club club);
-
-
 }
