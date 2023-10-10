@@ -13,7 +13,6 @@ import java.util.Set;
 
 @Repository
 public interface ClubTagRepository extends JpaRepository<ClubTag, Long> {
-
     @Query(value = "SELECT ct FROM ClubTag AS ct WHERE ct.tag.id = :tagId AND ct.club NOT IN :userClubs")
     List<ClubTag> findByTagIdNotInUserClub(@Param("tagId") Long tagId, @Param("userClubs") List<Club> userClubs);
 
