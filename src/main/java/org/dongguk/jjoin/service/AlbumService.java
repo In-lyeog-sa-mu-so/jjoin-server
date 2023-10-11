@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.domain.Album;
 import org.dongguk.jjoin.domain.Club;
+import org.dongguk.jjoin.dto.response.ClubAlbumDetailDto;
 import org.dongguk.jjoin.dto.response.ClubAlbumDto;
 import org.dongguk.jjoin.repository.AlbumRepository;
 import org.dongguk.jjoin.repository.ClubRepository;
@@ -34,5 +35,17 @@ public class AlbumService {
         }
 
         return clubAlbumDtoList;
+    }
+
+    public ClubAlbumDetailDto readClubAlbumDetail(Long clubId, Long albumId) {
+        Album album = albumRepository.findById(albumId).get();
+        List<String> imageUuidList = new ArrayList<>();
+        album.getImages().forEach(image -> imageUuidList.add(image.getUuidName()));
+
+        return ClubAlbumDetailDto.builder()
+                .albumId(albumId)
+                .imageUuidList(imageUuidList)
+                .createdDate(album.getCreateDate())
+                .build();
     }
 }

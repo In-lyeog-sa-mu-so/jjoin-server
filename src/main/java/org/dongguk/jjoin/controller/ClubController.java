@@ -54,6 +54,11 @@ public class ClubController {
         return albumService.readClubAlbumList(clubId, page);
     }
 
+    @GetMapping("/{clubId}/albums/{albumId}")
+    public ClubAlbumDetailDto readClubAlbumDetail(@PathVariable Long clubId, @PathVariable Long albumId) {
+        return albumService.readClubAlbumDetail(clubId, albumId);
+    }
+
     @GetMapping("/recommends")
     public List<ClubRecommendDto> readClubRecommend(@RequestBody List<UserTagDto> userTagDtoList) {
         Long userId = 2L;
