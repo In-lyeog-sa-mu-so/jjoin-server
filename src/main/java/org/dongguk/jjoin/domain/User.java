@@ -39,6 +39,7 @@ public class User {
     private String name;
 
     @Column(name = "major", nullable = false)
+    @Enumerated(EnumType.STRING)
     private MajorType major;
 
     @Column(name = "introduction")
