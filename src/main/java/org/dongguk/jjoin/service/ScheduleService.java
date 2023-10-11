@@ -6,6 +6,7 @@ import org.dongguk.jjoin.domain.Plan;
 import org.dongguk.jjoin.domain.Schedule;
 import org.dongguk.jjoin.domain.User;
 import org.dongguk.jjoin.dto.request.ScheduleDecideDto;
+import org.dongguk.jjoin.dto.response.ClubScheduleDetailDto;
 import org.dongguk.jjoin.dto.response.ClubScheduleDto;
 import org.dongguk.jjoin.dto.response.ScheduleDayDto;
 import org.dongguk.jjoin.dto.response.ScheduleDaysDto;
@@ -111,5 +112,22 @@ public class ScheduleService {
         }
 
         return clubScheduleDtoList;
+    }
+
+    public ClubScheduleDetailDto readClubScheduleDetail(Long userId, Long clubId, Long scheduleId) {
+        Schedule schedule = scheduleRepository.findById(scheduleId).get();
+        Plan plan = schedule.getPlan();
+
+        return ClubScheduleDetailDto.builder()
+                .planId(plan.getId())
+                .clubName(clubRepository.findById(clubId).get().getName())
+                .title(plan.getTitle())
+                .content(plan.getContent())
+                .startDate(plan.getStartDate())
+                .endDate(plan.getEndDate())
+                .createdDate(plan.getCreatedDate())
+                .updatedDate(plan.getUpdatedDate())
+                .isAgreed(schedule.getIsAgreed())
+                .build();
     }
 }
