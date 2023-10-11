@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.dongguk.jjoin.domain.type.EUserRole;
 import org.dongguk.jjoin.domain.type.ELoginProvider;
+import org.dongguk.jjoin.domain.type.MajorType;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -36,6 +37,10 @@ public class User {
 
     @Column(name = "user_name", nullable = false)
     private String name;
+
+    @Column(name = "major", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private MajorType major;
 
     @Column(name = "introduction")
     private String introduction;
@@ -77,12 +82,13 @@ public class User {
     List<Enrollment> enrollments = new ArrayList<>();
 
     @Builder
-    public User(ELoginProvider provider, String serialId, String password, String name,
+    public User(ELoginProvider provider, String serialId, String password, String name, MajorType major,
                 String introduction, String email, EUserRole role) {
         this.provider = provider;
         this.serialId = serialId;
         this.password = password;
         this.name = name;
+        this.major = major;
         this.introduction = introduction;
         this.email = email;
         this.role = role;
