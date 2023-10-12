@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.dto.response.ClubCardDto;
 import org.dongguk.jjoin.dto.response.ScheduleDayDto;
+import org.dongguk.jjoin.dto.response.UserProfileDto;
 import org.dongguk.jjoin.service.ScheduleService;
 import org.dongguk.jjoin.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,5 +32,11 @@ public class UserController {
     public List<ScheduleDayDto> readUserSchedules() {
         Long userId = 1L;
         return scheduleService.readDaySchedules(userId, LocalDateTime.now().toString().substring(0, 10).replaceAll("-", ""), true);
+    }
+
+    @GetMapping("/{userId}")
+    public UserProfileDto readUserProfile() {
+        Long userId = 1L;
+        return userService.readUserProfile(userId);
     }
 }

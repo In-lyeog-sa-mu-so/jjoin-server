@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.domain.Club;
 import org.dongguk.jjoin.domain.User;
 import org.dongguk.jjoin.dto.response.ClubCardDto;
+import org.dongguk.jjoin.dto.response.UserProfileDto;
 import org.dongguk.jjoin.repository.ClubMemberRepository;
 import org.dongguk.jjoin.repository.ClubRepository;
 import org.dongguk.jjoin.repository.NoticeRepository;
@@ -44,5 +45,17 @@ public class UserService {
         }
 
         return clubCardDtoList;
+    }
+
+    public UserProfileDto readUserProfile(Long userId) {
+        User user = userRepository.findById(userId).get();
+
+        return UserProfileDto.builder()
+                .userId(user.getId())
+                .profileImageUuid(user.getProfileImage().getUuidName())
+                .name(user.getName())
+                .major(user.getMajor().toString())
+                .introduction(user.getIntroduction())
+                .build();
     }
 }

@@ -48,6 +48,10 @@ public class User {
     @Column(name = "email", nullable = false)
     private String email;
 
+    @OneToOne
+    @JoinColumn(name = "profile_image")
+    private Image profileImage;
+
     @Column(name = "roles", nullable = false)
     @Enumerated(EnumType.STRING)
     private EUserRole role;
