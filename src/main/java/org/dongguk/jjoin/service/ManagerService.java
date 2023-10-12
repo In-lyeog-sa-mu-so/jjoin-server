@@ -3,15 +3,16 @@ package org.dongguk.jjoin.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.domain.Club;
+import org.dongguk.jjoin.domain.ClubMember;
 import org.dongguk.jjoin.domain.Notice;
+import org.dongguk.jjoin.domain.User;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
+import org.dongguk.jjoin.dto.response.ClubMemberDtoByWeb;
 import org.dongguk.jjoin.dto.response.NoticeDto;
 import org.dongguk.jjoin.dto.response.NoticeListDto;
-import org.dongguk.jjoin.dto.response.NoticeListDtoByApp;
+import org.dongguk.jjoin.repository.ClubMemberRepository;
 import org.dongguk.jjoin.repository.ClubRepository;
 import org.dongguk.jjoin.repository.NoticeRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,7 @@ import java.util.Optional;
 public class ManagerService {
     private final ClubRepository clubRepository;
     private final NoticeRepository noticeRepository;
+    private final ClubMemberRepository clubMemberRepository;
 
     public List<NoticeListDto> showNoticeList(Long clubId, Integer page, Integer size){
         Club club = clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("no match clubId"));
@@ -88,5 +90,24 @@ public class ManagerService {
         Notice notice = searchNotice(clubId, noticeId);
         notice.deleteNotice();
         return Boolean.TRUE;
+    }
+
+    // 동아리 멤버 목록 조회
+    public List<ClubMemberDtoByWeb> readClubMembers(Long clubId, Integer page, Integer size){
+        PageRequest pageRequest = PageRequest.of(page, size);
+        List<ClubMember> clubMembers = clubMemberRepository.findByClubId(clubId, pageRequest);
+        List<ClubMemberDtoByWeb> clubMemberDtoByWebs = new ArrayList<>();
+        for (ClubMember cm : clubMembers){
+            User user = cm.getUser();
+            clubMemberDtoByWebs.add(ClubMemberDtoByWeb.builder()
+                            .userId(user.getId())
+                            .userName(user.getName())
+                            .major(user.getMajor())
+                            .studentId(user.getStudentId())
+                            .registerDate(cm.getRegisterDate())
+                            .position(cm.getRankType())
+                    .build());
+        }
+        return clubMemberDtoByWebs;
     }
 }
