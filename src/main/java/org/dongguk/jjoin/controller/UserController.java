@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.dto.response.ClubCardDto;
 import org.dongguk.jjoin.dto.response.ScheduleDayDto;
+import org.dongguk.jjoin.dto.response.UserClubDto;
 import org.dongguk.jjoin.dto.response.UserProfileDto;
+import org.dongguk.jjoin.service.ClubService;
 import org.dongguk.jjoin.service.ScheduleService;
 import org.dongguk.jjoin.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,6 +24,7 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     private final ScheduleService scheduleService;
+    private final ClubService clubService;
 
     @GetMapping("/clubs")
     public List<ClubCardDto> readUserClubs() {
@@ -35,8 +39,12 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public UserProfileDto readUserProfile() {
-        Long userId = 1L;
+    public UserProfileDto readUserProfile(@PathVariable Long userId) {
         return userService.readUserProfile(userId);
+    }
+
+    @GetMapping("/{userId}/clubs")
+    public List<UserClubDto> readUserClubs(@PathVariable Long userId) {
+        return clubService.readUserClubList(userId);
     }
 }
