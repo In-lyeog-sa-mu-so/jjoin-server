@@ -42,6 +42,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private MajorType major;
 
+    @Column(name = "student_id", nullable = false)
+    private Long studentId;
+
     @Column(name = "introduction")
     private String introduction;
 
@@ -83,12 +86,13 @@ public class User {
 
     @Builder
     public User(ELoginProvider provider, String serialId, String password, String name, MajorType major,
-                String introduction, String email, EUserRole role) {
+                Long studentId, String introduction, String email, EUserRole role) {
         this.provider = provider;
         this.serialId = serialId;
         this.password = password;
         this.name = name;
         this.major = major;
+        this.studentId = studentId;
         this.introduction = introduction;
         this.email = email;
         this.role = role;
