@@ -3,7 +3,9 @@ package org.dongguk.jjoin.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.domain.Club;
+import org.dongguk.jjoin.domain.Image;
 import org.dongguk.jjoin.domain.User;
+import org.dongguk.jjoin.dto.request.UserProfileUpdateDto;
 import org.dongguk.jjoin.dto.response.ClubCardDto;
 import org.dongguk.jjoin.dto.response.UserProfileDto;
 import org.dongguk.jjoin.repository.ClubMemberRepository;
@@ -57,5 +59,14 @@ public class UserService {
                 .major(user.getMajor().toString())
                 .introduction(user.getIntroduction())
                 .build();
+    }
+
+    public Boolean updateUserProfile(Long userId, UserProfileUpdateDto userProfileUpdateDto) {
+        User user = userRepository.findById(userId).get();
+        Image profileImage = user.getProfileImage();
+        user.setIntroduction(userProfileUpdateDto.getIntroduction());
+        profileImage.setUuidName(userProfileUpdateDto.getProfileImageUuid());
+
+        return true;
     }
 }
