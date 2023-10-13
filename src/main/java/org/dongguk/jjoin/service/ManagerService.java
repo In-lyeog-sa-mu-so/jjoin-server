@@ -6,6 +6,7 @@ import org.dongguk.jjoin.domain.Club;
 import org.dongguk.jjoin.domain.ClubMember;
 import org.dongguk.jjoin.domain.Notice;
 import org.dongguk.jjoin.domain.User;
+import org.dongguk.jjoin.domain.type.RankType;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
 import org.dongguk.jjoin.dto.response.ClubMemberDtoByWeb;
 import org.dongguk.jjoin.dto.response.NoticeDto;
@@ -16,6 +17,7 @@ import org.dongguk.jjoin.repository.NoticeRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -109,5 +111,14 @@ public class ManagerService {
                     .build());
         }
         return clubMemberDtoByWebs;
+    }
+
+    // 동아리 멤버 퇴출
+    public void deleteMember(Long clubId, List<Long> userIds){
+//        User user = GetUser();
+//        if (clubMemberRepository.findByUser(user).getRankType().equals(RankType.LEADER)){
+//            throw new RuntimeException("권한 없어용");
+//        }
+        clubMemberRepository.deleteAllByClubIdAndUserId(clubId, userIds);
     }
 }

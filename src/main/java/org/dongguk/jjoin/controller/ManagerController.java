@@ -1,6 +1,7 @@
 package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.dongguk.jjoin.domain.User;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
 import org.dongguk.jjoin.dto.response.ClubMemberDtoByWeb;
 import org.dongguk.jjoin.dto.response.NoticeDto;
@@ -47,5 +48,17 @@ public class ManagerController {
     @GetMapping("/club/{clubId}/member")
     public List<ClubMemberDtoByWeb> readClubMembers(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size){
         return managerService.readClubMembers(clubId, page, size);
+    }
+
+    // 동아리 멤버 권한 수정
+    @PatchMapping("/club/{clubId}/member/{userId}")
+    public void modifyMemberRole(@PathVariable Long clubId, @PathVariable Long userId){
+
+    }
+
+    // 동아리 멤버 퇴출
+    @DeleteMapping("/club/{clubId}/member/{userId}")
+    public void deleteMember(@PathVariable Long clubId, @PathVariable List<Long> userId){
+        managerService.deleteMember(clubId, userId);
     }
 }
