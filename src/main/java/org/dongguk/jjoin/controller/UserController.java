@@ -46,6 +46,11 @@ public class UserController {
         return userService.updateUserProfile(userId, userProfileUpdateDto);
     }
 
+    @DeleteMapping("/{userId}")
+    public Boolean deleteUser(@PathVariable Long userId) {
+        return userService.deleteUser(userId);
+    }
+
     @GetMapping("/{userId}/clubs")
     public List<UserClubDto> readUserClubs(@PathVariable Long userId) {
         return clubService.readUserClubList(userId);
