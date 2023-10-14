@@ -2,6 +2,7 @@ package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.dongguk.jjoin.domain.User;
+import org.dongguk.jjoin.domain.type.RankType;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
 import org.dongguk.jjoin.dto.response.ClubMemberDtoByWeb;
 import org.dongguk.jjoin.dto.response.NoticeDto;
@@ -51,9 +52,9 @@ public class ManagerController {
     }
 
     // 동아리 멤버 권한 수정
-    @PatchMapping("/club/{clubId}/member/{userId}")
-    public void modifyMemberRole(@PathVariable Long clubId, @PathVariable Long userId){
-
+    @PatchMapping("/club/{clubId}/member/{userId}/rank/{rankType}")
+    public void modifyMemberRole(@PathVariable Long clubId, @PathVariable Long userId, @PathVariable String rankType){
+        managerService.modifyMemberRole(clubId, userId, rankType);
     }
 
     // 동아리 멤버 퇴출

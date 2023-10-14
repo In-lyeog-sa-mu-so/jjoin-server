@@ -113,6 +113,16 @@ public class ManagerService {
         return clubMemberDtoByWebs;
     }
 
+    // 동아리 멤버 권한 수정
+    public void modifyMemberRole(Long clubId, Long userId, String rankType){
+        //        User user = GetUser();
+//        if (clubMemberRepository.findByUser(user).getRankType().equals(RankType.LEADER)){
+//            throw new RuntimeException("권한 없어용");
+//        }
+        ClubMember clubMember = clubMemberRepository.findClubMemberByClubIdAndUserId(clubId, userId).orElseThrow(()-> new RuntimeException("No clubMember"));
+        clubMember.modifyRank(RankType.valueOf(rankType));
+    }
+
     // 동아리 멤버 퇴출
     public void deleteMember(Long clubId, List<Long> userIds){
 //        User user = GetUser();

@@ -13,6 +13,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ClubMemberRepository extends JpaRepository<ClubMember, Long> {
@@ -24,6 +25,9 @@ public interface ClubMemberRepository extends JpaRepository<ClubMember, Long> {
     List<ClubMember> findByClubId(Long clubId, Pageable pageable);
 
     ClubMember findByUser(User user);
+
+    @Query("SELECT cm FROM ClubMember AS cm WHERE cm.club.id = :clubId AND cm.user.id = :userId")
+    Optional<ClubMember> findClubMemberByClubIdAndUserId(Long clubId, Long userId);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("DELETE FROM ClubMember AS cm WHERE cm.club.id = :clubId AND cm.user.id IN :userIds")
