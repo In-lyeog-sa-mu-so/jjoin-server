@@ -2,13 +2,15 @@ package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dongguk.jjoin.dto.request.UserProfileUpdateDto;
 import org.dongguk.jjoin.dto.response.ClubCardDto;
 import org.dongguk.jjoin.dto.response.ScheduleDayDto;
+import org.dongguk.jjoin.dto.response.UserClubDto;
+import org.dongguk.jjoin.dto.response.UserProfileDto;
+import org.dongguk.jjoin.service.ClubService;
 import org.dongguk.jjoin.service.ScheduleService;
 import org.dongguk.jjoin.service.UserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,6 +22,7 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     private final ScheduleService scheduleService;
+    private final ClubService clubService;
 
     @GetMapping("/clubs")
     public List<ClubCardDto> readUserClubs() {
@@ -31,5 +34,25 @@ public class UserController {
     public List<ScheduleDayDto> readUserSchedules() {
         Long userId = 1L;
         return scheduleService.readDaySchedules(userId, LocalDateTime.now().toString().substring(0, 10).replaceAll("-", ""), true);
+    }
+
+    @GetMapping("/{userId}")
+    public UserProfileDto readUserProfile(@PathVariable Long userId) {
+        return userService.readUserProfile(userId);
+    }
+
+    @PutMapping("/{userId}")
+    public Boolean updateUserProfile(@PathVariable Long userId, @RequestBody UserProfileUpdateDto userProfileUpdateDto) {
+        return userService.updateUserProfile(userId, userProfileUpdateDto);
+    }
+
+    @DeleteMapping("/{userId}")
+    public Boolean deleteUser(@PathVariable Long userId) {
+        return userService.deleteUser(userId);
+    }
+
+    @GetMapping("/{userId}/clubs")
+    public List<UserClubDto> readUserClubs(@PathVariable Long userId) {
+        return clubService.readUserClubList(userId);
     }
 }
