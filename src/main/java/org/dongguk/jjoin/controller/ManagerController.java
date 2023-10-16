@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.dongguk.jjoin.domain.User;
 import org.dongguk.jjoin.domain.type.RankType;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
+import org.dongguk.jjoin.dto.response.ClubMainPageDtoByWeb;
 import org.dongguk.jjoin.dto.response.ClubMemberDtoByWeb;
 import org.dongguk.jjoin.dto.response.NoticeDto;
 import org.dongguk.jjoin.dto.response.NoticeListDto;
@@ -61,5 +62,11 @@ public class ManagerController {
     @DeleteMapping("/club/{clubId}/member/{userId}")
     public void deleteMember(@PathVariable Long clubId, @PathVariable List<Long> userId){
         managerService.deleteMember(clubId, userId);
+    }
+
+    // 동아리 기존 메인페이지 조회
+    @GetMapping("/club/{clubId}/information")
+    public ClubMainPageDtoByWeb readMainPage(@PathVariable Long clubId){
+        return managerService.readMainPage(clubId);
     }
 }

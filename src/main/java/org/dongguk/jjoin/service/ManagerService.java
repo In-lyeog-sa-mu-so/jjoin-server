@@ -2,22 +2,21 @@ package org.dongguk.jjoin.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dongguk.jjoin.domain.Club;
-import org.dongguk.jjoin.domain.ClubMember;
-import org.dongguk.jjoin.domain.Notice;
-import org.dongguk.jjoin.domain.User;
+import org.dongguk.jjoin.domain.*;
+import org.dongguk.jjoin.domain.type.ImageType;
 import org.dongguk.jjoin.domain.type.RankType;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
+import org.dongguk.jjoin.dto.response.ClubMainPageDtoByWeb;
 import org.dongguk.jjoin.dto.response.ClubMemberDtoByWeb;
 import org.dongguk.jjoin.dto.response.NoticeDto;
 import org.dongguk.jjoin.dto.response.NoticeListDto;
 import org.dongguk.jjoin.repository.ClubMemberRepository;
 import org.dongguk.jjoin.repository.ClubRepository;
 import org.dongguk.jjoin.repository.NoticeRepository;
+import org.dongguk.jjoin.repository.RecruitedPeriodRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -32,6 +31,7 @@ public class ManagerService {
     private final ClubRepository clubRepository;
     private final NoticeRepository noticeRepository;
     private final ClubMemberRepository clubMemberRepository;
+    private final RecruitedPeriodRepository recruitedPeriodRepository;
 
     public List<NoticeListDto> showNoticeList(Long clubId, Integer page, Integer size){
         Club club = clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("no match clubId"));
@@ -130,5 +130,19 @@ public class ManagerService {
 //            throw new RuntimeException("권한 없어용");
 //        }
         clubMemberRepository.deleteAllByClubIdAndUserId(clubId, userIds);
+    }
+
+    // 동아리 기존 메인페이지 조회
+    public ClubMainPageDtoByWeb readMainPage(Long clubId){
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
+        Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClub(club);
+        return ClubMainPageDtoByWeb.builder()
+                .clubImage(club.getClubImage().getUuidName())
+                .backgroundImage(club.getBackgroundImage().getUuidName())
+                .introduction(club.getIntroduction())
+                .isFinished(recruitedPeriod.isFinished())
+                .startDate(recruitedPeriod.getStartDate())
+                .endDate(recruitedPeriod.getEndDate())
+                .build();
     }
 }
