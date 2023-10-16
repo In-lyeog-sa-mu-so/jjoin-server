@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
 import org.dongguk.jjoin.dto.response.NoticeDto;
 import org.dongguk.jjoin.dto.response.NoticeListDto;
+import org.dongguk.jjoin.dto.response.PlanDto;
 import org.dongguk.jjoin.service.ManagerService;
+import org.dongguk.jjoin.service.PlanService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.List;
 @RequestMapping("/manager")
 public class ManagerController {
     private final ManagerService managerService;
+    private final PlanService planService;
 
     @PostMapping("/club/{clubId}/notice")
     public void createNotice(@PathVariable Long clubId, @RequestBody NoticeRequestDto noticeRequestDto){
@@ -39,5 +42,10 @@ public class ManagerController {
     public Boolean deleteNotice(@PathVariable Long clubId, @PathVariable Long noticeId){
         managerService.deleteNotice(clubId, noticeId);
         return Boolean.TRUE;
+    }
+
+    @GetMapping("/club/{clubId}/plan")
+    public List<PlanDto> readPlanList(@PathVariable Long clubId) {
+        return planService.readPlanList(clubId);
     }
 }
