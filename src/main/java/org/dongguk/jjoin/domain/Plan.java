@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.dongguk.jjoin.dto.request.PlanUpdateDto;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -58,5 +59,13 @@ public class Plan {
         this.endDate = endDate;
         this.title = title;
         this.content = content;
+    }
+
+    public void updatePlan(PlanUpdateDto planUpdateDto) {
+        this.title = planUpdateDto.getTitle();
+        this.content = planUpdateDto.getContent();
+        this.startDate = planUpdateDto.getStartDate();
+        this.endDate = planUpdateDto.getEndDate();
+        this.updatedDate = Timestamp.valueOf(LocalDateTime.now());
     }
 }

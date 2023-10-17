@@ -2,6 +2,8 @@ package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
+import org.dongguk.jjoin.dto.request.PlanRequestDto;
+import org.dongguk.jjoin.dto.request.PlanUpdateDto;
 import org.dongguk.jjoin.dto.response.NoticeDto;
 import org.dongguk.jjoin.dto.response.NoticeListDto;
 import org.dongguk.jjoin.dto.response.PlanDto;
@@ -47,5 +49,15 @@ public class ManagerController {
     @GetMapping("/club/{clubId}/plan")
     public List<PlanDto> readPlanList(@PathVariable Long clubId) {
         return planService.readPlanList(clubId);
+    }
+
+    @PostMapping("/club/{clubId}/plan")
+    public Boolean createPlan(@PathVariable Long clubId, @RequestBody PlanRequestDto planRequestDto) {
+        return planService.createPlan(clubId, planRequestDto);
+    }
+
+    @PutMapping("/club/{clubId}/plan/{planId}")
+    public Boolean updatePlan(@RequestBody PlanUpdateDto planUpdateDto) {
+        return planService.updatePlan(planUpdateDto);
     }
 }

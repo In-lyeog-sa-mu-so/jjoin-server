@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.domain.Club;
 import org.dongguk.jjoin.domain.Plan;
 import org.dongguk.jjoin.dto.request.PlanRequestDto;
+import org.dongguk.jjoin.dto.request.PlanUpdateDto;
 import org.dongguk.jjoin.dto.response.PlanDto;
 import org.dongguk.jjoin.repository.ClubRepository;
 import org.dongguk.jjoin.repository.PlanRepository;
@@ -53,6 +54,13 @@ public class PlanService {
                         .startDate(planRequestDto.getStartDate())
                         .endDate(planRequestDto.getEndDate())
                 .build());
+
+        return Boolean.TRUE;
+    }
+
+    public Boolean updatePlan(PlanUpdateDto planRequestDto) {
+        Plan plan = planRepository.findById(planRequestDto.getId()).get();
+        plan.updatePlan(planRequestDto);
 
         return Boolean.TRUE;
     }
