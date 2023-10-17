@@ -45,7 +45,7 @@ public class SearchService {
         List<Club> neededClubs = clubs.subList(startIdx, Math.min(startIdx + size, clubs.size()));
         List<SearchClubDto> searchClubDtos = new ArrayList<>();
         for (Club club : neededClubs){
-            Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClub(club);
+            Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClub(club).orElseThrow(()-> new RuntimeException("No match Club"));
             searchClubDtos.add(SearchClubDto.builder()
                             .clubId(club.getId())
                             .clubName(club.getName())
@@ -53,7 +53,7 @@ public class SearchService {
                             .userNumber(clubMemberRepository.countAllByClub(club))
                             .dependent(club.getDependent().toString())
                             .profileImageUuid(club.getClubImage().getUuidName())
-                            .isFinished(recruitedPeriod.isFinished())
+                            .isFinished(recruitedPeriod.getIsFinished())
                             .startDate(recruitedPeriod.getStartDate())
                             .endDate(recruitedPeriod.getEndDate())
                     .build());

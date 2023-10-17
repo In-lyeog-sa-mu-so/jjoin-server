@@ -1,4 +1,4 @@
-package org.dongguk.jjoin.dto.response;
+package org.dongguk.jjoin.dto;
 
 import lombok.Builder;
 import lombok.Getter;

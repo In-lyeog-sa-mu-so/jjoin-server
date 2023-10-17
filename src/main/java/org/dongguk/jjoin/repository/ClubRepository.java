@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ClubRepository extends JpaRepository<Club, Long> {
@@ -18,4 +19,6 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
 
     // 검색 키워드로 클럽 검색
     List<Club> findClubsByNameContainingOrIntroductionContaining(String keyword, String keyword2);
+
+    Optional<Club> findById(Long clubId);
 }

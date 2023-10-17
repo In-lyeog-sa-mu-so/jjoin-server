@@ -2,23 +2,20 @@ package org.dongguk.jjoin.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dongguk.jjoin.domain.Club;
-import org.dongguk.jjoin.domain.ClubMember;
-import org.dongguk.jjoin.domain.Notice;
-import org.dongguk.jjoin.domain.User;
+import org.dongguk.jjoin.domain.*;
 import org.dongguk.jjoin.domain.type.RankType;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
-import org.dongguk.jjoin.dto.response.ClubMemberDtoByWeb;
+import org.dongguk.jjoin.dto.response.ClubMainPageDtoByWeb;
+import org.dongguk.jjoin.dto.ClubMemberDtoByWeb;
 import org.dongguk.jjoin.dto.response.NoticeDto;
 import org.dongguk.jjoin.dto.response.NoticeListDto;
-import org.dongguk.jjoin.repository.ClubMemberRepository;
-import org.dongguk.jjoin.repository.ClubRepository;
-import org.dongguk.jjoin.repository.NoticeRepository;
+import org.dongguk.jjoin.repository.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -32,6 +29,8 @@ public class ManagerService {
     private final ClubRepository clubRepository;
     private final NoticeRepository noticeRepository;
     private final ClubMemberRepository clubMemberRepository;
+    private final RecruitedPeriodRepository recruitedPeriodRepository;
+    private final ImageRepository imageRepository;
 
     public List<NoticeListDto> showNoticeList(Long clubId, Integer page, Integer size){
         Club club = clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("no match clubId"));
@@ -130,5 +129,46 @@ public class ManagerService {
 //            throw new RuntimeException("권한 없어용");
 //        }
         clubMemberRepository.deleteAllByClubIdAndUserId(clubId, userIds);
+    }
+
+    // 동아리 기존 메인페이지 조회
+    public ClubMainPageDtoByWeb readClubMainPage(Long clubId){
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
+        Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClub(club).orElseThrow(()->new RuntimeException("No match Club"));
+        return ClubMainPageDtoByWeb.builder()
+                .clubImage(club.getClubImage().getUuidName())
+                .backgroundImage(club.getBackgroundImage().getUuidName())
+                .introduction(club.getIntroduction())
+                .isFinished(recruitedPeriod.getIsFinished())
+                .startDate(recruitedPeriod.getStartDate())
+                .endDate(recruitedPeriod.getEndDate())
+                .build();
+    }
+
+    // 수정 결과로 받아온 사진들이 이미 존재한 사진인지 확인. 변경된 새로운 사진일 경우 새롭게 저장
+    public Image checkisExistImage(Long clubId, String originName){
+        return imageRepository.findByOriginName(originName).orElseGet(() -> imageRepository.save(
+                Image.builder()
+//                        .user(GetUser())
+//                        .album()
+//                        .notice()
+//                        .originName(originName)
+//                        .uuidName()
+//                        .type()
+                        .build()
+        ));
+    }
+
+    // 동아리 메인페이지 수정
+    public void modifyClubMainPage(Long clubId, ClubMainPageDtoByWeb clubMainPageDtoByWeb){
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
+        Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClub(club).orElseThrow(() -> new RuntimeException("No Recruit_periods"));
+//        Image clubImage = checkisExistImage(clubId, clubMainPageDtoByWeb.getClubImage());
+//        Image backgroundImage = checkisExistImage(clubId, clubMainPageDtoByWeb.getBackgroundImage());
+        // club 사진들을 업데이트 로직 추가 필요.
+        club.setIntroduction(clubMainPageDtoByWeb.getIntroduction());
+        recruitedPeriod.setIsFinished(clubMainPageDtoByWeb.getIsFinished());
+        recruitedPeriod.setStartDate(clubMainPageDtoByWeb.getStartDate());
+        recruitedPeriod.setEndDate(clubMainPageDtoByWeb.getEndDate());
     }
 }

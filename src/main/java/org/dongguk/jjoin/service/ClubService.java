@@ -94,7 +94,7 @@ public class ClubService {
 
     public ClubDetailDto showClub(Long clubId) {
         Club club = clubRepository.findById(clubId).get();
-        Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClub(club);
+        Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClub(club).orElseThrow(()-> new RuntimeException("No match Club"));
         List<String> tags = new ArrayList<>();
         club.getTags().forEach(clubTag -> tags.add(clubTag.getTag().getName()));
 
