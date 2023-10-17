@@ -5,15 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.dongguk.jjoin.domain.Club;
 import org.dongguk.jjoin.domain.Notice;
-import org.dongguk.jjoin.dto.response.ClubDetailDto;
-import org.dongguk.jjoin.dto.response.NoticeDto;
-import org.dongguk.jjoin.dto.response.NoticeListDtoByApp;
+import org.dongguk.jjoin.dto.response.*;
 import org.dongguk.jjoin.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.dongguk.jjoin.domain.*;
 import org.dongguk.jjoin.dto.request.UserTagDto;
-import org.dongguk.jjoin.dto.response.ClubRecommendDto;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -97,7 +94,7 @@ public class ClubService {
 
     public ClubDetailDto showClub(Long clubId) {
         Club club = clubRepository.findById(clubId).get();
-        Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClub(club);
+        Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClub(club).orElseThrow(()-> new RuntimeException("No match Club"));
         List<String> tags = new ArrayList<>();
         club.getTags().forEach(clubTag -> tags.add(clubTag.getTag().getName()));
 
@@ -115,5 +112,21 @@ public class ClubService {
                 .startDate(recruitedPeriod.getStartDate())
                 .endDate(recruitedPeriod.getEndDate())
                 .build();
+    }
+
+    public List<UserClubDto> readUserClubList(Long userId) {
+        User user = userRepository.findById(userId).get();
+        List<Club> clubList = clubMemberRepository.findUserClubsByUser(user);
+        List<UserClubDto> userClubDtoList = new ArrayList<>();
+
+        for (Club club : clubList) {
+            userClubDtoList.add(UserClubDto.builder()
+                            .clubId(club.getId())
+                            .clubImage(club.getClubImage().getUuidName())
+                            .clubName(club.getName())
+                    .build());
+        }
+
+        return userClubDtoList;
     }
 }

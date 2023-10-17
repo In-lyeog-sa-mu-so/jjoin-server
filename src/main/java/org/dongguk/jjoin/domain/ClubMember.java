@@ -43,4 +43,8 @@ public class ClubMember {
         this.rankType = rankType;
         this.registerDate = Timestamp.valueOf(LocalDateTime.now());
     }
+
+    public void modifyRank(RankType rankType){
+        this.rankType = rankType;
+    }
 }
