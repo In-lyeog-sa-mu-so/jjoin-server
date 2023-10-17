@@ -30,7 +30,7 @@ public class Recruited_period {
     private Timestamp endDate;
 
     @Column(name = "is_finished", nullable = false)
-    private boolean isFinished;
+    private Boolean isFinished;
 
     @Builder
     public Recruited_period(Club club, Timestamp startDate, Timestamp endDate) {

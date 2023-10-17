@@ -3,11 +3,10 @@ package org.dongguk.jjoin.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.domain.*;
-import org.dongguk.jjoin.domain.type.ImageType;
 import org.dongguk.jjoin.domain.type.RankType;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
 import org.dongguk.jjoin.dto.response.ClubMainPageDtoByWeb;
-import org.dongguk.jjoin.dto.response.ClubMemberDtoByWeb;
+import org.dongguk.jjoin.dto.ClubMemberDtoByWeb;
 import org.dongguk.jjoin.dto.response.NoticeDto;
 import org.dongguk.jjoin.dto.response.NoticeListDto;
 import org.dongguk.jjoin.repository.ClubMemberRepository;
@@ -133,16 +132,21 @@ public class ManagerService {
     }
 
     // 동아리 기존 메인페이지 조회
-    public ClubMainPageDtoByWeb readMainPage(Long clubId){
+    public ClubMainPageDtoByWeb readClubMainPage(Long clubId){
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
         Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClub(club);
         return ClubMainPageDtoByWeb.builder()
                 .clubImage(club.getClubImage().getUuidName())
                 .backgroundImage(club.getBackgroundImage().getUuidName())
                 .introduction(club.getIntroduction())
-                .isFinished(recruitedPeriod.isFinished())
+                .isFinished(recruitedPeriod.getIsFinished())
                 .startDate(recruitedPeriod.getStartDate())
                 .endDate(recruitedPeriod.getEndDate())
                 .build();
+    }
+
+    // 동아리 메인페이지 수정
+    public void modifyClubMainPage(Long clubId, ClubMainPageDtoByWeb clubMainPageDtoByWeb){
+        //
     }
 }

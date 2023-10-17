@@ -12,7 +12,7 @@ public class ClubMainPageDtoByWeb {
     private String clubImage;
     private String backgroundImage;
     private String introduction;
-    private boolean isFinished;
+    private Boolean isFinished;
     private Timestamp startDate;
     private Timestamp endDate;
 

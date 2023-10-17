@@ -1,11 +1,9 @@
 package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.dongguk.jjoin.domain.User;
-import org.dongguk.jjoin.domain.type.RankType;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
 import org.dongguk.jjoin.dto.response.ClubMainPageDtoByWeb;
-import org.dongguk.jjoin.dto.response.ClubMemberDtoByWeb;
+import org.dongguk.jjoin.dto.ClubMemberDtoByWeb;
 import org.dongguk.jjoin.dto.response.NoticeDto;
 import org.dongguk.jjoin.dto.response.NoticeListDto;
 import org.dongguk.jjoin.service.ManagerService;
@@ -66,7 +64,7 @@ public class ManagerController {
 
     // 동아리 기존 메인페이지 조회
     @GetMapping("/club/{clubId}/information")
-    public ClubMainPageDtoByWeb readMainPage(@PathVariable Long clubId){
-        return managerService.readMainPage(clubId);
+    public ClubMainPageDtoByWeb readClubMainPage(@PathVariable Long clubId){
+        return managerService.readClubMainPage(clubId);
     }
 }
