@@ -60,4 +60,9 @@ public class ManagerController {
     public Boolean updatePlan(@RequestBody PlanUpdateDto planUpdateDto) {
         return planService.updatePlan(planUpdateDto);
     }
+
+    @DeleteMapping("/club/{clubId}/plan/{planId}")
+    public Boolean deletePlan(@PathVariable Long planId) {
+        return planService.deletePlan(planId);
+    }
 }

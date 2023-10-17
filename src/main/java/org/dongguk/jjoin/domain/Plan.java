@@ -47,7 +47,7 @@ public class Plan {
 
     //--------------------------------------------------------
 
-    @OneToMany(mappedBy = "plan", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "plan", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     List<Schedule> schedules = new ArrayList<>();
 
     @Builder

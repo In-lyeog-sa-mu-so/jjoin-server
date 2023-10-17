@@ -64,4 +64,9 @@ public class PlanService {
 
         return Boolean.TRUE;
     }
+
+    public Boolean deletePlan(Long planId) {
+        planRepository.deleteById(planId);
+        return Boolean.TRUE;
+    }
 }
