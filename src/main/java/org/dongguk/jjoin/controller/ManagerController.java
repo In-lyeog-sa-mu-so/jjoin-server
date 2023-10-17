@@ -67,4 +67,10 @@ public class ManagerController {
     public ClubMainPageDtoByWeb readClubMainPage(@PathVariable Long clubId){
         return managerService.readClubMainPage(clubId);
     }
+
+    // 동아리 메인페이지 수정
+    @PutMapping("/club/{clubId}/information")
+    public void modifyClubMainPage(@PathVariable Long clubId, @RequestBody ClubMainPageDtoByWeb clubMainPageDtoByWeb){
+        managerService.modifyClubMainPage(clubId, clubMainPageDtoByWeb);
+    }
 }
