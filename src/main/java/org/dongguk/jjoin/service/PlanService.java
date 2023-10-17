@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.domain.Club;
 import org.dongguk.jjoin.domain.Plan;
+import org.dongguk.jjoin.dto.request.PlanRequestDto;
 import org.dongguk.jjoin.dto.response.PlanDto;
 import org.dongguk.jjoin.repository.ClubRepository;
 import org.dongguk.jjoin.repository.PlanRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,5 +41,19 @@ public class PlanService {
         }
 
         return  planDtoList;
+    }
+
+    public Boolean createPlan(Long clubId, PlanRequestDto planRequestDto) {
+        Club club = clubRepository.findById(clubId).get();
+
+        planRepository.save(Plan.builder()
+                        .club(club)
+                        .title(planRequestDto.getTitle())
+                        .content(planRequestDto.getContent())
+                        .startDate(planRequestDto.getStartDate())
+                        .endDate(planRequestDto.getEndDate())
+                .build());
+
+        return Boolean.TRUE;
     }
 }

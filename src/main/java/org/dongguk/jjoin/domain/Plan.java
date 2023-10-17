@@ -29,7 +29,7 @@ public class Plan {
     @Column(name = "created_date", nullable = false)
     private Timestamp createdDate;
 
-    @Column(name = "updated_date")
+    @Column(name = "updated_date", nullable = false)
     private Timestamp updatedDate;
 
     @Column(name = "start_date", nullable = false)
@@ -53,6 +53,7 @@ public class Plan {
     public Plan(Club club, Timestamp startDate, Timestamp endDate, String title, String content) {
         this.club = club;
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());
+        this.updatedDate = Timestamp.valueOf(LocalDateTime.now());
         this.startDate = startDate;
         this.endDate = endDate;
         this.title = title;
