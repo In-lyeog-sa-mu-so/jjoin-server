@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.dongguk.jjoin.dto.request.PlanUpdateDto;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -29,7 +30,7 @@ public class Plan {
     @Column(name = "created_date", nullable = false)
     private Timestamp createdDate;
 
-    @Column(name = "updated_date")
+    @Column(name = "updated_date", nullable = false)
     private Timestamp updatedDate;
 
     @Column(name = "start_date", nullable = false)
@@ -46,16 +47,25 @@ public class Plan {
 
     //--------------------------------------------------------
 
-    @OneToMany(mappedBy = "plan", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "plan", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     List<Schedule> schedules = new ArrayList<>();
 
     @Builder
     public Plan(Club club, Timestamp startDate, Timestamp endDate, String title, String content) {
         this.club = club;
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());
+        this.updatedDate = Timestamp.valueOf(LocalDateTime.now());
         this.startDate = startDate;
         this.endDate = endDate;
         this.title = title;
         this.content = content;
+    }
+
+    public void updatePlan(PlanUpdateDto planUpdateDto) {
+        this.title = planUpdateDto.getTitle();
+        this.content = planUpdateDto.getContent();
+        this.startDate = planUpdateDto.getStartDate();
+        this.endDate = planUpdateDto.getEndDate();
+        this.updatedDate = Timestamp.valueOf(LocalDateTime.now());
     }
 }

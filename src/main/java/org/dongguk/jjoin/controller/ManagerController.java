@@ -2,11 +2,15 @@ package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
+import org.dongguk.jjoin.dto.request.PlanRequestDto;
+import org.dongguk.jjoin.dto.request.PlanUpdateDto;
 import org.dongguk.jjoin.dto.response.ClubMainPageDtoByWeb;
 import org.dongguk.jjoin.dto.ClubMemberDtoByWeb;
 import org.dongguk.jjoin.dto.response.NoticeDto;
 import org.dongguk.jjoin.dto.response.NoticeListDto;
+import org.dongguk.jjoin.dto.response.PlanDto;
 import org.dongguk.jjoin.service.ManagerService;
+import org.dongguk.jjoin.service.PlanService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +20,7 @@ import java.util.List;
 @RequestMapping("/manager")
 public class ManagerController {
     private final ManagerService managerService;
+    private final PlanService planService;
 
     @PostMapping("/club/{clubId}/notice")
     public void createNotice(@PathVariable Long clubId, @RequestBody NoticeRequestDto noticeRequestDto){
@@ -42,6 +47,26 @@ public class ManagerController {
     public Boolean deleteNotice(@PathVariable Long clubId, @PathVariable Long noticeId){
         managerService.deleteNotice(clubId, noticeId);
         return Boolean.TRUE;
+    }
+
+    @GetMapping("/club/{clubId}/plan")
+    public List<PlanDto> readPlanList(@PathVariable Long clubId) {
+        return planService.readPlanList(clubId);
+    }
+
+    @PostMapping("/club/{clubId}/plan")
+    public Boolean createPlan(@PathVariable Long clubId, @RequestBody PlanRequestDto planRequestDto) {
+        return planService.createPlan(clubId, planRequestDto);
+    }
+
+    @PutMapping("/club/{clubId}/plan/{planId}")
+    public Boolean updatePlan(@RequestBody PlanUpdateDto planUpdateDto) {
+        return planService.updatePlan(planUpdateDto);
+    }
+
+    @DeleteMapping("/club/{clubId}/plan/{planId}")
+    public Boolean deletePlan(@PathVariable Long planId) {
+        return planService.deletePlan(planId);
     }
 
     // 동아리 멤버 목록 조회
