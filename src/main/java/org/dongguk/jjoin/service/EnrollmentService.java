@@ -31,6 +31,7 @@ public class EnrollmentService {
             List<String> tagList = new ArrayList<>();
             clubTagList.forEach(tags -> tagList.add(tags.getTag().getName()));
             enrollmentDtoList.add(EnrollmentDto.builder()
+                            .id(enrollment.getId())
                             .clubName(club.getName())
                             .dependent(club.getDependent().toString())
                             .tags(tagList)
