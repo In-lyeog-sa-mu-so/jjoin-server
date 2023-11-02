@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.domain.Club;
 import org.dongguk.jjoin.domain.ClubTag;
 import org.dongguk.jjoin.domain.Enrollment;
+import org.dongguk.jjoin.dto.request.EnrollmentUpdateDto;
 import org.dongguk.jjoin.dto.response.EnrollmentDto;
 import org.dongguk.jjoin.repository.EnrollmentRepository;
 import org.springframework.stereotype.Service;
@@ -41,5 +42,16 @@ public class EnrollmentService {
         }
 
         return enrollmentDtoList;
+    }
+
+    public Boolean updateEnrollmentList(EnrollmentUpdateDto enrollmentUpdateDto) {
+        List<Long> idList = enrollmentUpdateDto.getId();
+
+        for (Long id : idList) {
+            Enrollment enrollment = enrollmentRepository.findById(id).get();
+            enrollment.getClub().enrollClub();
+        }
+
+        return true;
     }
 }

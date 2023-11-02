@@ -75,4 +75,8 @@ public class Club {
         this.clubImage = clubImage;
         this.backgroundImage = backgroundImage;
     }
+
+    public void enrollClub() {
+        this.createdDate = Timestamp.valueOf(LocalDateTime.now());
+    }
 }

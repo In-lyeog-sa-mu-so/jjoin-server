@@ -2,11 +2,10 @@ package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dongguk.jjoin.dto.request.EnrollmentUpdateDto;
 import org.dongguk.jjoin.dto.response.EnrollmentDto;
 import org.dongguk.jjoin.service.EnrollmentService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,5 +19,10 @@ public class AdminController {
     @GetMapping("/enrollment")
     public List<EnrollmentDto> readEnrollmentList() {
         return enrollmentService.readEnrollmentList();
+    }
+
+    @PutMapping("/enrollment")
+    public Boolean updateEnrollmentList(@RequestBody EnrollmentUpdateDto enrollmentUpdateDto) {
+        return enrollmentService.updateEnrollmentList(enrollmentUpdateDto);
     }
 }
