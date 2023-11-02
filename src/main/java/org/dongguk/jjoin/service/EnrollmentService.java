@@ -50,6 +50,17 @@ public class EnrollmentService {
         for (Long id : idList) {
             Enrollment enrollment = enrollmentRepository.findById(id).get();
             enrollment.getClub().enrollClub();
+            enrollmentRepository.deleteById(id);
+        }
+
+        return true;
+    }
+
+    public Boolean deleteEnrollmentList(EnrollmentUpdateDto enrollmentUpdateDto) {
+        List<Long> idList = enrollmentUpdateDto.getId();
+
+        for (Long id : idList) {
+            enrollmentRepository.deleteById(id);
         }
 
         return true;

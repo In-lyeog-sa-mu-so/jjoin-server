@@ -25,4 +25,9 @@ public class AdminController {
     public Boolean updateEnrollmentList(@RequestBody EnrollmentUpdateDto enrollmentUpdateDto) {
         return enrollmentService.updateEnrollmentList(enrollmentUpdateDto);
     }
+
+    @DeleteMapping("/enrollment")
+    public Boolean deleteEnrollmentList(@RequestBody EnrollmentUpdateDto enrollmentUpdateDto) {
+        return enrollmentService.deleteEnrollmentList(enrollmentUpdateDto);
+    }
 }
