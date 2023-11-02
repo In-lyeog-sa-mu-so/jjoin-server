@@ -1,0 +1,33 @@
+package org.dongguk.jjoin.controller;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.dongguk.jjoin.dto.request.EnrollmentUpdateDto;
+import org.dongguk.jjoin.dto.response.EnrollmentDto;
+import org.dongguk.jjoin.service.EnrollmentService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/admin")
+public class AdminController {
+    private final EnrollmentService enrollmentService;
+
+    @GetMapping("/enrollment")
+    public List<EnrollmentDto> readEnrollmentList() {
+        return enrollmentService.readEnrollmentList();
+    }
+
+    @PutMapping("/enrollment")
+    public Boolean updateEnrollmentList(@RequestBody EnrollmentUpdateDto enrollmentUpdateDto) {
+        return enrollmentService.updateEnrollmentList(enrollmentUpdateDto);
+    }
+
+    @DeleteMapping("/enrollment")
+    public Boolean deleteEnrollmentList(@RequestBody EnrollmentUpdateDto enrollmentUpdateDto) {
+        return enrollmentService.deleteEnrollmentList(enrollmentUpdateDto);
+    }
+}

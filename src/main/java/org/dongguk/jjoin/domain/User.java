@@ -85,9 +85,6 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     List<Image> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    List<Enrollment> enrollments = new ArrayList<>();
-
     @Builder
     public User(ELoginProvider provider, String serialId, String password, String name, MajorType major,
                 Long studentId, String introduction, String email, EUserRole role) {

@@ -21,15 +21,15 @@ public class Enrollment {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "club_id", nullable = false)
+    private Club club;
 
     @Column(name = "created_date")
     private Timestamp createdDate;
 
     @Builder
-    public Enrollment(User user) {
-        this.user = user;
+    public Enrollment(Club club) {
+        this.club = club;
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());
     }
 }
