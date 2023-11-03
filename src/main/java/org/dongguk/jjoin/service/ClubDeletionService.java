@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.domain.Club;
 import org.dongguk.jjoin.domain.ClubDeletion;
+import org.dongguk.jjoin.dto.request.ClubDeletionUpdateDto;
 import org.dongguk.jjoin.dto.response.ClubDeletionDto;
 import org.dongguk.jjoin.repository.ClubDeletionRepository;
 import org.springframework.stereotype.Service;
@@ -37,5 +38,15 @@ public class ClubDeletionService {
         }
 
         return clubDeletionDtos;
+    }
+
+    public Boolean updateClubDeltionList(ClubDeletionUpdateDto clubDeletionUpdateDto) {
+        List<Long> ids = clubDeletionUpdateDto.getId();
+
+        for (Long id : ids) {
+            clubDeletionRepository.findById(id).get().deleteClub();
+        }
+
+        return true;
     }
 }

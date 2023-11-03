@@ -2,6 +2,7 @@ package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dongguk.jjoin.dto.request.ClubDeletionUpdateDto;
 import org.dongguk.jjoin.dto.request.EnrollmentUpdateDto;
 import org.dongguk.jjoin.dto.response.ClubDeletionDto;
 import org.dongguk.jjoin.dto.response.EnrollmentDto;
@@ -37,5 +38,10 @@ public class AdminController {
     @GetMapping("/deletion")
     public List<ClubDeletionDto> readClubDeletionList() {
         return clubDeletionService.readClubDeletionList();
+    }
+
+    @PutMapping("/deletion")
+    public Boolean updateClubDeletion(@RequestBody ClubDeletionUpdateDto clubDeletionUpdateDto) {
+        return clubDeletionService.updateClubDeltionList(clubDeletionUpdateDto);
     }
 }
