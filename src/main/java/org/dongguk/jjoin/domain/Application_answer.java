@@ -1,6 +1,7 @@
 package org.dongguk.jjoin.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,4 +23,10 @@ public class Application_answer {
 
     @Column(name = "content", nullable = false)
     private String content;
+
+    @Builder
+    public Application_answer(Application_question applicationQuestion, String content) {
+        this.applicationQuestion = applicationQuestion;
+        this.content = content;
+    }
 }
