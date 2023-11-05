@@ -7,6 +7,7 @@ import org.dongguk.jjoin.domain.type.ImageType;
 import org.dongguk.jjoin.dto.request.ClubEnrollmentRequestDto;
 import org.dongguk.jjoin.dto.request.EnrollmentUpdateDto;
 import org.dongguk.jjoin.dto.response.ClubEnrollmentDto;
+import org.dongguk.jjoin.dto.response.ClubEnrollmentResponseDto;
 import org.dongguk.jjoin.dto.response.EnrollmentDto;
 import org.dongguk.jjoin.repository.*;
 import org.springframework.stereotype.Service;
@@ -136,5 +137,27 @@ public class EnrollmentService {
                 .build());
 
         return Boolean.TRUE;
+    }
+
+    public ClubEnrollmentResponseDto readClubEnrollment(Long userId, Long enrollmentId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
+        Enrollment enrollments = enrollmentRepository.findById(enrollmentId).get();
+        Club club = enrollments.getClub();
+        Image clubImage = club.getClubImage();
+        Image backgroundImage = club.getBackgroundImage();
+
+        return ClubEnrollmentResponseDto.builder()
+                .name(club.getName())
+                .introduction(club.getIntroduction())
+                .dependentType(club.getDependent().getDescription())
+                .clubImageOriginName(clubImage.getOriginName())
+                .clubImageUuidName(clubImage.getUuidName())
+                .backgroundImageOriginName(backgroundImage.getOriginName())
+                .backgroundImageUuidName(backgroundImage.getUuidName())
+                .tags(club.getTags().stream().map(
+                        clubTag -> clubTag.getTag().getName())
+                        .collect(Collectors.toList())
+                )
+                .build();
     }
 }

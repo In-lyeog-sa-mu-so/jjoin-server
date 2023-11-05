@@ -112,4 +112,10 @@ public class ManagerController {
         Long userId = 1L;
         return enrollmentService.createClubEnrollment(userId, clubEnrollmentRequestDto);
     }
+
+    @GetMapping("/enrollment/{enrollmentId}")
+    public ClubEnrollmentResponseDto readClubEnrollment(@PathVariable Long enrollmentId) {
+        Long userId = 1L;
+        return enrollmentService.readClubEnrollment(userId, enrollmentId);
+    }
 }
