@@ -1,6 +1,5 @@
 package org.dongguk.jjoin.repository;
 
-import org.dongguk.jjoin.domain.Club;
 import org.dongguk.jjoin.domain.ClubApplication;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,4 +15,6 @@ public interface ApplicationRepository extends JpaRepository<ClubApplication, Lo
     List<ClubApplication> findApplicationList(Long clubId, Pageable pageable);
 
     Optional<ClubApplication> findById(Long clubApplication_id);
+
+    void deleteById(Long applicationId);
 }

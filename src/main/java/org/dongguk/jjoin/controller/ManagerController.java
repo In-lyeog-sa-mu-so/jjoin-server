@@ -114,4 +114,10 @@ public class ManagerController {
     public ApplicationDetailDto readApplication(@PathVariable Long clubId, @PathVariable Long applicationId){
         return managerService.readApplication(clubId, applicationId);
     }
+
+    // 동아리 가입 신청 수락
+    @PatchMapping("/club/{clubId}/application/{applicationId}")
+    public void acceptApplication(@PathVariable Long clubId, @PathVariable Long applicationId){
+        managerService.acceptApplication(clubId, applicationId);
+    }
 }

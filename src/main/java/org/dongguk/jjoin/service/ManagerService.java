@@ -236,4 +236,19 @@ public class ManagerService {
                 .applicationQAsets(applicationQAsetList)
                 .build();
     }
+
+    // 동아리 가입 신청 수락
+    public void acceptApplication(Long clubId, Long applicationId){
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
+        ClubApplication clubApplication = applicationRepository.findById(applicationId).orElseThrow(() -> new RuntimeException("NO Application"));
+        User user = clubApplication.getUser();
+
+        clubMemberRepository.save(ClubMember.builder()
+                        .user(user)
+                        .club(clubApplication.getClub())
+                        .rankType(RankType.MEMBER)
+                .build());
+        answerRepository.deleteAllByUserAndQuestion(user.getId(), questionRepository.findAllByClubId(clubId));
+        applicationRepository.deleteById(applicationId);
+    }
 }
