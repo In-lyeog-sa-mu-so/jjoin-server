@@ -2,7 +2,6 @@ package org.dongguk.jjoin.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.dongguk.jjoin.domain.type.MajorType;
 
 import java.sql.Timestamp;
 

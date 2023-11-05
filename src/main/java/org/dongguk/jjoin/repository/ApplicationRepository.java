@@ -8,9 +8,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ApplicationRepository extends JpaRepository<ClubApplication, Long>{
-    @Query("SELECT ca FROM ClubApplication AS ca WHERE ca.club = :club ORDER BY ca.requestDate")
-    List<ClubApplication> findApplicationList(Club club, Pageable pageable);
+    @Query("SELECT ca FROM ClubApplication AS ca WHERE ca.club.id = :clubId ORDER BY ca.requestDate")
+    List<ClubApplication> findApplicationList(Long clubId, Pageable pageable);
+
+    Optional<ClubApplication> findById(Long clubApplication_id);
 }

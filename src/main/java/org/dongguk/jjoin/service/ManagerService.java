@@ -6,18 +6,12 @@ import org.dongguk.jjoin.domain.*;
 import org.dongguk.jjoin.domain.type.RankType;
 import org.dongguk.jjoin.dto.request.ApplicationQuestionDto;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
-import org.dongguk.jjoin.dto.response.ApplicationDto;
-import org.dongguk.jjoin.dto.response.ClubMainPageDtoByWeb;
+import org.dongguk.jjoin.dto.response.*;
 import org.dongguk.jjoin.dto.ClubMemberDtoByWeb;
-import org.dongguk.jjoin.dto.response.NoticeDto;
-import org.dongguk.jjoin.dto.response.NoticeListDto;
 import org.dongguk.jjoin.repository.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 import java.util.ArrayList;
@@ -37,6 +31,7 @@ public class ManagerService {
     private final ImageRepository imageRepository;
     private final QuestionRepository questionRepository;
     private final ApplicationRepository applicationRepository;
+    private final AnswerRepository answerRepository;
 
     public List<NoticeListDto> showNoticeList(Long clubId, Integer page, Integer size){
         Club club = clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("no match clubId"));
@@ -193,23 +188,52 @@ public class ManagerService {
         }
     }
 
+    // 가입 신청 목록, 상세보기에 쓰이는 ClubApplication 엔티티를 입력으로 받아 applicationDtos 만드는 함수
+    ApplicationDto makeApplicationDto(ClubApplication clubApplication){
+        User user = clubApplication.getUser();
+        return ApplicationDto.builder()
+                .name(user.getName())
+                .studentId(user.getStudentId())
+                .major(user.getMajor().toString())
+                .email(user.getEmail())
+                .requestDate(clubApplication.getRequestDate())
+                .build();
+    }
+
     // 동아리 가입 신청 목록
     public List<ApplicationDto> readApplicationList(Long clubId, Integer page, Integer size){
-        Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
+        clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
         PageRequest pageRequest = PageRequest.of(page, size);
-        List<ClubApplication> clubApplications = applicationRepository.findApplicationList(club, pageRequest);
+        List<ClubApplication> clubApplications = applicationRepository.findApplicationList(clubId, pageRequest);
         List<ApplicationDto> applicationDtos = new ArrayList<>();
 
         for (ClubApplication clubApplication: clubApplications){
-            User user = clubApplication.getUser();
-            applicationDtos.add(ApplicationDto.builder()
-                            .name(user.getName())
-                            .studentId(user.getStudentId())
-                            .major(user.getMajor().toString())
-                            .email(user.getEmail())
-                            .requestDate(clubApplication.getRequestDate())
-                    .build());
+            applicationDtos.add(makeApplicationDto(clubApplication));
         }
         return applicationDtos;
+    }
+
+    // 동아리 가입 신청 상세보기
+    public ApplicationDetailDto readApplication(Long clubId, Long applicationId){
+        clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
+        ClubApplication clubApplication = applicationRepository.findById(applicationId).orElseThrow(() -> new RuntimeException("NO Application"));
+        User user = clubApplication.getUser();
+
+        List<Application_question> applicationQuestions = questionRepository.findAllByClubId(clubId);
+        List<ApplicationQAset> applicationQAsetList = new ArrayList<>();
+
+        for (int i = 0; i < applicationQuestions.size(); i++){
+            Application_question applicationQuestion = applicationQuestions.get(i);
+            Application_answer applicationAnswer = answerRepository.findAllByApplicationQuestionId(applicationQuestion.getId());
+            applicationQAsetList.add(ApplicationQAset.builder()
+                            .question(applicationQuestion.getContent())
+                            .answer(applicationAnswer.getContent())
+                    .build());
+        }
+
+        return ApplicationDetailDto.builder()
+                .applicationDto(makeApplicationDto(clubApplication))
+                .applicationQAsets(applicationQAsetList)
+                .build();
     }
 }

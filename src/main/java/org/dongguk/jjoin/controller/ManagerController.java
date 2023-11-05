@@ -108,4 +108,10 @@ public class ManagerController {
     public List<ApplicationDto> readApplicationList(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size){
         return managerService.readApplicationList(clubId, page, size);
     }
+
+    // 동아리 가입 신청 상세보기
+    @GetMapping("/club/{clubId}/application/{applicationId}")
+    public ApplicationDetailDto readApplication(@PathVariable Long clubId, @PathVariable Long applicationId){
+        return managerService.readApplication(clubId, applicationId);
+    }
 }
