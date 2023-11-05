@@ -5,11 +5,8 @@ import org.dongguk.jjoin.dto.request.ApplicationQuestionDto;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
 import org.dongguk.jjoin.dto.request.PlanRequestDto;
 import org.dongguk.jjoin.dto.request.PlanUpdateDto;
-import org.dongguk.jjoin.dto.response.ClubMainPageDtoByWeb;
+import org.dongguk.jjoin.dto.response.*;
 import org.dongguk.jjoin.dto.ClubMemberDtoByWeb;
-import org.dongguk.jjoin.dto.response.NoticeDto;
-import org.dongguk.jjoin.dto.response.NoticeListDto;
-import org.dongguk.jjoin.dto.response.PlanDto;
 import org.dongguk.jjoin.service.ManagerService;
 import org.dongguk.jjoin.service.PlanService;
 import org.springframework.web.bind.annotation.*;
@@ -104,5 +101,11 @@ public class ManagerController {
     @PostMapping("/club/{clubId}/application")
     public void makeApplicationQuestion(@PathVariable Long clubId, @RequestBody List<ApplicationQuestionDto> applicationQuestionDtos){
         managerService.makeApplicationQuestion(clubId, applicationQuestionDtos);
+    }
+
+    // 동아리 가입 신청 목록
+    @GetMapping("/club/{clubId}/application")
+    public List<ApplicationDto> readApplicationList(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size){
+        return managerService.readApplicationList(clubId, page, size);
     }
 }

@@ -6,6 +6,7 @@ import org.dongguk.jjoin.domain.*;
 import org.dongguk.jjoin.domain.type.RankType;
 import org.dongguk.jjoin.dto.request.ApplicationQuestionDto;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
+import org.dongguk.jjoin.dto.response.ApplicationDto;
 import org.dongguk.jjoin.dto.response.ClubMainPageDtoByWeb;
 import org.dongguk.jjoin.dto.ClubMemberDtoByWeb;
 import org.dongguk.jjoin.dto.response.NoticeDto;
@@ -14,6 +15,9 @@ import org.dongguk.jjoin.repository.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 import java.util.ArrayList;
@@ -32,6 +36,7 @@ public class ManagerService {
     private final RecruitedPeriodRepository recruitedPeriodRepository;
     private final ImageRepository imageRepository;
     private final QuestionRepository questionRepository;
+    private final ApplicationRepository applicationRepository;
 
     public List<NoticeListDto> showNoticeList(Long clubId, Integer page, Integer size){
         Club club = clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("no match clubId"));
@@ -186,5 +191,25 @@ public class ManagerService {
             );
             questionRepository.saveAll(applicationQuestions);
         }
+    }
+
+    // 동아리 가입 신청 목록
+    public List<ApplicationDto> readApplicationList(Long clubId, Integer page, Integer size){
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
+        PageRequest pageRequest = PageRequest.of(page, size);
+        List<ClubApplication> clubApplications = applicationRepository.findApplicationList(club, pageRequest);
+        List<ApplicationDto> applicationDtos = new ArrayList<>();
+
+        for (ClubApplication clubApplication: clubApplications){
+            User user = clubApplication.getUser();
+            applicationDtos.add(ApplicationDto.builder()
+                            .name(user.getName())
+                            .studentId(user.getStudentId())
+                            .major(user.getMajor().toString())
+                            .email(user.getEmail())
+                            .requestDate(clubApplication.getRequestDate())
+                    .build());
+        }
+        return applicationDtos;
     }
 }
