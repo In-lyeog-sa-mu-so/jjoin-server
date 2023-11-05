@@ -29,4 +29,8 @@ public class ClubDeletion {
         this.club = club;
         this.isDeleted = false;
     }
+
+    public void deleteClub() {
+        isDeleted = true;
+    }
 }

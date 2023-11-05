@@ -65,6 +65,12 @@ public class Club {
     @OneToMany(mappedBy = "club", fetch = FetchType.LAZY)
     List<Album> albums = new ArrayList<>();
 
+    @OneToMany(mappedBy = "club", fetch = FetchType.LAZY)
+    List<ClubApplication> clubApplications = new ArrayList<>();
+
+    @OneToMany(mappedBy = "club", fetch = FetchType.LAZY)
+    List<Application_question> applicationQuestions = new ArrayList<>();
+
     @Builder
     public Club(String name, String introduction, User leader, DependentType dependent, Image clubImage, Image backgroundImage) {
         this.name = name;
