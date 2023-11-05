@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.domain.*;
 import org.dongguk.jjoin.domain.type.RankType;
+import org.dongguk.jjoin.dto.request.ApplicationQuestionDto;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
 import org.dongguk.jjoin.dto.response.ClubMainPageDtoByWeb;
 import org.dongguk.jjoin.dto.ClubMemberDtoByWeb;
@@ -14,8 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -31,6 +31,7 @@ public class ManagerService {
     private final ClubMemberRepository clubMemberRepository;
     private final RecruitedPeriodRepository recruitedPeriodRepository;
     private final ImageRepository imageRepository;
+    private final QuestionRepository questionRepository;
 
     public List<NoticeListDto> showNoticeList(Long clubId, Integer page, Integer size){
         Club club = clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("no match clubId"));
@@ -170,5 +171,20 @@ public class ManagerService {
         recruitedPeriod.setIsFinished(clubMainPageDtoByWeb.getIsFinished());
         recruitedPeriod.setStartDate(clubMainPageDtoByWeb.getStartDate());
         recruitedPeriod.setEndDate(clubMainPageDtoByWeb.getEndDate());
+    }
+
+    // 동아리 가입 신청서 질문 생성
+    public void makeApplicationQuestion(Long clubId, List<ApplicationQuestionDto> applicationQuestionDtos){
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
+        List<Application_question> applicationQuestions = new ArrayList<>();
+        for(ApplicationQuestionDto applicationQuestionDto : applicationQuestionDtos){
+            applicationQuestions.add(
+                    Application_question.builder()
+                            .club(club)
+                            .content(applicationQuestionDto.getContent())
+                            .build()
+            );
+            questionRepository.saveAll(applicationQuestions);
+        }
     }
 }

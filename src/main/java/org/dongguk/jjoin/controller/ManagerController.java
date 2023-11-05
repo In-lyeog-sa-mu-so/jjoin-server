@@ -1,6 +1,7 @@
 package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.dongguk.jjoin.dto.request.ApplicationQuestionDto;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
 import org.dongguk.jjoin.dto.request.PlanRequestDto;
 import org.dongguk.jjoin.dto.request.PlanUpdateDto;
@@ -97,5 +98,11 @@ public class ManagerController {
     @PutMapping("/club/{clubId}/information")
     public void modifyClubMainPage(@PathVariable Long clubId, @RequestBody ClubMainPageDtoByWeb clubMainPageDtoByWeb){
         managerService.modifyClubMainPage(clubId, clubMainPageDtoByWeb);
+    }
+
+    // 동아리 가입 신청서 질문 생성
+    @PostMapping("/club/{clubId}/application")
+    public void makeApplicationQuestion(@PathVariable Long clubId, @RequestBody List<ApplicationQuestionDto> applicationQuestionDtos){
+        managerService.makeApplicationQuestion(clubId, applicationQuestionDtos);
     }
 }
