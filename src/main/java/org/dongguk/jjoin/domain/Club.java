@@ -50,7 +50,7 @@ public class Club {
 
     //--------------------------------------------------------
 
-    @OneToMany(mappedBy = "club", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "club", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     List<ClubTag> tags = new ArrayList<>();
 
     @OneToMany(mappedBy = "club", fetch = FetchType.LAZY)

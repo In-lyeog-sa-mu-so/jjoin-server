@@ -2,15 +2,13 @@ package org.dongguk.jjoin.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dongguk.jjoin.domain.Club;
-import org.dongguk.jjoin.domain.ClubTag;
-import org.dongguk.jjoin.domain.Enrollment;
-import org.dongguk.jjoin.domain.User;
+import org.dongguk.jjoin.domain.*;
+import org.dongguk.jjoin.domain.type.ImageType;
+import org.dongguk.jjoin.dto.request.ClubEnrollmentRequestDto;
 import org.dongguk.jjoin.dto.request.EnrollmentUpdateDto;
 import org.dongguk.jjoin.dto.response.ClubEnrollmentDto;
 import org.dongguk.jjoin.dto.response.EnrollmentDto;
-import org.dongguk.jjoin.repository.EnrollmentRepository;
-import org.dongguk.jjoin.repository.UserRepository;
+import org.dongguk.jjoin.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +23,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 public class EnrollmentService {
+    private final ClubRepository clubRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final UserRepository userRepository;
+    private final ImageRepository imageRepository;
+    private final TagRepository tagRepository;
+    private final ClubTagRepository clubTagRepository;
 
     public List<EnrollmentDto> readEnrollmentList() {
         List<Enrollment> enrollmentList = enrollmentRepository.findAll();
@@ -90,5 +92,49 @@ public class EnrollmentService {
         }
 
         return clubEnrollmentDtos;
+    }
+
+    public Boolean createClubEnrollment(Long userId, ClubEnrollmentRequestDto clubEnrollmentRequestDto) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
+
+        // 이미지 처리 필요
+        Image clubImage = imageRepository.save(Image.builder()
+                .user(user)
+                .album(null)
+                .notice(null)
+                .originName(clubEnrollmentRequestDto.getClubImageOriginName())
+                .uuidName(clubEnrollmentRequestDto.getClubImageUuidName())
+                .type(ImageType.JPG).build());
+        // 이미지 처리 필요
+        Image backgroundImage = imageRepository.save(Image.builder()
+                .user(user)
+                .album(null)
+                .notice(null)
+                .originName(clubEnrollmentRequestDto.getBackgroundImageOriginName())
+                .uuidName(clubEnrollmentRequestDto.getBackgroundImageUuidName())
+                .type(ImageType.JPG).build());
+
+        Club club = clubRepository.save(Club.builder()
+                .name(clubEnrollmentRequestDto.getName())
+                .introduction(clubEnrollmentRequestDto.getIntroduction())
+                .leader(user)
+                .dependent(clubEnrollmentRequestDto.getDependentType())
+                .clubImage(clubImage)
+                .backgroundImage(backgroundImage).build());
+
+        List<String> tagNames = clubEnrollmentRequestDto.getTags();
+        List<Tag> tags = tagRepository.findByNames(tagNames);
+        for (Tag tag : tags) {
+            clubTagRepository.save(ClubTag.builder()
+                    .club(club)
+                    .tag(tag)
+                    .build());
+        }
+
+        enrollmentRepository.save(Enrollment.builder()
+                .club(club)
+                .build());
+
+        return Boolean.TRUE;
     }
 }

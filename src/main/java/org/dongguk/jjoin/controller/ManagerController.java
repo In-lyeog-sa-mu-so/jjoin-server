@@ -1,6 +1,8 @@
 package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.dongguk.jjoin.dto.request.ClubEnrollmentRequestDto;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
 import org.dongguk.jjoin.dto.request.PlanRequestDto;
 import org.dongguk.jjoin.dto.request.PlanUpdateDto;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/manager")
@@ -102,5 +105,11 @@ public class ManagerController {
     public List<ClubEnrollmentDto> readClubEnrollmentList() {
         Long userId = 1L;
         return enrollmentService.readClubEnrollmentList(userId);
+    }
+
+    @PostMapping("/enrollment")
+    public Boolean createClubEnrollment(@RequestBody ClubEnrollmentRequestDto clubEnrollmentRequestDto) {
+        Long userId = 1L;
+        return enrollmentService.createClubEnrollment(userId, clubEnrollmentRequestDto);
     }
 }
