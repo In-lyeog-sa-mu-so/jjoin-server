@@ -1,5 +1,6 @@
 package org.dongguk.jjoin.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.domain.type.ImageType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -9,9 +10,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+@Slf4j
 @Component
 public class FileUtil {
-    @Value("${image.dir}")
+    @Value("${file.dir}")
     private String FileDir;
 
     public String getFullPath(String FileName) {
@@ -26,14 +28,18 @@ public class FileUtil {
         return UUID.randomUUID().toString() + '.' + getFileExtension(originalFileName);
     }
 
-    public String storeFile(MultipartFile file) throws IOException {
+    public String storeFile(MultipartFile file) {
         if (file.isEmpty()) {
             return null;
         }
 
         String originalFileName = file.getOriginalFilename();
         String uuidFileName = getUuidName(originalFileName);
-        file.transferTo(new File(getFullPath(uuidFileName)));
+        try {
+            file.transferTo(new File(getFullPath(uuidFileName)));
+        } catch (IOException e) {
+            return null;
+        }
         return uuidFileName;
     }
 }

@@ -85,4 +85,10 @@ public class Club {
     public void enrollClub() {
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());
     }
+
+    public void modifyClubMain(String introduction, Image clubImage, Image backgroundImage) {
+        this.introduction = introduction;
+        this.clubImage = clubImage;
+        this.backgroundImage = backgroundImage;
+    }
 }
