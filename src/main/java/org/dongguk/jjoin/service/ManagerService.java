@@ -218,7 +218,6 @@ public class ManagerService {
         clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
         ClubApplication clubApplication = applicationRepository.findById(applicationId).orElseThrow(() -> new RuntimeException("NO Application"));
         User user = clubApplication.getUser();
-
         List<Application_question> applicationQuestions = questionRepository.findAllByClubId(clubId);
         List<ApplicationQAset> applicationQAsetList = new ArrayList<>();
 
@@ -237,6 +236,12 @@ public class ManagerService {
                 .build();
     }
 
+    // 동아리 가입 신청 수락,거절 시 제출한 신청서와 답변을 DB에서 삭제하는 함수
+    public void removeApplication(Long userId, Long clubId, Long applicationId){
+        answerRepository.deleteAllByUserAndQuestion(userId, questionRepository.findAllByClubId(clubId));
+        applicationRepository.deleteById(applicationId);
+    }
+
     // 동아리 가입 신청 수락
     public void acceptApplication(Long clubId, Long applicationId){
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
@@ -248,7 +253,13 @@ public class ManagerService {
                         .club(clubApplication.getClub())
                         .rankType(RankType.MEMBER)
                 .build());
-        answerRepository.deleteAllByUserAndQuestion(user.getId(), questionRepository.findAllByClubId(clubId));
-        applicationRepository.deleteById(applicationId);
+        removeApplication(user.getId(), clubId, applicationId);
+    }
+
+    // 동아리 가입 신청 거절
+    public void refuseApplication(Long clubId, Long applicationId){
+        clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
+        ClubApplication clubApplication = applicationRepository.findById(applicationId).orElseThrow(() -> new RuntimeException("NO Application"));
+        removeApplication(clubApplication.getUser().getId(), clubId, applicationId);
     }
 }
