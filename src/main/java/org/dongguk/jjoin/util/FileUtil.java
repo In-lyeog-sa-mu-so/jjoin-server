@@ -1,19 +1,16 @@
-package org.dongguk.jjoin.service;
+package org.dongguk.jjoin.util;
 
-import lombok.extern.slf4j.Slf4j;
+import org.dongguk.jjoin.domain.type.ImageType;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
-@Slf4j
-@Service
-@Transactional
-public class FileService {
+@Component
+public class FileUtil {
     @Value("${image.dir}")
     private String FileDir;
 
@@ -21,9 +18,12 @@ public class FileService {
         return FileDir + FileName;
     }
 
+    public String getFileExtension(String originalFileName) {
+        return originalFileName.substring(originalFileName.lastIndexOf('.') + 1);
+    }
+
     private String getUuidName(String originalFileName) {
-        return UUID.randomUUID().toString()
-                + originalFileName.substring(originalFileName.lastIndexOf('.'));
+        return UUID.randomUUID().toString() + '.' + getFileExtension(originalFileName);
     }
 
     public String storeFile(MultipartFile file) throws IOException {
