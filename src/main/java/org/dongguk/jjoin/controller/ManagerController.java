@@ -3,6 +3,7 @@ package org.dongguk.jjoin.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.dto.request.ClubEnrollmentRequestDto;
+import org.dongguk.jjoin.dto.request.ApplicationQuestionDto;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
 import org.dongguk.jjoin.dto.request.PlanRequestDto;
 import org.dongguk.jjoin.dto.request.PlanUpdateDto;
@@ -118,4 +119,33 @@ public class ManagerController {
         Long userId = 1L;
         return enrollmentService.readClubEnrollment(userId, enrollmentId);
     }
+  
+    // 동아리 가입 신청서 질문 생성
+    @PostMapping("/club/{clubId}/application")
+    public void makeApplicationQuestion(@PathVariable Long clubId, @RequestBody List<ApplicationQuestionDto> applicationQuestionDtos){
+        managerService.makeApplicationQuestion(clubId, applicationQuestionDtos);
+    }
+
+    // 동아리 가입 신청 목록
+    @GetMapping("/club/{clubId}/application")
+    public List<ApplicationDto> readApplicationList(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size){
+        return managerService.readApplicationList(clubId, page, size);
+    }
+
+    // 동아리 가입 신청 상세보기
+    @GetMapping("/club/{clubId}/application/{applicationId}")
+    public ApplicationDetailDto readApplication(@PathVariable Long clubId, @PathVariable Long applicationId){
+        return managerService.readApplication(clubId, applicationId);
+    }
+
+    // 동아리 가입 신청 수락
+    @PatchMapping("/club/{clubId}/application/{applicationId}")
+    public void acceptApplication(@PathVariable Long clubId, @PathVariable Long applicationId){
+        managerService.acceptApplication(clubId, applicationId);
+    }
+
+    // 동아리 가입 신청 거절
+    @DeleteMapping("/club/{clubId}/application/{applicationId}")
+    public void refuseApplication(@PathVariable Long clubId, @PathVariable Long applicationId){
+        managerService.refuseApplication(clubId, applicationId);
 }
