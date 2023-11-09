@@ -140,8 +140,8 @@ public class ManagerService {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
         Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClub(club).orElseThrow(()->new RuntimeException("No match Club"));
         return ClubMainPageDtoByWeb.builder()
-                .clubImage(club.getClubImage().getUuidName())
-                .backgroundImage(club.getBackgroundImage().getUuidName())
+                .clubImageUuid(club.getClubImage().getUuidName())
+                .backgroundImageUuid(club.getBackgroundImage().getUuidName())
                 .introduction(club.getIntroduction())
                 .isFinished(recruitedPeriod.getIsFinished())
                 .startDate(recruitedPeriod.getStartDate())

@@ -10,8 +10,10 @@ import org.dongguk.jjoin.dto.response.ClubEnrollmentDto;
 import org.dongguk.jjoin.dto.response.ClubEnrollmentResponseDto;
 import org.dongguk.jjoin.dto.response.EnrollmentDto;
 import org.dongguk.jjoin.repository.*;
+import org.dongguk.jjoin.util.FileUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -30,6 +32,7 @@ public class EnrollmentService {
     private final ImageRepository imageRepository;
     private final TagRepository tagRepository;
     private final ClubTagRepository clubTagRepository;
+    private final FileUtil fileUtil;
 
     public List<EnrollmentDto> readEnrollmentList() {
         List<Enrollment> enrollmentList = enrollmentRepository.findAll();
@@ -95,35 +98,40 @@ public class EnrollmentService {
         return clubEnrollmentDtos;
     }
 
-    public Boolean createClubEnrollment(Long userId, ClubEnrollmentRequestDto clubEnrollmentRequestDto) {
+    public Boolean createClubEnrollment(Long userId, ClubEnrollmentRequestDto data, MultipartFile clubImageFile, MultipartFile backgroundImageFile) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
 
-        // 이미지 처리 필요
+        String clubImageOriginName = clubImageFile.getOriginalFilename();
+        String clubImageUuidName = fileUtil.storeFile(clubImageFile);
         Image clubImage = imageRepository.save(Image.builder()
                 .user(user)
                 .album(null)
                 .notice(null)
-                .originName(clubEnrollmentRequestDto.getClubImageOriginName())
-                .uuidName(clubEnrollmentRequestDto.getClubImageUuidName())
-                .type(ImageType.JPG).build());
-        // 이미지 처리 필요
+                .originName(clubImageOriginName)
+                .uuidName(clubImageUuidName)
+                .type(ImageType.valueOf(fileUtil.getFileExtension(clubImageOriginName).toUpperCase()))
+                .build());
+
+        String backgroundImageOriginName = backgroundImageFile.getOriginalFilename();
+        String backgroundImageUuidName = fileUtil.storeFile(backgroundImageFile);
         Image backgroundImage = imageRepository.save(Image.builder()
                 .user(user)
                 .album(null)
                 .notice(null)
-                .originName(clubEnrollmentRequestDto.getBackgroundImageOriginName())
-                .uuidName(clubEnrollmentRequestDto.getBackgroundImageUuidName())
-                .type(ImageType.JPG).build());
+                .originName(backgroundImageOriginName)
+                .uuidName(backgroundImageUuidName)
+                .type(ImageType.valueOf(fileUtil.getFileExtension(backgroundImageOriginName).toUpperCase()))
+                .build());
 
         Club club = clubRepository.save(Club.builder()
-                .name(clubEnrollmentRequestDto.getName())
-                .introduction(clubEnrollmentRequestDto.getIntroduction())
+                .name(data.getName())
+                .introduction(data.getIntroduction())
                 .leader(user)
-                .dependent(clubEnrollmentRequestDto.getDependentType())
+                .dependent(data.getDependentType())
                 .clubImage(clubImage)
                 .backgroundImage(backgroundImage).build());
 
-        List<String> tagNames = clubEnrollmentRequestDto.getTags();
+        List<String> tagNames = data.getTags();
         List<Tag> tags = tagRepository.findByNames(tagNames);
         for (Tag tag : tags) {
             clubTagRepository.save(ClubTag.builder()

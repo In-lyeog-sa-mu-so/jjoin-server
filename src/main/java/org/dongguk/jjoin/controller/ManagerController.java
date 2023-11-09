@@ -111,9 +111,11 @@ public class ManagerController {
     }
 
     @PostMapping("/enrollment")
-    public Boolean createClubEnrollment(@RequestBody ClubEnrollmentRequestDto clubEnrollmentRequestDto) {
+    public Boolean createClubEnrollment(@RequestPart ClubEnrollmentRequestDto data,
+                                        @RequestPart MultipartFile clubImageFile,
+                                        @RequestPart MultipartFile backgroundImageFile) {
         Long userId = 1L;
-        return enrollmentService.createClubEnrollment(userId, clubEnrollmentRequestDto);
+        return enrollmentService.createClubEnrollment(userId, data, clubImageFile, backgroundImageFile);
     }
 
     @GetMapping("/enrollment/{enrollmentId}")

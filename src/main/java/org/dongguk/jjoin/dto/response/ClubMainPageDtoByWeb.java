@@ -1,25 +1,23 @@
 package org.dongguk.jjoin.dto.response;
 
-import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Getter;
-import org.dongguk.jjoin.domain.Image;
 
 import java.sql.Timestamp;
 
 @Getter
 public class ClubMainPageDtoByWeb {
-    private String clubImage;
-    private String backgroundImage;
+    private String clubImageUuid;
+    private String backgroundImageUuid;
     private String introduction;
     private Boolean isFinished;
     private Timestamp startDate;
     private Timestamp endDate;
 
     @Builder
-    public ClubMainPageDtoByWeb(String clubImage, String backgroundImage, String introduction, boolean isFinished, Timestamp startDate, Timestamp endDate) {
-        this.clubImage = clubImage;
-        this.backgroundImage = backgroundImage;
+    public ClubMainPageDtoByWeb(String clubImageUuid, String backgroundImageUuid, String introduction, boolean isFinished, Timestamp startDate, Timestamp endDate) {
+        this.clubImageUuid = clubImageUuid;
+        this.backgroundImageUuid = backgroundImageUuid;
         this.introduction = introduction;
         this.isFinished = isFinished;
         this.startDate = startDate;

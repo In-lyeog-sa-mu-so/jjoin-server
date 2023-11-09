@@ -16,7 +16,7 @@ public class FileUtil {
     @Value("${file.dir}")
     private String FileDir;
 
-    public String getFullPath(String FileName) {
+    private String getFullPath(String FileName) {
         return FileDir + FileName;
     }
 
