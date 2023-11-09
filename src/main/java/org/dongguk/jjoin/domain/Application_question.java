@@ -1,6 +1,7 @@
 package org.dongguk.jjoin.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,6 +27,11 @@ public class Application_question {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Builder
+    public Application_question(Club club, String content) {
+        this.club = club;
+        this.content = content;
+    }
     //-------------------
     @OneToMany(mappedBy = "applicationQuestion", fetch = FetchType.LAZY)
     List<Application_answer> applicationAnswers = new ArrayList<>();

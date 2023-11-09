@@ -5,8 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.domain.*;
 import org.dongguk.jjoin.domain.type.ImageType;
 import org.dongguk.jjoin.domain.type.RankType;
+import org.dongguk.jjoin.dto.request.ApplicationQuestionDto;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
-import org.dongguk.jjoin.dto.response.ClubMainPageDtoByWeb;
+import org.dongguk.jjoin.dto.response.*;
 import org.dongguk.jjoin.dto.ClubMemberDtoByWeb;
 import org.dongguk.jjoin.dto.response.ClubMainPageUpdateDto;
 import org.dongguk.jjoin.dto.response.NoticeDto;
@@ -35,6 +36,9 @@ public class ManagerService {
     private final RecruitedPeriodRepository recruitedPeriodRepository;
     private final ImageRepository imageRepository;
     private final FileUtil fileUtil;
+    private final QuestionRepository questionRepository;
+    private final ApplicationRepository applicationRepository;
+    private final AnswerRepository answerRepository;
 
     public List<NoticeListDto> showNoticeList(Long clubId, Integer page, Integer size){
         Club club = clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("no match clubId"));
@@ -179,5 +183,95 @@ public class ManagerService {
         club.modifyClubMain(data.getIntroduction(), clubImage, backgroundImage);
         recruitedPeriod.updatePeriod(data.getStartDate(), data.getEndDate(),
                 data.getIsFinished());
+    }
+
+    // 동아리 가입 신청서 질문 생성
+    public void makeApplicationQuestion(Long clubId, List<ApplicationQuestionDto> applicationQuestionDtos){
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
+        List<Application_question> applicationQuestions = new ArrayList<>();
+        for(ApplicationQuestionDto applicationQuestionDto : applicationQuestionDtos){
+            applicationQuestions.add(
+                    Application_question.builder()
+                            .club(club)
+                            .content(applicationQuestionDto.getContent())
+                            .build()
+            );
+            questionRepository.saveAll(applicationQuestions);
+        }
+    }
+
+    // 가입 신청 목록, 상세보기에 쓰이는 ClubApplication 엔티티를 입력으로 받아 applicationDtos 만드는 함수
+    ApplicationDto makeApplicationDto(ClubApplication clubApplication){
+        User user = clubApplication.getUser();
+        return ApplicationDto.builder()
+                .name(user.getName())
+                .studentId(user.getStudentId())
+                .major(user.getMajor().toString())
+                .email(user.getEmail())
+                .requestDate(clubApplication.getRequestDate())
+                .build();
+    }
+
+    // 동아리 가입 신청 목록
+    public List<ApplicationDto> readApplicationList(Long clubId, Integer page, Integer size){
+        clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
+        PageRequest pageRequest = PageRequest.of(page, size);
+        List<ClubApplication> clubApplications = applicationRepository.findApplicationList(clubId, pageRequest);
+        List<ApplicationDto> applicationDtos = new ArrayList<>();
+
+        for (ClubApplication clubApplication: clubApplications){
+            applicationDtos.add(makeApplicationDto(clubApplication));
+        }
+        return applicationDtos;
+    }
+
+    // 동아리 가입 신청 상세보기
+    public ApplicationDetailDto readApplication(Long clubId, Long applicationId){
+        clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
+        ClubApplication clubApplication = applicationRepository.findById(applicationId).orElseThrow(() -> new RuntimeException("NO Application"));
+        User user = clubApplication.getUser();
+        List<Application_question> applicationQuestions = questionRepository.findAllByClubId(clubId);
+        List<ApplicationQAset> applicationQAsetList = new ArrayList<>();
+
+        for (int i = 0; i < applicationQuestions.size(); i++){
+            Application_question applicationQuestion = applicationQuestions.get(i);
+            Application_answer applicationAnswer = answerRepository.findAllByApplicationQuestionId(applicationQuestion.getId());
+            applicationQAsetList.add(ApplicationQAset.builder()
+                            .question(applicationQuestion.getContent())
+                            .answer(applicationAnswer.getContent())
+                    .build());
+        }
+
+        return ApplicationDetailDto.builder()
+                .applicationDto(makeApplicationDto(clubApplication))
+                .applicationQAsets(applicationQAsetList)
+                .build();
+    }
+
+    // 동아리 가입 신청 수락,거절 시 제출한 신청서와 답변을 DB에서 삭제하는 함수
+    public void removeApplication(Long userId, Long clubId, Long applicationId){
+        answerRepository.deleteAllByUserAndQuestion(userId, questionRepository.findAllByClubId(clubId));
+        applicationRepository.deleteById(applicationId);
+    }
+
+    // 동아리 가입 신청 수락
+    public void acceptApplication(Long clubId, Long applicationId){
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
+        ClubApplication clubApplication = applicationRepository.findById(applicationId).orElseThrow(() -> new RuntimeException("NO Application"));
+        User user = clubApplication.getUser();
+
+        clubMemberRepository.save(ClubMember.builder()
+                        .user(user)
+                        .club(clubApplication.getClub())
+                        .rankType(RankType.MEMBER)
+                .build());
+        removeApplication(user.getId(), clubId, applicationId);
+    }
+
+    // 동아리 가입 신청 거절
+    public void refuseApplication(Long clubId, Long applicationId){
+        clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
+        ClubApplication clubApplication = applicationRepository.findById(applicationId).orElseThrow(() -> new RuntimeException("NO Application"));
+        removeApplication(clubApplication.getUser().getId(), clubId, applicationId);
     }
 }
