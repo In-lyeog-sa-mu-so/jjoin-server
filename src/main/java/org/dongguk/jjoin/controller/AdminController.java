@@ -10,6 +10,7 @@ import org.dongguk.jjoin.service.ClubDeletionService;
 import org.dongguk.jjoin.service.EnrollmentService;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 @Slf4j
@@ -22,8 +23,8 @@ public class AdminController {
 
     // 관리자가 동아리 개설 신청서를 읽어오는 API
     @GetMapping("/enrollment")
-    public List<EnrollmentDto> readEnrollmentList() {
-        return enrollmentService.readEnrollments();
+    public List<EnrollmentDto> readEnrollmentList(@RequestParam Long page, @RequestParam Long size) {
+        return enrollmentService.readEnrollments(page, size);
     }
 
     // 관리자가 동아리 개설을 승인하는 API

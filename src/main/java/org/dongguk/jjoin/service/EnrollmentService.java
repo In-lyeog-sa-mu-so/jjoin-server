@@ -11,10 +11,14 @@ import org.dongguk.jjoin.dto.response.ClubEnrollmentResponseDto;
 import org.dongguk.jjoin.dto.response.EnrollmentDto;
 import org.dongguk.jjoin.repository.*;
 import org.dongguk.jjoin.util.FileUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.print.Pageable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,22 +39,23 @@ public class EnrollmentService {
     private final FileUtil fileUtil;
 
     // 모든 개설 신청서 조회
-    public List<EnrollmentDto> readEnrollments() {
-        List<Enrollment> enrollments = enrollmentRepository.findAll();
+    public List<EnrollmentDto> readEnrollments(Long page, Long size) {
+        PageRequest pageable = PageRequest.of(page.intValue(), size.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<Enrollment> enrollments = enrollmentRepository.findAll(pageable);
         List<EnrollmentDto> enrollmentDtos = new ArrayList<>();
 
-        for (Enrollment enrollment : enrollments) {
+        for (Enrollment enrollment : enrollments.getContent()) {
             Club club = enrollment.getClub();
             List<String> tags = club.getTags().stream()
                     .map(clubTag -> clubTag.getTag().getName()).collect(Collectors.toList());
 
             enrollmentDtos.add(EnrollmentDto.builder()
-                            .id(enrollment.getId())
-                            .clubName(club.getName())
-                            .dependent(club.getDependent().toString())
-                            .tags(tags)
-                            .createdDate(Timestamp.valueOf(LocalDateTime.now()))
-                            .createdDate(enrollment.getCreatedDate())
+                    .id(enrollment.getId())
+                    .clubName(club.getName())
+                    .dependent(club.getDependent().toString())
+                    .tags(tags)
+                    .createdDate(Timestamp.valueOf(LocalDateTime.now()))
+                    .createdDate(enrollment.getCreatedDate())
                     .build());
         }
         return enrollmentDtos;
@@ -88,12 +93,12 @@ public class EnrollmentService {
         for (Enrollment enrollment : enrollments) {
             Club club = enrollment.getClub();
             clubEnrollmentDtos.add(ClubEnrollmentDto.builder()
-                            .id(enrollment.getId())
-                            .clubName(club.getName())
-                            .dependent(club.getDependent().toString())
-                            .tags(club.getTags().stream().map(clubTag -> clubTag.getTag().getName())
-                                    .collect(Collectors.toList()))
-                            .createdDate(enrollment.getCreatedDate())
+                    .id(enrollment.getId())
+                    .clubName(club.getName())
+                    .dependent(club.getDependent().toString())
+                    .tags(club.getTags().stream().map(clubTag -> clubTag.getTag().getName())
+                            .collect(Collectors.toList()))
+                    .createdDate(enrollment.getCreatedDate())
                     .build());
         }
 
@@ -165,7 +170,7 @@ public class EnrollmentService {
                 .backgroundImageOriginName(backgroundImage.getOriginName())
                 .backgroundImageUuidName(backgroundImage.getUuidName())
                 .tags(club.getTags().stream().map(
-                        clubTag -> clubTag.getTag().getName())
+                                clubTag -> clubTag.getTag().getName())
                         .collect(Collectors.toList())
                 )
                 .build();
