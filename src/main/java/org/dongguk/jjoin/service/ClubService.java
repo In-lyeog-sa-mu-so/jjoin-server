@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.dongguk.jjoin.domain.Club;
 import org.dongguk.jjoin.domain.Notice;
+import org.dongguk.jjoin.dto.request.ApplicationAnswerDto;
 import org.dongguk.jjoin.dto.response.*;
 import org.dongguk.jjoin.repository.*;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,8 @@ public class ClubService {
     private final UserRepository userRepository;
     private final RecruitedPeriodRepository recruitedPeriodRepository;
     private final QuestionRepository questionRepository;
+    private final ApplicationRepository applicationRepository;
+    private final AnswerRepository answerRepository;
 
     // 동아리 게시글(공지, 홍보) 목록을 보여주는 API
     public List<NoticeListDtoByApp> showNoticeList(Long clubId, Integer page, Integer size){
@@ -146,5 +149,26 @@ public class ClubService {
                     .build());
         }
         return applicationQuestionDtos;
+    }
+
+    // 동아리 가입신청서 제출
+    public void submitClubApplication(Long clubId, List<ApplicationAnswerDto> applicationAnswerDtos) {
+        clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("No match Club"));
+        User user = new User(); //User.getUser() 이 부분 수정 필요!!! 현재는 작동 안됨.
+        List<Application_answer> applicationAnswers = new ArrayList<>();
+
+        for (ApplicationAnswerDto applicationAnswerDto: applicationAnswerDtos){
+            Application_question applicationQuestion = questionRepository.findById(applicationAnswerDto.getQuestionId()).orElseThrow(()-> new RuntimeException("No match Question"));
+            applicationAnswers.add(Application_answer.builder()
+                    .applicationQuestion(applicationQuestion)
+                    .user(user)
+                    .content(applicationAnswerDto.getAnswerContent())
+                    .build());
+        }
+        answerRepository.saveAll(applicationAnswers);
+        applicationRepository.save(ClubApplication.builder()
+                .user(user)
+                .club(clubRepository.findById(clubId).get())
+                .build());
     }
 }

@@ -1,6 +1,7 @@
 package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.dongguk.jjoin.dto.request.ApplicationAnswerDto;
 import org.dongguk.jjoin.dto.response.*;
 import org.dongguk.jjoin.service.AlbumService;
 import org.dongguk.jjoin.service.ClubService;
@@ -69,5 +70,11 @@ public class ClubController {
     @GetMapping("/{clubId}/applications")
     public List<ApplicationQuestionDto> readClubApplication(@PathVariable Long clubId){
         return clubService.readClubApplication(clubId);
+    }
+
+    // 동아리 가입신청서 제출
+    @PostMapping("/{clubId}/applications")
+    public void submitClubApplication(@PathVariable Long clubId, @RequestBody List<ApplicationAnswerDto> applicationAnswerDtos) {
+        clubService.submitClubApplication(clubId, applicationAnswerDtos);
     }
 }
