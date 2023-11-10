@@ -13,7 +13,6 @@ import org.dongguk.jjoin.domain.*;
 import org.dongguk.jjoin.dto.request.UserTagDto;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -25,6 +24,7 @@ public class ClubService {
     private final ClubTagRepository clubTagRepository;
     private final UserRepository userRepository;
     private final RecruitedPeriodRepository recruitedPeriodRepository;
+    private final QuestionRepository questionRepository;
 
     // 동아리 게시글(공지, 홍보) 목록을 보여주는 API
     public List<NoticeListDtoByApp> showNoticeList(Long clubId, Integer page, Integer size){
@@ -128,5 +128,23 @@ public class ClubService {
         }
 
         return userClubDtoList;
+    }
+
+    // 동아리 가입신청서 양식 가져오기
+    public List<ApplicationQuestionDto> readClubApplication(Long clubId) {
+        clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("No match Club"));
+        List<Application_question> applicationQuestions = questionRepository.findAllByClubId(clubId);
+        if (applicationQuestions == null || applicationQuestions.isEmpty()) {
+            throw new RuntimeException("A Club has No application");
+        }
+
+        List<ApplicationQuestionDto> applicationQuestionDtos = new ArrayList<>();
+        for(Application_question aQ: applicationQuestions){
+            applicationQuestionDtos.add(ApplicationQuestionDto.builder()
+                            .id(aQ.getId())
+                            .content(aQ.getContent())
+                    .build());
+        }
+        return applicationQuestionDtos;
     }
 }
