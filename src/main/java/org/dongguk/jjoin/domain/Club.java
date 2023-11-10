@@ -40,11 +40,11 @@ public class Club {
     @Column(name = "created_date")
     private Timestamp createdDate;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "club_image")
     private Image clubImage;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "background_image")
     private Image backgroundImage;
 
@@ -82,6 +82,7 @@ public class Club {
         this.backgroundImage = backgroundImage;
     }
 
+    // 동아리 개설
     public void enrollClub() {
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());
     }

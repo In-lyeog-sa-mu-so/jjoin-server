@@ -34,48 +34,50 @@ public class EnrollmentService {
     private final ClubTagRepository clubTagRepository;
     private final FileUtil fileUtil;
 
-    public List<EnrollmentDto> readEnrollmentList() {
-        List<Enrollment> enrollmentList = enrollmentRepository.findAll();
-        List<EnrollmentDto> enrollmentDtoList = new ArrayList<>();
+    // 모든 개설 신청서 조회
+    public List<EnrollmentDto> readEnrollments() {
+        List<Enrollment> enrollments = enrollmentRepository.findAll();
+        List<EnrollmentDto> enrollmentDtos = new ArrayList<>();
 
-        for (Enrollment enrollment : enrollmentList) {
+        for (Enrollment enrollment : enrollments) {
             Club club = enrollment.getClub();
-            List<ClubTag> clubTagList = club.getTags();
-            List<String> tagList = new ArrayList<>();
-            clubTagList.forEach(tags -> tagList.add(tags.getTag().getName()));
-            enrollmentDtoList.add(EnrollmentDto.builder()
+            List<String> tags = club.getTags().stream()
+                    .map(clubTag -> clubTag.getTag().getName()).collect(Collectors.toList());
+
+            enrollmentDtos.add(EnrollmentDto.builder()
                             .id(enrollment.getId())
                             .clubName(club.getName())
                             .dependent(club.getDependent().toString())
-                            .tags(tagList)
+                            .tags(tags)
                             .createdDate(Timestamp.valueOf(LocalDateTime.now()))
                             .createdDate(enrollment.getCreatedDate())
                     .build());
         }
-
-        return enrollmentDtoList;
+        return enrollmentDtos;
     }
 
-    public Boolean updateEnrollmentList(EnrollmentUpdateDto enrollmentUpdateDto) {
-        List<Long> idList = enrollmentUpdateDto.getId();
+    // 동아리 개설 신청 승인
+    public Boolean updateEnrollments(EnrollmentUpdateDto enrollmentUpdateDto) {
+        List<Long> ids = enrollmentUpdateDto.getIds();
 
-        for (Long id : idList) {
-            Enrollment enrollment = enrollmentRepository.findById(id).get();
-            enrollment.getClub().enrollClub();
-            enrollmentRepository.deleteById(id);
+        for (Long id : ids) {
+            enrollmentRepository.findById(id).get()
+                    .getClub().enrollClub();
         }
+        enrollmentRepository.deleteByIds(ids);
 
-        return true;
+        return Boolean.TRUE;
     }
 
+    // 동아리 개설 신청 거부
     public Boolean deleteEnrollmentList(EnrollmentUpdateDto enrollmentUpdateDto) {
-        List<Long> idList = enrollmentUpdateDto.getId();
+        List<Long> ids = enrollmentUpdateDto.getIds();
 
-        for (Long id : idList) {
+        for (Long id : ids) {
+            Club club = enrollmentRepository.findById(id).get().getClub();
             enrollmentRepository.deleteById(id);
         }
-
-        return true;
+        return Boolean.TRUE;
     }
 
     public List<ClubEnrollmentDto> readClubEnrollmentList(Long userId) {

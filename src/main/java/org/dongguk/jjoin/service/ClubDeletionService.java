@@ -21,7 +21,8 @@ import java.util.stream.Collectors;
 public class ClubDeletionService {
     private final ClubDeletionRepository clubDeletionRepository;
 
-    public List<ClubDeletionDto> readClubDeletionList() {
+    // 동아리 삭제 신청서 반환
+    public List<ClubDeletionDto> readClubDeletions() {
         List<ClubDeletion> clubDeletions = clubDeletionRepository.findByIsDeletedIsFalse();
         List<ClubDeletionDto> clubDeletionDtos = new ArrayList<>();
 
@@ -36,7 +37,6 @@ public class ClubDeletionService {
                             .createdDate(club.getCreatedDate())
                             .build());
         }
-
         return clubDeletionDtos;
     }
 
