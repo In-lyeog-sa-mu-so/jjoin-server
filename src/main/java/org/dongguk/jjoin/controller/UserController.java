@@ -11,6 +11,7 @@ import org.dongguk.jjoin.service.ClubService;
 import org.dongguk.jjoin.service.ScheduleService;
 import org.dongguk.jjoin.service.UserService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,8 +43,9 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public Boolean updateUserProfile(@PathVariable Long userId, @RequestBody UserProfileUpdateDto userProfileUpdateDto) {
-        return userService.updateUserProfile(userId, userProfileUpdateDto);
+    public Boolean updateUserProfile(@PathVariable Long userId, @RequestPart UserProfileUpdateDto data,
+                                     @RequestPart MultipartFile userProfileImageFile) {
+        return userService.updateUserProfile(userId, data, userProfileImageFile);
     }
 
     @DeleteMapping("/{userId}")

@@ -102,4 +102,9 @@ public class User {
         this.refreshToken = null;
         this.deviceToken = null;
     }
+
+    public void updateUserProfile(String introduction, Image profileImage) {
+        this.introduction = introduction;
+        this.profileImage = profileImage;
+    }
 }

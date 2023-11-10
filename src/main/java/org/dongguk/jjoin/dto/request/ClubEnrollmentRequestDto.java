@@ -14,9 +14,5 @@ public class ClubEnrollmentRequestDto {
     private String name;
     private String introduction;
     private DependentType dependentType;
-    private String clubImageOriginName;
-    private String clubImageUuidName;
-    private String backgroundImageOriginName;
-    private String backgroundImageUuidName;
     private List<String> tags;
 }

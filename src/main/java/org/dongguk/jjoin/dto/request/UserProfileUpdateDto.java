@@ -8,6 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserProfileUpdateDto {
-    private String profileImageUuid;
     private String introduction;
 }

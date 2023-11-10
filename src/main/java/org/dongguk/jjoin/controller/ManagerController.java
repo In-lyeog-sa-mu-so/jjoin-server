@@ -13,6 +13,7 @@ import org.dongguk.jjoin.service.EnrollmentService;
 import org.dongguk.jjoin.service.ManagerService;
 import org.dongguk.jjoin.service.PlanService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -98,8 +99,10 @@ public class ManagerController {
 
     // 동아리 메인페이지 수정
     @PutMapping("/club/{clubId}/information")
-    public void modifyClubMainPage(@PathVariable Long clubId, @RequestBody ClubMainPageDtoByWeb clubMainPageDtoByWeb) {
-        managerService.modifyClubMainPage(clubId, clubMainPageDtoByWeb);
+    public void modifyClubMainPage(@PathVariable Long clubId, @RequestPart ClubMainPageUpdateDto data,
+                                   @RequestPart MultipartFile clubImageFile,
+                                   @RequestPart MultipartFile backgroundImageFile) {
+        managerService.modifyClubMainPage(clubId, data, clubImageFile, backgroundImageFile);
     }
 
     @GetMapping("/enrollment")
@@ -109,9 +112,11 @@ public class ManagerController {
     }
 
     @PostMapping("/enrollment")
-    public Boolean createClubEnrollment(@RequestBody ClubEnrollmentRequestDto clubEnrollmentRequestDto) {
+    public Boolean createClubEnrollment(@RequestPart ClubEnrollmentRequestDto data,
+                                        @RequestPart MultipartFile clubImageFile,
+                                        @RequestPart MultipartFile backgroundImageFile) {
         Long userId = 1L;
-        return enrollmentService.createClubEnrollment(userId, clubEnrollmentRequestDto);
+        return enrollmentService.createClubEnrollment(userId, data, clubImageFile, backgroundImageFile);
     }
 
     @GetMapping("/enrollment/{enrollmentId}")

@@ -44,4 +44,10 @@ public class Recruited_period {
         else this.isFinished = false;
         this.isFinished = isFinished;
     }
+
+    public void updatePeriod(Timestamp startDate, Timestamp endDate, Boolean isFinished) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.isFinished = isFinished;
+    }
 }
