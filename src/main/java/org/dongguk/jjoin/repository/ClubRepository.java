@@ -21,5 +21,5 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     List<Club> findClubsByTagsAndKeyword(List<Tag> tagList, String keyword);
 
     // 검색 키워드로 클럽 검색
-    List<Club> findClubsByNameContainingOrIntroductionContainingIsDeletedIsFalseAndCreatedDateIsNotNull(String keyword, String keyword2);
+    List<Club> findClubsByNameContainingOrIntroductionContainingAndIsDeletedIsFalseAndCreatedDateIsNotNull(String keyword, String keyword2);
 }
