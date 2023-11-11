@@ -10,5 +10,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClubDeletionUpdateDto {
-    private List<Long> id;
+    private List<Long> ids;
 }

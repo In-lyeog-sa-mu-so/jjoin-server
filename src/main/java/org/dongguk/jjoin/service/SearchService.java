@@ -35,7 +35,7 @@ public class SearchService {
                 clubs = clubRepository.findClubsByTags(tagList);
             }
         } else if (!keyword.isEmpty()) { // 키워드 검색
-            clubs = clubRepository.findClubsByNameContainingOrIntroductionContaining(keyword, keyword);
+            clubs = clubRepository.findClubsByNameContainingOrIntroductionContainingIsDeletedIsFalseAndCreatedDateIsNotNull(keyword, keyword);
         } else { // 검색 옵션 X
             clubs = clubRepository.findAll();
         }

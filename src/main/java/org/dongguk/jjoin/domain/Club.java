@@ -48,6 +48,9 @@ public class Club {
     @JoinColumn(name = "background_image")
     private Image backgroundImage;
 
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted;
+
     //--------------------------------------------------------
 
     @OneToMany(mappedBy = "club", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
@@ -91,5 +94,9 @@ public class Club {
         this.introduction = introduction;
         this.clubImage = clubImage;
         this.backgroundImage = backgroundImage;
+    }
+
+    public void deleteClub() {
+        this.isDeleted = Boolean.TRUE;
     }
 }
