@@ -151,6 +151,7 @@ public class ManagerController {
 
     // 동아리 가입 신청 거절
     @DeleteMapping("/club/{clubId}/application/{applicationId}")
-    public void refuseApplication(@PathVariable Long clubId, @PathVariable Long applicationId){
+    public void refuseApplication(@PathVariable Long clubId, @PathVariable Long applicationId) {
         managerService.refuseApplication(clubId, applicationId);
+    }
 }

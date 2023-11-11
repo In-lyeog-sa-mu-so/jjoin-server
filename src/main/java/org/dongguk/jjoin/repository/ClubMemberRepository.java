@@ -24,8 +24,6 @@ public interface ClubMemberRepository extends JpaRepository<ClubMember, Long> {
 
     List<ClubMember> findByClubId(Long clubId, Pageable pageable);
 
-    ClubMember findByUser(User user);
-
     @Query("SELECT cm FROM ClubMember AS cm WHERE cm.club.id = :clubId AND cm.user.id = :userId")
     Optional<ClubMember> findClubMemberByClubIdAndUserId(Long clubId, Long userId);
 
