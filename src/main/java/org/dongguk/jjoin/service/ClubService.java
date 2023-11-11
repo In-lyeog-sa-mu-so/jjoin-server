@@ -134,8 +134,9 @@ public class ClubService {
     }
 
     // 동아리 가입신청서 양식 가져오기
-    public List<ApplicationQuestionDto> readClubApplication(Long clubId) {
-        clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("No match Club"));
+    public ApplicationFormDto readClubApplication(Long clubId) {
+        Club club = clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("No match Club"));
+        Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClub(club).orElseThrow(()-> new RuntimeException("Not Recuriting"));
         List<Application_question> applicationQuestions = questionRepository.findAllByClubId(clubId);
         if (applicationQuestions == null || applicationQuestions.isEmpty()) {
             throw new RuntimeException("A Club has No application");
@@ -148,7 +149,12 @@ public class ClubService {
                             .content(aQ.getContent())
                     .build());
         }
-        return applicationQuestionDtos;
+        return ApplicationFormDto.builder()
+                .clubName(club.getName())
+                .startDate(recruitedPeriod.getStartDate())
+                .endDate(recruitedPeriod.getEndDate())
+                .applicationQuestionDtos(applicationQuestionDtos)
+                .build();
     }
 
     // 동아리 가입신청서 제출

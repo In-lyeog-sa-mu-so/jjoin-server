@@ -68,7 +68,7 @@ public class ClubController {
 
     // 동아리 가입신청서 양식 가져오기
     @GetMapping("/{clubId}/applications")
-    public List<ApplicationQuestionDto> readClubApplication(@PathVariable Long clubId){
+    public ApplicationFormDto readClubApplication(@PathVariable Long clubId){
         return clubService.readClubApplication(clubId);
     }
 
