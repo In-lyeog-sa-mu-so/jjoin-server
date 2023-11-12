@@ -116,19 +116,18 @@ public class ClubService {
                 .build();
     }
 
-    public List<UserClubDto> readUserClubList(Long userId) {
+    public List<UserClubDto> readUserClubs(Long userId) {
         User user = userRepository.findById(userId).get();
         List<Club> clubList = clubMemberRepository.findUserClubsByUser(user);
         List<UserClubDto> userClubDtoList = new ArrayList<>();
 
         for (Club club : clubList) {
             userClubDtoList.add(UserClubDto.builder()
-                    .clubId(club.getId())
-                    .clubImage(club.getClubImage().getUuidName())
-                    .clubName(club.getName())
+                    .id(club.getId())
+                    .clubImageUuid(club.getClubImage().getUuidName())
+                    .name(club.getName())
                     .build());
         }
-
         return userClubDtoList;
     }
 

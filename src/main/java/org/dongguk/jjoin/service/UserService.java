@@ -29,6 +29,7 @@ public class UserService {
     private final ImageRepository imageRepository;
     private final FileUtil fileUtil;
 
+    // 사용자가 가입한 동아리 반환
     public List<ClubCardDto> readUserClubs(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
         List<Club> clubs = clubMemberRepository.findUserClubsByUser(user);

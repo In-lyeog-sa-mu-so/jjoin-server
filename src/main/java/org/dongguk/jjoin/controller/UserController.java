@@ -25,12 +25,14 @@ public class UserController {
     private final ScheduleService scheduleService;
     private final ClubService clubService;
 
+    // 홈화면에서의 가입한 동아리 조회 API
     @GetMapping("/clubs")
     public List<ClubCardDto> readUserClubs() {
         Long userId = 1L;
         return userService.readUserClubs(userId);
     }
 
+    // 홈화면에서의 사용자의 스케줄 조회 API
     @GetMapping("/schedules")
     public List<ScheduleDayDto> readUserSchedules() {
         Long userId = 1L;
@@ -54,8 +56,9 @@ public class UserController {
         return userService.deleteUser(userId);
     }
 
+    // 마이페이지에서의 사용자 동아리 조회 API
     @GetMapping("/{userId}/clubs")
     public List<UserClubDto> readUserClubs(@PathVariable Long userId) {
-        return clubService.readUserClubList(userId);
+        return clubService.readUserClubs(userId);
     }
 }

@@ -5,14 +5,14 @@ import lombok.Getter;
 
 @Getter
 public class UserClubDto {
-    private Long clubId;
-    private String clubImage;
-    private String clubName;
+    private Long id;
+    private String clubImageUuid;
+    private String name;
 
     @Builder
-    public UserClubDto(Long clubId, String clubImage, String clubName) {
-        this.clubId = clubId;
-        this.clubImage = clubImage;
-        this.clubName = clubName;
+    public UserClubDto(Long id, String clubImageUuid, String name) {
+        this.id = id;
+        this.clubImageUuid = clubImageUuid;
+        this.name = name;
     }
 }
