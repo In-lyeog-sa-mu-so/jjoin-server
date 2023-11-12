@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.domain.*;
 import org.dongguk.jjoin.domain.type.ImageType;
+import org.dongguk.jjoin.domain.type.RankType;
 import org.dongguk.jjoin.dto.request.ClubEnrollmentRequestDto;
 import org.dongguk.jjoin.dto.request.EnrollmentUpdateDto;
 import org.dongguk.jjoin.dto.response.ClubEnrollmentDto;
@@ -36,6 +37,7 @@ public class EnrollmentService {
     private final ImageRepository imageRepository;
     private final TagRepository tagRepository;
     private final ClubTagRepository clubTagRepository;
+    private final ClubMemberRepository clubMemberRepository;
     private final FileUtil fileUtil;
 
     // 모든 개설 신청서 조회
@@ -66,8 +68,13 @@ public class EnrollmentService {
         List<Long> ids = enrollmentUpdateDto.getIds();
 
         for (Long id : ids) {
-            enrollmentRepository.findById(id).get()
-                    .getClub().enrollClub();
+            Club club = enrollmentRepository.findById(id).get().getClub();
+            club.enrollClub();
+            clubMemberRepository.save(ClubMember.builder()
+                    .user(club.getLeader())
+                    .club(club)
+                    .rankType(RankType.LEADER)
+                    .build());
         }
         enrollmentRepository.deleteByIds(ids);
 
