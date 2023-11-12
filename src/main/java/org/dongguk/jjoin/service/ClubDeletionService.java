@@ -7,6 +7,9 @@ import org.dongguk.jjoin.domain.ClubDeletion;
 import org.dongguk.jjoin.dto.request.ClubDeletionUpdateDto;
 import org.dongguk.jjoin.dto.response.ClubDeletionDto;
 import org.dongguk.jjoin.repository.ClubDeletionRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,32 +24,34 @@ import java.util.stream.Collectors;
 public class ClubDeletionService {
     private final ClubDeletionRepository clubDeletionRepository;
 
-    public List<ClubDeletionDto> readClubDeletionList() {
-        List<ClubDeletion> clubDeletions = clubDeletionRepository.findByIsDeletedIsFalse();
+    // 동아리 삭제 신청서 반환
+    public List<ClubDeletionDto> readClubDeletions(Long page, Long size) {
+        PageRequest pageable = PageRequest.of(page.intValue(), size.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<ClubDeletion> clubDeletions = clubDeletionRepository.findAll(pageable);
         List<ClubDeletionDto> clubDeletionDtos = new ArrayList<>();
 
-        for (ClubDeletion clubDeletion : clubDeletions) {
+        for (ClubDeletion clubDeletion : clubDeletions.getContent()) {
             Club club = clubDeletion.getClub();
             clubDeletionDtos.add(ClubDeletionDto.builder()
-                            .id(clubDeletion.getId())
-                            .clubName(club.getName())
-                            .dependent(club.getDependent().toString())
-                            .tags(club.getTags().stream().map(clubTag -> clubTag.getTag().getName())
-                                    .collect(Collectors.toList()))
-                            .createdDate(club.getCreatedDate())
-                            .build());
+                    .id(clubDeletion.getId())
+                    .clubName(club.getName())
+                    .dependent(club.getDependent().toString())
+                    .tags(club.getTags().stream().map(clubTag -> clubTag.getTag().getName())
+                            .collect(Collectors.toList()))
+                    .createdDate(clubDeletion.getCreatedDate())
+                    .build());
         }
-
         return clubDeletionDtos;
     }
 
-    public Boolean updateClubDeltionList(ClubDeletionUpdateDto clubDeletionUpdateDto) {
-        List<Long> ids = clubDeletionUpdateDto.getId();
+    // 동아리 삭제 신청 승인
+    public Boolean updateClubDeletions(ClubDeletionUpdateDto clubDeletionUpdateDto) {
+        List<Long> ids = clubDeletionUpdateDto.getIds();
 
         for (Long id : ids) {
             clubDeletionRepository.findById(id).get().deleteClub();
+            clubDeletionRepository.deleteById(id);
         }
-
         return true;
     }
 }
