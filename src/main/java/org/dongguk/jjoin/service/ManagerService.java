@@ -34,16 +34,16 @@ public class ManagerService {
     private final AnswerRepository answerRepository;
 
     // 관리자가 관리하는 동아리 조회
-    public List<JoinedClubDto> showJoinedClubs(Long userId){
+    public List<ManagingClubDto> showJoinedClubs(Long userId){
         List<Club> clubs = clubMemberRepository.findClubMemberByUserIdAndRankType(userId, RankType.MEMBER);
-        List<JoinedClubDto> joinedClubDtos = new ArrayList<>();
+        List<ManagingClubDto> managingClubDtos = new ArrayList<>();
         for (Club club: clubs){
-            joinedClubDtos.add(JoinedClubDto.builder()
+            managingClubDtos.add(ManagingClubDto.builder()
                     .id(club.getId())
                     .name(club.getName())
                     .build());
         }
-        return joinedClubDtos;
+        return managingClubDtos;
     }
 
     public List<NoticeListDto> showNoticeList(Long clubId, Integer page, Integer size){

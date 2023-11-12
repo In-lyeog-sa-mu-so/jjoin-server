@@ -27,7 +27,7 @@ public class ManagerController {
 
     // 관리자가 관리하는 동아리 조회
     @GetMapping("/club")
-    public List<JoinedClubDto> showJoinedClubs(){
+    public List<ManagingClubDto> showJoinedClubs(){
         Long userId = 1L;
         return managerService.showJoinedClubs(userId);
     }
