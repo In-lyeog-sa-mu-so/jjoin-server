@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.print.Pageable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -92,7 +91,7 @@ public class EnrollmentService {
         return Boolean.TRUE;
     }
 
-    public List<ClubEnrollmentDto> readClubEnrollmentList(Long userId) {
+    public List<ClubEnrollmentDto> readClubEnrollments(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
         List<Enrollment> enrollments = enrollmentRepository.findByUser(user);
         List<ClubEnrollmentDto> clubEnrollmentDtos = new ArrayList<>();
@@ -101,7 +100,7 @@ public class EnrollmentService {
             Club club = enrollment.getClub();
             clubEnrollmentDtos.add(ClubEnrollmentDto.builder()
                     .id(enrollment.getId())
-                    .clubName(club.getName())
+                    .name(club.getName())
                     .dependent(club.getDependent().toString())
                     .tags(club.getTags().stream().map(clubTag -> clubTag.getTag().getName())
                             .collect(Collectors.toList()))

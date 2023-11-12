@@ -122,10 +122,11 @@ public class ManagerController {
         managerService.modifyClubMainPage(clubId, data, clubImageFile, backgroundImageFile);
     }
 
+    // 동아리 개설 신청서 목록 조회 API
     @GetMapping("/enrollment")
-    public List<ClubEnrollmentDto> readClubEnrollmentList() {
+    public List<ClubEnrollmentDto> readClubEnrollments() {
         Long userId = 1L;
-        return enrollmentService.readClubEnrollmentList(userId);
+        return enrollmentService.readClubEnrollments(userId);
     }
 
     @PostMapping("/enrollment")
