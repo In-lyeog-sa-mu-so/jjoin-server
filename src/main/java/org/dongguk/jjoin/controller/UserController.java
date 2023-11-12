@@ -40,17 +40,20 @@ public class UserController {
         return scheduleService.readDaySchedules(userId, targetDate);
     }
 
+    // 사용자 조회 API
     @GetMapping("/{userId}")
     public UserProfileDto readUserProfile(@PathVariable Long userId) {
         return userService.readUserProfile(userId);
     }
 
+    // 사용자 프로필 변경 API
     @PutMapping("/{userId}")
     public Boolean updateUserProfile(@PathVariable Long userId, @RequestPart UserProfileUpdateDto data,
                                      @RequestPart MultipartFile userProfileImageFile) {
         return userService.updateUserProfile(userId, data, userProfileImageFile);
     }
 
+    // 회원 탈퇴 API
     @DeleteMapping("/{userId}")
     public Boolean deleteUser(@PathVariable Long userId) {
         return userService.deleteUser(userId);

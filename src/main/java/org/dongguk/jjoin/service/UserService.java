@@ -77,12 +77,11 @@ public class UserService {
                 .build());
         user.updateUserProfile(userProfileUpdateDto.getIntroduction(), userProfileImage);
 
-        return true;
+        return Boolean.TRUE;
     }
 
     public Boolean deleteUser(Long userId) {
         userRepository.deleteById(userId);
-
-        return true;
+        return Boolean.TRUE;
     }
 }
