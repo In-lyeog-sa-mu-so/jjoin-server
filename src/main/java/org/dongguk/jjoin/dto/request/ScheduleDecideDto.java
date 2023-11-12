@@ -8,6 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ScheduleDecideDto {
-    private Long scheduleId;
-    private Boolean acceptCheck;
+    private Boolean isAgreed;
 }

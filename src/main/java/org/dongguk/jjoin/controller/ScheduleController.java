@@ -30,9 +30,9 @@ public class ScheduleController {
         return scheduleService.readPeriodPlans(userId, startDate, endDate);
     }
 
+    // 개인 일정 수락 및 거절
     @PatchMapping("/{scheduleId}")
     public Boolean updateUserSchedule(@PathVariable Long scheduleId, @RequestBody ScheduleDecideDto scheduleDecideDto) {
-        Long userId = 1L;
         return scheduleService.updateSchedule(scheduleId, scheduleDecideDto);
     }
 }

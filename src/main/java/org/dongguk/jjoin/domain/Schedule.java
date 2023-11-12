@@ -34,4 +34,8 @@ public class Schedule {
         this.plan = plans;
         this.isAgreed = false;
     }
+
+    public void scheduleDecidedBy(boolean isAgreed) {
+        this.isAgreed = isAgreed;
+    }
 }

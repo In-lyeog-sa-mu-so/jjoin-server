@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -91,9 +90,9 @@ public class ScheduleService {
 
     public Boolean updateSchedule(Long scheduleId, ScheduleDecideDto scheduleDecideDto) {
         Schedule schedule = scheduleRepository.findById(scheduleId).get();
-        schedule.setIsAgreed(scheduleDecideDto.getAcceptCheck());
+        schedule.scheduleDecidedBy(scheduleDecideDto.getIsAgreed());
 
-        return true;
+        return Boolean.TRUE;
     }
 
     // 특정 동아리의 일정 목록 반환
