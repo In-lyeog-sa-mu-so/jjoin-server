@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.dto.request.ClubDeletionUpdateDto;
 import org.dongguk.jjoin.dto.request.EnrollmentUpdateDto;
 import org.dongguk.jjoin.dto.response.ClubDeletionDto;
+import org.dongguk.jjoin.dto.response.ClubEnrollmentDto;
+import org.dongguk.jjoin.dto.response.ClubEnrollmentResponseDto;
 import org.dongguk.jjoin.dto.response.EnrollmentDto;
 import org.dongguk.jjoin.service.ClubDeletionService;
 import org.dongguk.jjoin.service.EnrollmentService;
@@ -24,6 +26,11 @@ public class AdminController {
     @GetMapping("/enrollment")
     public List<EnrollmentDto> readEnrollments(@RequestParam Long page, @RequestParam Long size) {
         return enrollmentService.readEnrollments(page, size);
+    }
+
+    @GetMapping("/enrollment/{enrollmentId}")
+    public ClubEnrollmentResponseDto readEnrollment(@PathVariable Long enrollmentId){
+        return enrollmentService.readClubEnrollment(enrollmentId);
     }
 
     // 관리자가 동아리 개설을 승인하는 API

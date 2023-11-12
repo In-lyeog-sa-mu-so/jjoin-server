@@ -154,9 +154,8 @@ public class EnrollmentService {
         return Boolean.TRUE;
     }
 
-    public ClubEnrollmentResponseDto readClubEnrollment(Long userId, Long enrollmentId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
-        Enrollment enrollments = enrollmentRepository.findById(enrollmentId).get();
+    public ClubEnrollmentResponseDto readClubEnrollment(Long enrollmentId) {
+        Enrollment enrollments = enrollmentRepository.findById(enrollmentId).orElseThrow(() -> new RuntimeException("NO enrollment")); // 예외처리 수정 예정
         Club club = enrollments.getClub();
         Image clubImage = club.getClubImage();
         Image backgroundImage = club.getBackgroundImage();
@@ -164,10 +163,8 @@ public class EnrollmentService {
         return ClubEnrollmentResponseDto.builder()
                 .name(club.getName())
                 .introduction(club.getIntroduction())
-                .dependentType(club.getDependent().getDescription())
-                .clubImageOriginName(clubImage.getOriginName())
+                .dependent(club.getDependent().getDescription())
                 .clubImageUuidName(clubImage.getUuidName())
-                .backgroundImageOriginName(backgroundImage.getOriginName())
                 .backgroundImageUuidName(backgroundImage.getUuidName())
                 .tags(club.getTags().stream().map(
                                 clubTag -> clubTag.getTag().getName())
