@@ -7,20 +7,20 @@ import java.util.List;
 
 @Getter
 public class ClubRecommendDto {
-    private Long clubId;
-    private String clubName;
+    private Long id;
+    private String name;
     private String introduction;
     private String profileImageUuid;
-    private Long userNumber;
+    private Long numberOfMembers;
     private String dependent;
     private List<String> tags;
 
     @Builder
-    public ClubRecommendDto(Long clubId, String clubName, String introduction, Long userNumber, String dependent, String profileImageUuid, List<String> tags) {
-        this.clubId = clubId;
-        this.clubName = clubName;
+    public ClubRecommendDto(Long id, String name, String introduction, Long numberOfMembers, String dependent, String profileImageUuid, List<String> tags) {
+        this.id = id;
+        this.name = name;
         this.introduction = introduction;
-        this.userNumber = userNumber;
+        this.numberOfMembers = numberOfMembers;
         this.dependent = dependent;
         this.profileImageUuid = profileImageUuid;
         this.tags = tags;

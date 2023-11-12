@@ -30,6 +30,7 @@ public class ClubService {
     private final QuestionRepository questionRepository;
     private final ApplicationRepository applicationRepository;
     private final AnswerRepository answerRepository;
+    private final TagRepository tagRepository;
 
     // 동아리 게시글(공지, 홍보) 목록 반환
     public List<NoticeListDtoByApp> readNotices(Long clubId, Long page, Long size) {
@@ -66,35 +67,27 @@ public class ClubService {
                 .updatedDate(notice.getUpdatedDate()).build();
     }
 
-    public List<ClubRecommendDto> readClubRecommend(Long userId, List<UserTagDto> userTagDtoList) {
+    // 추천 동아리 목록 반환
+    public List<ClubRecommendDto> readClubRecommend(Long userId, UserTagDto userTagDtos) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
-        // 사용자가 가입한 동아리 제외 반환을 위해 조회
-        List<Club> userClubs = clubMemberRepository.findUserClubsByUser(user);
-        List<ClubTag> clubRecommendList = new ArrayList<>();
-        userTagDtoList.forEach(clubTag ->
-                clubRecommendList.addAll(clubTagRepository.findByTagIdNotInUserClub(clubTag.getId(), userClubs)));
+        List<Tag> userTags = tagRepository.findByNames(userTagDtos.getTags());
+        List<Club> userClubs = user.getClubMembers().stream().map(cm -> cm.getClub()).collect(Collectors.toList());
+        List<ClubTag> clubTags = clubTagRepository.findByTagAndClubNotInUserClubs(userTags, userClubs);
+        List<ClubRecommendDto> clubRecommendDtos = new ArrayList<>();
 
-        Map<Long, ClubRecommendDto> clubRecommendDtoMap = new HashMap<>();
-        for (ClubTag clubTag : clubRecommendList) {
+        for (ClubTag clubTag : clubTags) {
             Club club = clubTag.getClub();
-            List<String> clubTagList = new ArrayList<>();
-            clubTagRepository.findByClub(club).forEach(clubTag1 ->
-                    clubTagList.add(clubTag1.getTag().getName()));
-
-            clubRecommendDtoMap.put(club.getId(), ClubRecommendDto.builder()
-                    .clubId(club.getId())
-                    .clubName(club.getName())
+            clubRecommendDtos.add(ClubRecommendDto.builder()
+                    .id(club.getId())
+                    .name(club.getName())
                     .introduction(club.getIntroduction())
-                    .profileImageUuid(club.getClubImage().getUuidName())
-                    .userNumber(clubMemberRepository.countAllByClub(club))
+                    .numberOfMembers(clubMemberRepository.countAllByClub(club))
                     .dependent(club.getDependent().toString())
-                    .tags(clubTagList)
+                    .profileImageUuid(club.getClubImage().getUuidName())
+                    .tags(club.getTags().stream().map(ct -> ct.getTag().getName()).collect(Collectors.toList()))
                     .build());
         }
-        List<ClubRecommendDto> clubRecommendDtoList = new ArrayList<>(clubRecommendDtoMap.values());
-        clubRecommendDtoList.sort(Comparator.comparing(ClubRecommendDto::getUserNumber).reversed());
-
-        return clubRecommendDtoList;
+        return clubRecommendDtos.subList(0, 5);
     }
 
     // 동아리 상세 조회 정보를 반환
