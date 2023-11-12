@@ -15,27 +15,24 @@ import java.util.List;
 public class ScheduleController {
     private final ScheduleService scheduleService;
 
+    // 하루에 해당하는 일정 조회 API
     @GetMapping("/days/{day}")
     public List<ScheduleDayDto> readDayPlans(@PathVariable String day) {
         Long userId = 1L;
-        return scheduleService.readDaySchedules(userId, day, true);
+        return scheduleService.readDaySchedules(userId, day);
     }
 
-    @GetMapping("/weeks/{week}")
-    public List<ScheduleDaysDto> readWeekPlans(@PathVariable String week) {
+    // 기간에 해당하는 일정 조회 API
+    @GetMapping("")
+    public List<ScheduleDaysDto> readPeriodPlans(@RequestParam String startDate,
+                                                @RequestParam String endDate) {
         Long userId = 1L;
-        return scheduleService.readWeekSchedules(userId, week);
+        return scheduleService.readPeriodPlans(userId, startDate, endDate);
     }
 
-    @GetMapping("/months/{month}")
-    public List<ScheduleDaysDto> readMonthPlans(@PathVariable String month) {
-        Long userId = 1L;
-        return scheduleService.readMonthSchedules(userId, month);
-    }
-
+    // 개인 일정 수락 및 거절
     @PatchMapping("/{scheduleId}")
     public Boolean updateUserSchedule(@PathVariable Long scheduleId, @RequestBody ScheduleDecideDto scheduleDecideDto) {
-        Long userId = 1L;
         return scheduleService.updateSchedule(scheduleId, scheduleDecideDto);
     }
 }

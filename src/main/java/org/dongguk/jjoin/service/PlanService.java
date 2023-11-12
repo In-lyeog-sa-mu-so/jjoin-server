@@ -2,22 +2,20 @@ package org.dongguk.jjoin.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dongguk.jjoin.domain.Club;
-import org.dongguk.jjoin.domain.Plan;
+import org.dongguk.jjoin.domain.*;
 import org.dongguk.jjoin.dto.request.PlanRequestDto;
 import org.dongguk.jjoin.dto.request.PlanUpdateDto;
 import org.dongguk.jjoin.dto.response.PlanDto;
+import org.dongguk.jjoin.repository.ClubMemberRepository;
 import org.dongguk.jjoin.repository.ClubRepository;
 import org.dongguk.jjoin.repository.PlanRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.dongguk.jjoin.repository.ScheduleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -25,51 +23,74 @@ import java.util.List;
 @Transactional
 public class PlanService {
     private final PlanRepository planRepository;
+    private final ScheduleRepository scheduleRepository;
+    private final ClubMemberRepository clubMemberRepository;
     private final ClubRepository clubRepository;
 
-    public List<PlanDto> readPlanList(Long clubId, Long page, Long size) {
+    // 특정 동아리의 일정 목록 반환
+    public List<PlanDto> readPlans(Long clubId) {
         Club club = clubRepository.findById(clubId).get();
-        PageRequest pageable = PageRequest.of(page.intValue(), size.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
-        Page<Plan> plans = planRepository.findByClub(club, pageable);
-        List<PlanDto> planDtoList = new ArrayList<>();
+        List<Plan> plans = planRepository.findByClub(club);
+        List<PlanDto> planDtos = new ArrayList<>();
 
-        for (Plan plan : plans.getContent()) {
-            planDtoList.add(PlanDto.builder()
-                            .id(plan.getId())
-                            .clubName(club.getName())
-                            .title(plan.getTitle())
-                            .content(plan.getContent())
-                            .startDate(plan.getStartDate())
-                            .endDate(plan.getEndDate())
-                            .updatedDate(plan.getUpdatedDate())
+        for (Plan plan : plans) {
+            planDtos.add(PlanDto.builder()
+                    .id(plan.getId())
+                    .title(plan.getTitle())
+                    .content(plan.getContent())
+                    .startDate(plan.getStartDate())
+                    .endDate(plan.getEndDate())
                     .build());
         }
-
-        return  planDtoList;
+        return planDtos;
     }
 
+    // 특정 동아리의 일정 등록
     public Boolean createPlan(Long clubId, PlanRequestDto planRequestDto) {
         Club club = clubRepository.findById(clubId).get();
 
-        planRepository.save(Plan.builder()
-                        .club(club)
-                        .title(planRequestDto.getTitle())
-                        .content(planRequestDto.getContent())
-                        .startDate(planRequestDto.getStartDate())
-                        .endDate(planRequestDto.getEndDate())
+        Plan plan = planRepository.save(Plan.builder()
+                .club(club)
+                .title(planRequestDto.getTitle())
+                .content(planRequestDto.getContent())
+                .startDate(planRequestDto.getStartDate())
+                .endDate(planRequestDto.getEndDate())
                 .build());
 
+        List<User> users = clubMemberRepository.findByClub(club).stream()
+                .map(cm -> cm.getUser()).collect(Collectors.toList());
+        for (User user : users) {
+            scheduleRepository.save(Schedule.builder()
+                    .user(user)
+                    .plan(plan)
+                    .build());
+        }
         return Boolean.TRUE;
     }
 
-    public Boolean updatePlan(PlanUpdateDto planRequestDto) {
-        Plan plan = planRepository.findById(planRequestDto.getId()).get();
+    // 특정 동아리의 일정 상세 정보 반환
+    public PlanDto readPlanDetail(Long clubId, Long planId) {
+        Plan plan = planRepository.findById(planId).get();
+
+        return PlanDto.builder()
+                .id(plan.getId())
+                .title(plan.getTitle())
+                .content(plan.getContent())
+                .startDate(plan.getStartDate())
+                .endDate(plan.getEndDate())
+                .build();
+    }
+
+    // 특정 동아리의 일정 정보 수정
+    public Boolean updatePlan(Long clubId, Long planId, PlanUpdateDto planRequestDto) {
+        Plan plan = planRepository.findById(planId).get();
         plan.updatePlan(planRequestDto);
 
         return Boolean.TRUE;
     }
 
-    public Boolean deletePlan(Long planId) {
+    // 특정 동아리의 일정 삭제
+    public Boolean deletePlan(Long clubId, Long planId) {
         planRepository.deleteById(planId);
         return Boolean.TRUE;
     }

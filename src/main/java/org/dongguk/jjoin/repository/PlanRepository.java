@@ -11,5 +11,5 @@ import java.util.List;
 
 @Repository
 public interface PlanRepository extends JpaRepository<Plan, Long> {
-    Page<Plan> findByClub(Club club, PageRequest pageable);
+    List<Plan> findByClub(Club club);
 }

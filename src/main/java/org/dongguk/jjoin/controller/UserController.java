@@ -34,7 +34,8 @@ public class UserController {
     @GetMapping("/schedules")
     public List<ScheduleDayDto> readUserSchedules() {
         Long userId = 1L;
-        return scheduleService.readDaySchedules(userId, LocalDateTime.now().toString().substring(0, 10).replaceAll("-", ""), true);
+        String targetDate = LocalDateTime.now().toString().substring(0, 10).replaceAll("-", "");
+        return scheduleService.readDaySchedules(userId, targetDate);
     }
 
     @GetMapping("/{userId}")

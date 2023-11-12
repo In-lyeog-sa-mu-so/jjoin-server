@@ -60,26 +60,34 @@ public class ManagerController {
         return Boolean.TRUE;
     }
 
+    // 특정 동아리의 일정 목록 조회 API
     @GetMapping("/club/{clubId}/plan")
-    public List<PlanDto> readPlanList(@PathVariable Long clubId,
-                                      @RequestParam Long page,
-                                      @RequestParam Long size) {
-        return planService.readPlanList(clubId, page, size);
+    public List<PlanDto> readPlans(@PathVariable Long clubId) {
+        return planService.readPlans(clubId);
     }
 
+    // 특정 동아리의 일정 등록 API
     @PostMapping("/club/{clubId}/plan")
     public Boolean createPlan(@PathVariable Long clubId, @RequestBody PlanRequestDto planRequestDto) {
         return planService.createPlan(clubId, planRequestDto);
     }
 
-    @PutMapping("/club/{clubId}/plan/{planId}")
-    public Boolean updatePlan(@RequestBody PlanUpdateDto planUpdateDto) {
-        return planService.updatePlan(planUpdateDto);
+    // 특정 동아리의 일정 상세 조회 API
+    @GetMapping("/club/{clubId}/plan/{planId}")
+    public PlanDto readPlanDetail(@PathVariable Long clubId, @PathVariable Long planId) {
+        return planService.readPlanDetail(clubId, planId);
     }
 
+    // 특정 동아리의 일정 정보 수정 API
+    @PutMapping("/club/{clubId}/plan/{planId}")
+    public Boolean updatePlan(@PathVariable Long clubId, @PathVariable Long planId, @RequestBody PlanUpdateDto planUpdateDto) {
+        return planService.updatePlan(clubId, planId, planUpdateDto);
+    }
+
+    // 특정 동아리의 일정 삭제 API
     @DeleteMapping("/club/{clubId}/plan/{planId}")
-    public Boolean deletePlan(@PathVariable Long planId) {
-        return planService.deletePlan(planId);
+    public Boolean deletePlan(@PathVariable Long clubId, @PathVariable Long planId) {
+        return planService.deletePlan(clubId, planId);
     }
 
     // 동아리 멤버 목록 조회

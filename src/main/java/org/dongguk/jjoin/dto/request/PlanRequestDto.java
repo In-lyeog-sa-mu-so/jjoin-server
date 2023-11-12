@@ -7,15 +7,13 @@ import java.sql.Timestamp;
 
 @Getter
 public class PlanRequestDto {
-    private Long clubId;
     private String title;
     private String content;
     private Timestamp startDate;
     private Timestamp endDate;
 
     @Builder
-    public PlanRequestDto(Long clubId, String title, String content, Timestamp startDate, Timestamp endDate) {
-        this.clubId = clubId;
+    public PlanRequestDto(String title, String content, Timestamp startDate, Timestamp endDate) {
         this.title = title;
         this.content = content;
         this.startDate = startDate;

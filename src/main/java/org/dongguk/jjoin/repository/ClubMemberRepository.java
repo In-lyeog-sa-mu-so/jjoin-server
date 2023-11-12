@@ -33,4 +33,6 @@ public interface ClubMemberRepository extends JpaRepository<ClubMember, Long> {
 
     @Query("SELECT cm.club FROM ClubMember AS cm WHERE cm.user.id = :userId AND cm.rankType != :rankType")
     List<Club> findClubMemberByUserIdAndRankType(Long userId, RankType rankType);
+
+    List<ClubMember> findByClub(Club club);
 }
