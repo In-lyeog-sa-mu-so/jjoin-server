@@ -26,6 +26,13 @@ public class ManagerController {
     private final PlanService planService;
     private final EnrollmentService enrollmentService;
 
+    // 관리자가 관리하는 동아리 조회
+    @GetMapping("/club")
+    public List<ManagingClubDto> showJoinedClubs(){
+        Long userId = 1L;
+        return managerService.showJoinedClubs(userId);
+    }
+
     @PostMapping("/club/{clubId}/notice")
     public void createNotice(@PathVariable Long clubId, @RequestBody NoticeRequestDto noticeRequestDto) {
         Long userId = 1L;   //  로그인 구현시 @GetUser 같은 어노테이션으로 대체해야함
@@ -123,8 +130,7 @@ public class ManagerController {
 
     @GetMapping("/enrollment/{enrollmentId}")
     public ClubEnrollmentResponseDto readClubEnrollment(@PathVariable Long enrollmentId) {
-        Long userId = 1L;
-        return enrollmentService.readClubEnrollment(userId, enrollmentId);
+        return enrollmentService.readClubEnrollment(enrollmentId);
     }
   
     // 동아리 가입 신청서 질문 생성

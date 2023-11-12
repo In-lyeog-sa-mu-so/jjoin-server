@@ -40,9 +40,22 @@ public class ManagerService {
     private final ApplicationRepository applicationRepository;
     private final AnswerRepository answerRepository;
 
-    public List<NoticeListDto> showNoticeList(Long clubId, Integer page, Integer size) {
-        Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("no match clubId"));
-        List<Notice> notices = Optional.ofNullable(club.getNotices()).orElseThrow(() -> new RuntimeException("Notice Not found!"));
+    // 관리자가 관리하는 동아리 조회
+    public List<ManagingClubDto> showJoinedClubs(Long userId){
+        List<Club> clubs = clubMemberRepository.findClubMemberByUserIdAndRankType(userId, RankType.MEMBER);
+        List<ManagingClubDto> managingClubDtos = new ArrayList<>();
+        for (Club club: clubs){
+            managingClubDtos.add(ManagingClubDto.builder()
+                    .id(club.getId())
+                    .name(club.getName())
+                    .build());
+        }
+        return managingClubDtos;
+    }
+
+    public List<NoticeListDto> showNoticeList(Long clubId, Integer page, Integer size){
+        Club club = clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("no match clubId"));
+        List<Notice> notices = Optional.ofNullable(club.getNotices()).orElseThrow(()-> new RuntimeException("Notice Not found!"));
         notices.removeIf(notice -> notice.isDeleted());
         notices.sort(Comparator.comparing(Notice::getUpdatedDate).reversed());
 

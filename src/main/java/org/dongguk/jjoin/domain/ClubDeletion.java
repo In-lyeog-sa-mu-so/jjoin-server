@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -21,16 +24,16 @@ public class ClubDeletion {
     @JoinColumn(name = "club_id", nullable = false)
     private Club club;
 
-    @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted;
+    @Column(name = "created_date", nullable = false)
+    private Timestamp createdDate;
 
     @Builder
-    public ClubDeletion(Club club, boolean isDeleted) {
+    public ClubDeletion(Club club) {
         this.club = club;
-        this.isDeleted = false;
+        this.createdDate = Timestamp.valueOf(LocalDateTime.now());
     }
 
     public void deleteClub() {
-        isDeleted = true;
+        club.deleteClub();
     }
 }
