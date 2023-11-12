@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 @Getter
 public class PlanDto {
     private Long id;
-    private String clubName;
+    private String name;
     private String title;
     private String content;
     private Timestamp startDate;
@@ -16,9 +16,9 @@ public class PlanDto {
     private Timestamp updatedDate;
 
     @Builder
-    public PlanDto(Long id, String clubName, String title, String content, Timestamp startDate, Timestamp endDate, Timestamp updatedDate) {
+    public PlanDto(Long id, String name, String title, String content, Timestamp startDate, Timestamp endDate, Timestamp updatedDate) {
         this.id = id;
-        this.clubName = clubName;
+        this.name = name;
         this.title = title;
         this.content = content;
         this.startDate = startDate;

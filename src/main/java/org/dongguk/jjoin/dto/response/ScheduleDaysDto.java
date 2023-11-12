@@ -9,11 +9,11 @@ import java.util.List;
 @Getter
     public class ScheduleDaysDto {
         private Timestamp date;
-        private List<ScheduleDayDto> scheduleDayDtoList;
+        private List<ScheduleDayDto> scheduleDayDtos;
 
         @Builder
-        public ScheduleDaysDto(Timestamp date, List<ScheduleDayDto> scheduleDayDtoList) {
+        public ScheduleDaysDto(Timestamp date, List<ScheduleDayDto> scheduleDayDtos) {
             this.date = date;
-            this.scheduleDayDtoList = scheduleDayDtoList;
+            this.scheduleDayDtos = scheduleDayDtos;
         }
 }
