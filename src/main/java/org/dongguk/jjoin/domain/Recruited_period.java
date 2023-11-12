@@ -30,24 +30,19 @@ public class Recruited_period {
     @Column(name = "end_date", nullable = false)
     private Timestamp endDate;
 
-    @Column(name = "is_finished", nullable = false)
-    private Boolean isFinished;
-
     @Builder
-    public Recruited_period(Club club, Timestamp startDate, Timestamp endDate, Boolean isFinished) {
+    public Recruited_period(Club club, Timestamp startDate, Timestamp endDate) {
         this.club = club;
         this.startDate = startDate;
         this.endDate = endDate;
-        // isFinished가 주어지지 않았을 때
-        if (this.startDate.after(Timestamp.valueOf(LocalDateTime.now())) && this.endDate.before(Timestamp.valueOf(LocalDateTime.now())))
-            this.isFinished = true;
-        else this.isFinished = false;
-        this.isFinished = isFinished;
     }
 
-    public void updatePeriod(Timestamp startDate, Timestamp endDate, Boolean isFinished) {
+    public void updatePeriod(Timestamp startDate, Timestamp endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
-        this.isFinished = isFinished;
+    }
+
+    public Timestamp[] getPeriod() {
+        return new Timestamp[]{this.startDate, this.endDate};
     }
 }

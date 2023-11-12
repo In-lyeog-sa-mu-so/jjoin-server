@@ -100,17 +100,12 @@ public class ClubService {
     // 동아리 상세 조회 정보를 반환
     public ClubDetailDto readClub(Long clubId) {
         Club club = clubRepository.findById(clubId).get();
-        Optional<Recruited_period> recruitedPeriod = recruitedPeriodRepository.findByClubOrderByStartDateDesc(club);
-        Timestamp period[] = new Timestamp[]{null, null};
+        Optional<Recruited_period> recruitedPeriod = recruitedPeriodRepository.findByClub(club);
+        // 모집 기간을 한번도 설정하지 않은 동아리라면 null값으로 설정
+        Timestamp period[] = recruitedPeriod.map(rp -> rp.getPeriod()).orElse(new Timestamp[]{null, null});
         List<String> tags = club.getTags().stream()
                 .map(clubTag -> clubTag.getTag().getName())
                 .collect(Collectors.toList());
-
-        // 모집 기간을 한번도 설정하지 않은 동아리라면 null값으로 설정
-        if (recruitedPeriod.isPresent()) {
-            period[0] = recruitedPeriod.get().getStartDate();
-            period[1] = recruitedPeriod.get().getEndDate();
-        }
 
         return ClubDetailDto.builder()
                 .id(club.getId())
@@ -147,8 +142,9 @@ public class ClubService {
     // 동아리 가입신청서 양식 가져오기
     public ApplicationFormDto readClubApplication(Long clubId) {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("No match Club"));
-        Recruited_period recruitedPeriod = recruitedPeriodRepository
-                .findByClubOrderByStartDateDesc(club).orElseThrow(() -> new RuntimeException("Not Recuriting"));
+        Optional<Recruited_period> recruitedPeriod = recruitedPeriodRepository.findByClub(club);
+        // 모집 기간을 한번도 설정하지 않은 동아리라면 null값으로 설정
+        Timestamp period[] = recruitedPeriod.map(rp -> rp.getPeriod()).orElse(new Timestamp[]{null, null});
         List<Application_question> applicationQuestions = questionRepository.findAllByClubId(clubId);
         if (applicationQuestions == null || applicationQuestions.isEmpty()) {
             throw new RuntimeException("A Club has No application");
@@ -163,8 +159,8 @@ public class ClubService {
         }
         return ApplicationFormDto.builder()
                 .clubName(club.getName())
-                .startDate(recruitedPeriod.getStartDate())
-                .endDate(recruitedPeriod.getEndDate())
+                .startDate(period[0])
+                .endDate(period[1])
                 .applicationQuestionDtos(applicationQuestionDtos)
                 .build();
     }

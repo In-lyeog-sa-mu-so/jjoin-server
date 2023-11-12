@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface RecruitedPeriodRepository extends JpaRepository<Recruited_period, Long> {
-    Optional<Recruited_period> findByClubOrderByStartDateDesc(Club club);
+    Optional<Recruited_period> findByClub(Club club);
 }
