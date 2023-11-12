@@ -5,22 +5,22 @@ import lombok.Getter;
 
 @Getter
 public class ClubCardDto {
-    private Long clubId;
-    private String clubName;
+    private Long id;
+    private String name;
     private String introduction;
     private String leaderName;
-    private Long userNumber;
+    private Long numberOfMembers;
     private String dependent;
     private String profileImageUuid;
     private String newestNotice;
 
     @Builder
-    public ClubCardDto(Long clubId, String clubName, String introduction, String leaderName, Long userNumber, String dependent, String profileImageUuid, String newestNotice) {
-        this.clubId = clubId;
-        this.clubName = clubName;
+    public ClubCardDto(Long id, String name, String introduction, String leaderName, Long numberOfMembers, String dependent, String profileImageUuid, String newestNotice) {
+        this.id = id;
+        this.name = name;
         this.introduction = introduction;
         this.leaderName = leaderName;
-        this.userNumber = userNumber;
+        this.numberOfMembers = numberOfMembers;
         this.dependent = dependent;
         this.profileImageUuid = profileImageUuid;
         this.newestNotice = newestNotice;

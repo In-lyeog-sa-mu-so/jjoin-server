@@ -31,23 +31,22 @@ public class UserService {
 
     public List<ClubCardDto> readUserClubs(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
-        List<Club> clubList = clubMemberRepository.findUserClubsByUser(user);
-        List<ClubCardDto> clubCardDtoList = new ArrayList<>();
+        List<Club> clubs = clubMemberRepository.findUserClubsByUser(user);
+        List<ClubCardDto> clubCardDtos = new ArrayList<>();
 
-        for (Club club : clubList) {
-            clubCardDtoList.add(ClubCardDto.builder()
-                    .clubId(club.getId())
-                    .clubName(club.getName())
+        for (Club club : clubs) {
+            clubCardDtos.add(ClubCardDto.builder()
+                    .id(club.getId())
+                    .name(club.getName())
                     .introduction(club.getIntroduction())
                     .leaderName(club.getLeader().getName())
-                    .userNumber(clubMemberRepository.countAllByClub(club))
+                    .numberOfMembers(clubMemberRepository.countAllByClub(club))
                     .dependent(club.getDependent().toString())
                     .profileImageUuid(club.getClubImage().getUuidName())
                     .newestNotice(noticeRepository.findByClubOrderByCreatedDateDesc(club).getTitle())
                     .build());
         }
-
-        return clubCardDtoList;
+        return clubCardDtos;
     }
 
     public UserProfileDto readUserProfile(Long userId) {
