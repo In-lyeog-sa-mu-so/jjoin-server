@@ -11,4 +11,7 @@ import java.util.List;
 public interface TagRepository extends JpaRepository<Tag, Long> {
     @Query("SELECT t FROM Tag t WHERE t.name IN :names")
     List<Tag> findByNames(List<String> names);
+
+    @Query("SELECT t FROM Tag AS t ORDER BY t.name")
+    List<Tag> findAllSort();
 }
