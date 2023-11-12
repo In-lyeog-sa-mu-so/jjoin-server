@@ -56,6 +56,7 @@ public class SearchService {
                     .clubName(club.getName())
                     .introduction(club.getIntroduction())
                     .userNumber(clubMemberRepository.countAllByClub(club))
+                    .leaderName(club.getLeader().getName())
                     .dependent(club.getDependent().toString())
                     .profileImageUuid(club.getClubImage().getUuidName())
                     .startDate(period[0])
