@@ -82,7 +82,7 @@ public class ClubService {
                     .name(club.getName())
                     .introduction(club.getIntroduction())
                     .numberOfMembers(clubMemberRepository.countAllByClub(club))
-                    .dependent(club.getDependent().toString())
+                    .dependent(club.getDependent().getDescription())
                     .profileImageUuid(club.getClubImage().getUuidName())
                     .tags(club.getTags().stream().map(ct -> ct.getTag().getName()).collect(Collectors.toList()))
                     .build());
@@ -107,7 +107,7 @@ public class ClubService {
                 .introduction(club.getIntroduction())
                 .leaderName(club.getLeader().getName())
                 .numberOfMembers(clubMemberRepository.countAllByClub(club))
-                .dependent(club.getDependent().toString())
+                .dependent(club.getDependent().getDescription())
                 .profileImageUuid(club.getClubImage().getUuidName())
                 .backgroundImageUuid(club.getBackgroundImage().getUuidName())
                 .createdDate(club.getCreatedDate())
