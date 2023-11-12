@@ -8,7 +8,6 @@ import java.sql.Timestamp;
 @Getter
 public class ClubScheduleDetailDto {
     private Long id;
-    private String name;
     private String title;
     private String content;
     private Timestamp startDate;
@@ -16,11 +15,12 @@ public class ClubScheduleDetailDto {
     private Timestamp createdDate;
     private Timestamp updatedDate;
     private Boolean isAgreed;
+    private Long numberOfAgree;
+    private Long numberOfDisagree;
 
     @Builder
-    public ClubScheduleDetailDto(Long id, String name, String title, String content, Timestamp startDate, Timestamp endDate, Timestamp createdDate, Timestamp updatedDate, Boolean isAgreed) {
+    public ClubScheduleDetailDto(Long id, String title, String content, Timestamp startDate, Timestamp endDate, Timestamp createdDate, Timestamp updatedDate, Boolean isAgreed, Long numberOfAgree, Long numberOfDisagree) {
         this.id = id;
-        this.name = name;
         this.title = title;
         this.content = content;
         this.startDate = startDate;
@@ -28,5 +28,7 @@ public class ClubScheduleDetailDto {
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
         this.isAgreed = isAgreed;
+        this.numberOfAgree = numberOfAgree;
+        this.numberOfDisagree = numberOfDisagree;
     }
 }

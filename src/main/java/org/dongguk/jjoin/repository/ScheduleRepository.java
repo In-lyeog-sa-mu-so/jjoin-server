@@ -24,4 +24,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     @Query(value = "SELECT s FROM Schedule AS s INNER JOIN Plan AS p ON s.plan = p " +
             "WHERE s.user = :user AND s.isAgreed = null AND p.startDate >= :targetDate")
     List<Schedule> findUnplansByDate(@Param("user") User user, @Param("targetDate") Timestamp targetDate);
+
+    Long countByPlanAndIsAgreed(Plan plan, Boolean isAgreed);
 }

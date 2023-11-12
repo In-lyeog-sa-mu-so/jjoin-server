@@ -37,6 +37,7 @@ public class ScheduleService {
     private final PlanRepository planRepository;
     private final DateUtil dateUtil;
 
+    // 특정 날짜에 해당하는 일정 목록 반환
     public List<ScheduleDayDto> readDaySchedules(Long userId, String targetDate) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
         Timestamp date = dateUtil.stringToTimestamp(targetDate);
@@ -48,11 +49,11 @@ public class ScheduleService {
             Plan plan = schedule.getPlan();
             scheduleDayDtos.add(ScheduleDayDto.builder()
                     .id(schedule.getId())
+                    .clubId(plan.getClub().getId())
                     .name(plan.getClub().getName())
                     .startDate(plan.getStartDate())
                     .endDate(plan.getEndDate())
                     .title(plan.getTitle())
-
                     .content(plan.getContent())
                     .isAgreed(schedule.getIsAgreed())
                     .build());
@@ -73,6 +74,7 @@ public class ScheduleService {
                 Plan plan = schedule.getPlan();
                 scheduleDayDtos.add(ScheduleDayDto.builder()
                         .id(schedule.getId())
+                        .clubId(plan.getClub().getId())
                         .name(plan.getClub().getName())
                         .startDate(plan.getStartDate())
                         .endDate(plan.getEndDate())
@@ -89,6 +91,7 @@ public class ScheduleService {
         return scheduleDaysDtos;
     }
 
+    // 개인 일정 동의 및 거부
     public Boolean updateSchedule(Long scheduleId, ScheduleDecideDto scheduleDecideDto) {
         Schedule schedule = scheduleRepository.findById(scheduleId).get();
         schedule.scheduleDecidedBy(scheduleDecideDto.getIsAgreed());
@@ -118,13 +121,13 @@ public class ScheduleService {
         return clubScheduleDtos;
     }
 
+    // 일정 상세 조회
     public ClubScheduleDetailDto readClubScheduleDetail(Long clubId, Long scheduleId) {
         Schedule schedule = scheduleRepository.findById(scheduleId).get();
         Plan plan = schedule.getPlan();
 
         return ClubScheduleDetailDto.builder()
                 .id(schedule.getId())
-                .name(clubRepository.findById(clubId).get().getName())
                 .title(plan.getTitle())
                 .content(plan.getContent())
                 .startDate(plan.getStartDate())
@@ -132,6 +135,8 @@ public class ScheduleService {
                 .createdDate(plan.getCreatedDate())
                 .updatedDate(plan.getUpdatedDate())
                 .isAgreed(schedule.getIsAgreed())
+                .numberOfAgree(scheduleRepository.countByPlanAndIsAgreed(plan, true))
+                .numberOfDisagree(scheduleRepository.countByPlanAndIsAgreed(plan, false))
                 .build();
     }
 }
