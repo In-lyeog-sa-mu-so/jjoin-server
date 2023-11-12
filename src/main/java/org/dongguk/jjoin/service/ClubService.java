@@ -31,22 +31,22 @@ public class ClubService {
     private final ApplicationRepository applicationRepository;
     private final AnswerRepository answerRepository;
 
-    // 동아리 게시글(공지, 홍보) 목록을 보여주는 API
-    public List<NoticeListDtoByApp> showNoticeList(Long clubId, Integer page, Integer size) {
+    // 동아리 게시글(공지, 홍보) 목록 반환
+    public List<NoticeListDtoByApp> showNotices(Long clubId, Long page, Long size) {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("no match clubId"));
-        List<Notice> notices = Optional.ofNullable(club.getNotices()).orElseThrow(() -> new RuntimeException("Notice Not found!"));
+        List<Notice> notices = club.getNotices();
         notices.removeIf(notice -> notice.isDeleted());
         notices.sort(Comparator.comparing(Notice::getUpdatedDate).reversed());
-
-        int startIdx = page * size;
-        List<Notice> showNotices = notices.subList(startIdx, Math.min(startIdx + size, notices.size()));
+        int startIdx = page.intValue() * size.intValue();
+        List<Notice> showNotices = notices.subList(startIdx, Math.min(startIdx + size.intValue(), notices.size()));
         List<NoticeListDtoByApp> noticeListDtoByApps = new ArrayList<>();
-        for (Notice n : showNotices) {
+
+        for (Notice notice : showNotices) {
             noticeListDtoByApps.add(NoticeListDtoByApp.builder()
-                    .id(n.getId())
-                    .title(n.getTitle())
-                    .content(n.getContent())
-                    .updatedDate(n.getUpdatedDate()).build());
+                    .id(notice.getId())
+                    .title(notice.getTitle())
+                    .content(notice.getContent())
+                    .updatedDate(notice.getUpdatedDate()).build());
         }
         return noticeListDtoByApps;
     }
@@ -98,7 +98,7 @@ public class ClubService {
     }
 
     // 동아리 상세 조회 정보를 반환
-    public ClubDetailDto readClub(Long clubId) {
+    public ClubDetailDto readClubDetail(Long clubId) {
         Club club = clubRepository.findById(clubId).get();
         Optional<Recruited_period> recruitedPeriod = recruitedPeriodRepository.findByClub(club);
         // 모집 기간을 한번도 설정하지 않은 동아리라면 null값으로 설정

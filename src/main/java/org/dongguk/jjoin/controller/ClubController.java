@@ -23,14 +23,14 @@ public class ClubController {
 
     // 동아리 상세 조회 API
     @GetMapping("/{clubId}")
-    public ClubDetailDto readClub(@PathVariable Long clubId) {
-        return clubService.readClub(clubId);
+    public ClubDetailDto readClubDetail(@PathVariable Long clubId) {
+        return clubService.readClubDetail(clubId);
     }
 
     // 동아리 게시글(공지, 홍보) 목록을 보여주는 API
     @GetMapping("/{clubId}/notices")
-    public List<NoticeListDtoByApp> showNoticeList(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size){
-        return clubService.showNoticeList(clubId, page, size);
+    public List<NoticeListDtoByApp> readNotices(@PathVariable Long clubId, @RequestParam("page") Long page, @RequestParam("size") Long size){
+        return clubService.showNotices(clubId, page, size);
     }
 
     // 동아리 게시글 상세정보를 보여주는 API
