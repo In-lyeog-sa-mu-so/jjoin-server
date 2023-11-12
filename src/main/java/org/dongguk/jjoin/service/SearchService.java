@@ -6,6 +6,7 @@ import org.dongguk.jjoin.domain.Club;
 import org.dongguk.jjoin.domain.Recruited_period;
 import org.dongguk.jjoin.domain.Tag;
 import org.dongguk.jjoin.dto.response.SearchClubDto;
+import org.dongguk.jjoin.dto.response.TagDto;
 import org.dongguk.jjoin.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,5 +63,17 @@ public class SearchService {
                     .build());
         }
         return searchClubDtos;
+    }
+
+    // 동아리 검색하기 위해 모든 태그 목록 조회
+    public List<TagDto> readAllTags() {
+        List<TagDto> tagDtos = new ArrayList<>();
+        for (Tag tag : tagRepository.findAllSort()) {
+            tagDtos.add(TagDto.builder()
+                    .id(tag.getId())
+                    .name(tag.getName())
+                    .build());
+        }
+        return tagDtos;
     }
 }
