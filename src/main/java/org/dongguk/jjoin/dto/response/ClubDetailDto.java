@@ -1,38 +1,34 @@
 package org.dongguk.jjoin.dto.response;
 
-import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
-import org.dongguk.jjoin.domain.Image;
-import org.dongguk.jjoin.domain.User;
-import org.dongguk.jjoin.domain.type.DependentType;
 
 import java.sql.Timestamp;
 import java.util.List;
 
 @Getter
 public class ClubDetailDto {
-    private Long clubId;
-    private String clubName;
-    private List<String> tag;
+    private Long id;
+    private String name;
+    private List<String> tags;
     private String introduction;
     private String leaderName;
-    private Long userNumber;
+    private Long numberOfMembers;
     private String dependent;
-    private String backgroundImageUuid;
     private String profileImageUuid;
+    private String backgroundImageUuid;
     private Timestamp createdDate;
     private Timestamp startDate;
     private Timestamp endDate;
 
     @Builder
-    public ClubDetailDto(Long clubId, String clubName, List<String> tag, String introduction, String leaderName, Long userNumber, String dependent, String backgroundImageUuid, String profileImageUuid, Timestamp createdDate, Timestamp startDate, Timestamp endDate) {
-        this.clubId = clubId;
-        this.clubName = clubName;
-        this.tag = tag;
+    public ClubDetailDto(Long id, String name, List<String> tags, String introduction, String leaderName, Long numberOfMembers, String dependent, String backgroundImageUuid, String profileImageUuid, Timestamp createdDate, Timestamp startDate, Timestamp endDate) {
+        this.id = id;
+        this.name = name;
+        this.tags = tags;
         this.introduction = introduction;
         this.leaderName = leaderName;
-        this.userNumber = userNumber;
+        this.numberOfMembers = numberOfMembers;
         this.dependent = dependent;
         this.backgroundImageUuid = backgroundImageUuid;
         this.profileImageUuid = profileImageUuid;

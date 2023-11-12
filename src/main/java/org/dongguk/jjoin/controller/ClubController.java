@@ -21,9 +21,10 @@ public class ClubController {
     private final ScheduleService scheduleService;
     private final AlbumService albumService;
 
+    // 동아리 상세 조회 API
     @GetMapping("/{clubId}")
-    public ClubDetailDto showClub(@PathVariable Long clubId) {
-        return clubService.showClub(clubId);
+    public ClubDetailDto readClub(@PathVariable Long clubId) {
+        return clubService.readClub(clubId);
     }
 
     // 동아리 게시글(공지, 홍보) 목록을 보여주는 API

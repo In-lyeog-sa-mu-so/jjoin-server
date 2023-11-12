@@ -142,7 +142,7 @@ public class ManagerService {
     // 동아리 기존 메인페이지 조회
     public ClubMainPageDtoByWeb readClubMainPage(Long clubId){
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
-        Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClub(club).orElseThrow(()->new RuntimeException("No match Club"));
+        Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClubOrderByStartDateDesc(club).orElseThrow(()->new RuntimeException("No match Club"));
         return ClubMainPageDtoByWeb.builder()
                 .clubImageUuid(club.getClubImage().getUuidName())
                 .backgroundImageUuid(club.getBackgroundImage().getUuidName())
@@ -158,7 +158,7 @@ public class ManagerService {
     public void modifyClubMainPage(Long clubId, ClubMainPageUpdateDto data,
                                    MultipartFile clubImageFile, MultipartFile backgroundImageFile) {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
-        Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClub(club).orElseThrow(() -> new RuntimeException("No Recruit_periods"));
+        Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClubOrderByStartDateDesc(club).orElseThrow(() -> new RuntimeException("No Recruit_periods"));
 
         String clubImageOriginName = clubImageFile.getOriginalFilename();
         String clubImageUuidName = fileUtil.storeFile(clubImageFile);
