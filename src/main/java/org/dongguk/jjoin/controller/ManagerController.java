@@ -138,6 +138,7 @@ public class ManagerController {
         return enrollmentService.createClubEnrollment(userId, data, clubImageFile, backgroundImageFile);
     }
 
+    // 동아리 개설 신청서 조회 API
     @GetMapping("/enrollment/{enrollmentId}")
     public ClubEnrollmentResponseDto readClubEnrollment(@PathVariable Long enrollmentId) {
         return enrollmentService.readClubEnrollment(enrollmentId);
