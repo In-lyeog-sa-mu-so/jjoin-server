@@ -122,12 +122,14 @@ public class ManagerController {
         managerService.modifyClubMainPage(clubId, data, clubImageFile, backgroundImageFile);
     }
 
+    // 동아리 개설 신청서 목록 조회 API
     @GetMapping("/enrollment")
-    public List<ClubEnrollmentDto> readClubEnrollmentList() {
+    public List<ClubEnrollmentDto> readClubEnrollments() {
         Long userId = 1L;
-        return enrollmentService.readClubEnrollmentList(userId);
+        return enrollmentService.readClubEnrollments(userId);
     }
 
+    // 동아리 개설 API
     @PostMapping("/enrollment")
     public Boolean createClubEnrollment(@RequestPart ClubEnrollmentRequestDto data,
                                         @RequestPart MultipartFile clubImageFile,
@@ -136,6 +138,7 @@ public class ManagerController {
         return enrollmentService.createClubEnrollment(userId, data, clubImageFile, backgroundImageFile);
     }
 
+    // 동아리 개설 신청서 조회 API
     @GetMapping("/enrollment/{enrollmentId}")
     public ClubEnrollmentResponseDto readClubEnrollment(@PathVariable Long enrollmentId) {
         return enrollmentService.readClubEnrollment(enrollmentId);

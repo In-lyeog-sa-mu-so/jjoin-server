@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.print.Pageable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -92,7 +91,8 @@ public class EnrollmentService {
         return Boolean.TRUE;
     }
 
-    public List<ClubEnrollmentDto> readClubEnrollmentList(Long userId) {
+    // 동아리 개설 신청서 목록 반환
+    public List<ClubEnrollmentDto> readClubEnrollments(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
         List<Enrollment> enrollments = enrollmentRepository.findByUser(user);
         List<ClubEnrollmentDto> clubEnrollmentDtos = new ArrayList<>();
@@ -101,7 +101,7 @@ public class EnrollmentService {
             Club club = enrollment.getClub();
             clubEnrollmentDtos.add(ClubEnrollmentDto.builder()
                     .id(enrollment.getId())
-                    .clubName(club.getName())
+                    .name(club.getName())
                     .dependent(club.getDependent().toString())
                     .tags(club.getTags().stream().map(clubTag -> clubTag.getTag().getName())
                             .collect(Collectors.toList()))
@@ -112,6 +112,7 @@ public class EnrollmentService {
         return clubEnrollmentDtos;
     }
 
+    // 동아리 개설 신청
     public Boolean createClubEnrollment(Long userId, ClubEnrollmentRequestDto data, MultipartFile clubImageFile, MultipartFile backgroundImageFile) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
 
@@ -141,19 +142,18 @@ public class EnrollmentService {
                 .name(data.getName())
                 .introduction(data.getIntroduction())
                 .leader(user)
-                .dependent(data.getDependentType())
+                .dependent(data.getDependent())
                 .clubImage(clubImage)
-                .backgroundImage(backgroundImage).build());
+                .backgroundImage(backgroundImage)
+                .build());
 
-        List<String> tagNames = data.getTags();
-        List<Tag> tags = tagRepository.findByNames(tagNames);
+        List<Tag> tags = tagRepository.findByNames(data.getTags());
         for (Tag tag : tags) {
             clubTagRepository.save(ClubTag.builder()
                     .club(club)
                     .tag(tag)
                     .build());
         }
-
         enrollmentRepository.save(Enrollment.builder()
                 .club(club)
                 .build());
@@ -161,6 +161,7 @@ public class EnrollmentService {
         return Boolean.TRUE;
     }
 
+    // 동아리 개설 신청서 상세 반환
     public ClubEnrollmentResponseDto readClubEnrollment(Long enrollmentId) {
         Enrollment enrollments = enrollmentRepository.findById(enrollmentId).orElseThrow(() -> new RuntimeException("NO enrollment")); // 예외처리 수정 예정
         Club club = enrollments.getClub();
@@ -171,12 +172,11 @@ public class EnrollmentService {
                 .name(club.getName())
                 .introduction(club.getIntroduction())
                 .dependent(club.getDependent().getDescription())
-                .clubImageUuidName(clubImage.getUuidName())
-                .backgroundImageUuidName(backgroundImage.getUuidName())
+                .clubImageUuid(clubImage.getUuidName())
+                .backgroundImageUuid(backgroundImage.getUuidName())
                 .tags(club.getTags().stream().map(
                                 clubTag -> clubTag.getTag().getName())
-                        .collect(Collectors.toList())
-                )
+                        .collect(Collectors.toList()))
                 .build();
     }
 }

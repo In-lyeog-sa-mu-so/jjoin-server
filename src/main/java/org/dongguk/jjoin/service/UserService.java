@@ -29,32 +29,32 @@ public class UserService {
     private final ImageRepository imageRepository;
     private final FileUtil fileUtil;
 
+    // 사용자가 가입한 동아리 반환
     public List<ClubCardDto> readUserClubs(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
-        List<Club> clubList = clubMemberRepository.findUserClubsByUser(user);
-        List<ClubCardDto> clubCardDtoList = new ArrayList<>();
+        List<Club> clubs = clubMemberRepository.findUserClubsByUser(user);
+        List<ClubCardDto> clubCardDtos = new ArrayList<>();
 
-        for (Club club : clubList) {
-            clubCardDtoList.add(ClubCardDto.builder()
-                    .clubId(club.getId())
-                    .clubName(club.getName())
+        for (Club club : clubs) {
+            clubCardDtos.add(ClubCardDto.builder()
+                    .id(club.getId())
+                    .name(club.getName())
                     .introduction(club.getIntroduction())
                     .leaderName(club.getLeader().getName())
-                    .userNumber(clubMemberRepository.countAllByClub(club))
+                    .numberOfMembers(clubMemberRepository.countAllByClub(club))
                     .dependent(club.getDependent().toString())
                     .profileImageUuid(club.getClubImage().getUuidName())
                     .newestNotice(noticeRepository.findByClubOrderByCreatedDateDesc(club).getTitle())
                     .build());
         }
-
-        return clubCardDtoList;
+        return clubCardDtos;
     }
 
     public UserProfileDto readUserProfile(Long userId) {
         User user = userRepository.findById(userId).get();
 
         return UserProfileDto.builder()
-                .userId(user.getId())
+                .id(user.getId())
                 .profileImageUuid(user.getProfileImage().getUuidName())
                 .name(user.getName())
                 .major(user.getMajor().toString())
@@ -77,12 +77,11 @@ public class UserService {
                 .build());
         user.updateUserProfile(userProfileUpdateDto.getIntroduction(), userProfileImage);
 
-        return true;
+        return Boolean.TRUE;
     }
 
     public Boolean deleteUser(Long userId) {
         userRepository.deleteById(userId);
-
-        return true;
+        return Boolean.TRUE;
     }
 }
