@@ -13,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.dongguk.jjoin.domain.*;
 import org.dongguk.jjoin.dto.request.UserTagDto;
 
+import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -28,23 +30,24 @@ public class ClubService {
     private final QuestionRepository questionRepository;
     private final ApplicationRepository applicationRepository;
     private final AnswerRepository answerRepository;
+    private final TagRepository tagRepository;
 
-    // 동아리 게시글(공지, 홍보) 목록을 보여주는 API
-    public List<NoticeListDtoByApp> showNoticeList(Long clubId, Integer page, Integer size){
-        Club club = clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("no match clubId"));
-        List<Notice> notices = Optional.ofNullable(club.getNotices()).orElseThrow(()-> new RuntimeException("Notice Not found!"));
+    // 동아리 게시글(공지, 홍보) 목록 반환
+    public List<NoticeListDtoByApp> readNotices(Long clubId, Long page, Long size) {
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("no match clubId"));
+        List<Notice> notices = club.getNotices();
         notices.removeIf(notice -> notice.isDeleted());
         notices.sort(Comparator.comparing(Notice::getUpdatedDate).reversed());
-
-        int startIdx = page * size;
-        List<Notice> showNotices = notices.subList(startIdx, Math.min(startIdx + size, notices.size()));
+        int startIdx = page.intValue() * size.intValue();
+        List<Notice> showNotices = notices.subList(startIdx, Math.min(startIdx + size.intValue(), notices.size()));
         List<NoticeListDtoByApp> noticeListDtoByApps = new ArrayList<>();
-        for (Notice n : showNotices){
+
+        for (Notice notice : showNotices) {
             noticeListDtoByApps.add(NoticeListDtoByApp.builder()
-                            .id(n.getId())
-                            .title(n.getTitle())
-                            .content(n.getContent())
-                            .updatedDate(n.getUpdatedDate()).build());
+                    .id(notice.getId())
+                    .title(notice.getTitle())
+                    .content(notice.getContent())
+                    .updatedDate(notice.getUpdatedDate()).build());
         }
         return noticeListDtoByApps;
     }
@@ -63,57 +66,53 @@ public class ClubService {
                 .createdDate(notice.getCreatedDate())
                 .updatedDate(notice.getUpdatedDate()).build();
     }
-  
-    public List<ClubRecommendDto> readClubRecommend(Long userId, List<UserTagDto> userTagDtoList) {
+
+    // 추천 동아리 목록 반환
+    public List<ClubRecommendDto> readClubRecommend(Long userId, UserTagDto userTagDtos) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
-        // 사용자가 가입한 동아리 제외 반환을 위해 조회
-        List<Club> userClubs = clubMemberRepository.findUserClubsByUser(user);
-        List<ClubTag> clubRecommendList = new ArrayList<>();
-        userTagDtoList.forEach(clubTag ->
-                clubRecommendList.addAll(clubTagRepository.findByTagIdNotInUserClub(clubTag.getId(), userClubs)));
+        List<Tag> userTags = tagRepository.findByNames(userTagDtos.getTags());
+        List<Club> userClubs = user.getClubMembers().stream().map(cm -> cm.getClub()).collect(Collectors.toList());
+        List<ClubTag> clubTags = clubTagRepository.findByTagAndClubNotInUserClubs(userTags, userClubs);
+        List<ClubRecommendDto> clubRecommendDtos = new ArrayList<>();
 
-        Map<Long, ClubRecommendDto> clubRecommendDtoMap = new HashMap<>();
-        for (ClubTag clubTag : clubRecommendList) {
+        for (ClubTag clubTag : clubTags) {
             Club club = clubTag.getClub();
-            List<String> clubTagList = new ArrayList<>();
-            clubTagRepository.findByClub(club).forEach(clubTag1 ->
-                    clubTagList.add(clubTag1.getTag().getName()));
-
-            clubRecommendDtoMap.put(club.getId(), ClubRecommendDto.builder()
-                    .clubId(club.getId())
-                    .clubName(club.getName())
+            clubRecommendDtos.add(ClubRecommendDto.builder()
+                    .id(club.getId())
+                    .name(club.getName())
                     .introduction(club.getIntroduction())
+                    .numberOfMembers(clubMemberRepository.countAllByClub(club))
+                    .dependent(club.getDependent().getDescription())
                     .profileImageUuid(club.getClubImage().getUuidName())
-                            .userNumber(clubMemberRepository.countAllByClub(club))
-                            .dependent(club.getDependent().toString())
-                            .tags(clubTagList)
+                    .tags(club.getTags().stream().map(ct -> ct.getTag().getName()).collect(Collectors.toList()))
                     .build());
         }
-        List<ClubRecommendDto> clubRecommendDtoList= new ArrayList<>(clubRecommendDtoMap.values());
-        clubRecommendDtoList.sort(Comparator.comparing(ClubRecommendDto::getUserNumber).reversed());
-
-        return clubRecommendDtoList;
+        return clubRecommendDtos.subList(0, 5);
     }
 
-    public ClubDetailDto showClub(Long clubId) {
+    // 동아리 상세 조회 정보를 반환
+    public ClubDetailDto readClubDetail(Long clubId) {
         Club club = clubRepository.findById(clubId).get();
-        Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClub(club).orElseThrow(()-> new RuntimeException("No match Club"));
-        List<String> tags = new ArrayList<>();
-        club.getTags().forEach(clubTag -> tags.add(clubTag.getTag().getName()));
+        Optional<Recruited_period> recruitedPeriod = recruitedPeriodRepository.findByClub(club);
+        // 모집 기간을 한번도 설정하지 않은 동아리라면 null값으로 설정
+        Timestamp period[] = recruitedPeriod.map(rp -> rp.getPeriod()).orElse(new Timestamp[]{null, null});
+        List<String> tags = club.getTags().stream()
+                .map(clubTag -> clubTag.getTag().getName())
+                .collect(Collectors.toList());
 
         return ClubDetailDto.builder()
-                .clubId(club.getId())
-                .clubName(club.getName())
-                .tag(tags)
+                .id(club.getId())
+                .name(club.getName())
+                .tags(tags)
                 .introduction(club.getIntroduction())
                 .leaderName(club.getLeader().getName())
-                .userNumber(clubMemberRepository.countAllByClub(club))
-                .dependent(club.getDependent().toString())
-                .backgroundImageUuid(club.getBackgroundImage().getUuidName())
+                .numberOfMembers(clubMemberRepository.countAllByClub(club))
+                .dependent(club.getDependent().getDescription())
                 .profileImageUuid(club.getClubImage().getUuidName())
+                .backgroundImageUuid(club.getBackgroundImage().getUuidName())
                 .createdDate(club.getCreatedDate())
-                .startDate(recruitedPeriod.getStartDate())
-                .endDate(recruitedPeriod.getEndDate())
+                .startDate(period[0])
+                .endDate(period[1])
                 .build();
     }
 
@@ -124,9 +123,9 @@ public class ClubService {
 
         for (Club club : clubList) {
             userClubDtoList.add(UserClubDto.builder()
-                            .clubId(club.getId())
-                            .clubImage(club.getClubImage().getUuidName())
-                            .clubName(club.getName())
+                    .clubId(club.getId())
+                    .clubImage(club.getClubImage().getUuidName())
+                    .clubName(club.getName())
                     .build());
         }
 
@@ -135,36 +134,38 @@ public class ClubService {
 
     // 동아리 가입신청서 양식 가져오기
     public ApplicationFormDto readClubApplication(Long clubId) {
-        Club club = clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("No match Club"));
-        Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClub(club).orElseThrow(()-> new RuntimeException("Not Recuriting"));
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("No match Club"));
+        Optional<Recruited_period> recruitedPeriod = recruitedPeriodRepository.findByClub(club);
+        // 모집 기간을 한번도 설정하지 않은 동아리라면 null값으로 설정
+        Timestamp period[] = recruitedPeriod.map(rp -> rp.getPeriod()).orElse(new Timestamp[]{null, null});
         List<Application_question> applicationQuestions = questionRepository.findAllByClubId(clubId);
         if (applicationQuestions == null || applicationQuestions.isEmpty()) {
             throw new RuntimeException("A Club has No application");
         }
 
         List<ApplicationQuestionDto> applicationQuestionDtos = new ArrayList<>();
-        for(Application_question aQ: applicationQuestions){
+        for (Application_question aQ : applicationQuestions) {
             applicationQuestionDtos.add(ApplicationQuestionDto.builder()
-                            .id(aQ.getId())
-                            .content(aQ.getContent())
+                    .id(aQ.getId())
+                    .content(aQ.getContent())
                     .build());
         }
         return ApplicationFormDto.builder()
                 .clubName(club.getName())
-                .startDate(recruitedPeriod.getStartDate())
-                .endDate(recruitedPeriod.getEndDate())
+                .startDate(period[0])
+                .endDate(period[1])
                 .applicationQuestionDtos(applicationQuestionDtos)
                 .build();
     }
 
     // 동아리 가입신청서 제출
     public void submitClubApplication(Long clubId, List<ApplicationAnswerDto> applicationAnswerDtos) {
-        clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("No match Club"));
+        clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("No match Club"));
         User user = new User(); //User.getUser() 이 부분 수정 필요!!! 현재는 작동 안됨.
         List<Application_answer> applicationAnswers = new ArrayList<>();
 
-        for (ApplicationAnswerDto applicationAnswerDto: applicationAnswerDtos){
-            Application_question applicationQuestion = questionRepository.findById(applicationAnswerDto.getQuestionId()).orElseThrow(()-> new RuntimeException("No match Question"));
+        for (ApplicationAnswerDto applicationAnswerDto : applicationAnswerDtos) {
+            Application_question applicationQuestion = questionRepository.findById(applicationAnswerDto.getQuestionId()).orElseThrow(() -> new RuntimeException("No match Question"));
             applicationAnswers.add(Application_answer.builder()
                     .applicationQuestion(applicationQuestion)
                     .user(user)

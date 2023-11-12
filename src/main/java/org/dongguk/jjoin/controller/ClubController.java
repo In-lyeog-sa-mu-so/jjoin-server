@@ -21,54 +21,61 @@ public class ClubController {
     private final ScheduleService scheduleService;
     private final AlbumService albumService;
 
+    // 동아리 상세 조회 API
     @GetMapping("/{clubId}")
-    public ClubDetailDto showClub(@PathVariable Long clubId) {
-        return clubService.showClub(clubId);
+    public ClubDetailDto readClubDetail(@PathVariable Long clubId) {
+        return clubService.readClubDetail(clubId);
     }
 
     // 동아리 게시글(공지, 홍보) 목록을 보여주는 API
     @GetMapping("/{clubId}/notices")
-    public List<NoticeListDtoByApp> showNoticeList(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size){
-        return clubService.showNoticeList(clubId, page, size);
+    public List<NoticeListDtoByApp> readNotices(@PathVariable Long clubId,
+                                                @RequestParam("page") Long page,
+                                                @RequestParam("size") Long size) {
+        return clubService.readNotices(clubId, page, size);
     }
 
     // 동아리 게시글 상세정보를 보여주는 API
     @GetMapping("/{clubId}/notices/{noticeId}")
-    public NoticeDto readNotice(@PathVariable Long clubId, @PathVariable Long noticeId){
+    public NoticeDto readNotice(@PathVariable Long clubId, @PathVariable Long noticeId) {
         return clubService.readNotice(clubId, noticeId);
     }
 
+    // 특정 동아리의 일정 목록 조회 API
     @GetMapping("/{clubId}/schedules")
-    public List<ClubScheduleDto> readClubScheduleList(@PathVariable Long clubId, @RequestParam("page") Long page) {
+    public List<ClubScheduleDto> readClubSchedules(@PathVariable Long clubId,
+                                                   @RequestParam("page") Long page,
+                                                   @RequestParam("size") Long size) {
         Long userId = 1L;
-        return scheduleService.readClubSchedules(userId, clubId, page);
+        return scheduleService.readClubSchedules(userId, clubId, page, size);
     }
 
+    // 특정 동아리의 일정 상세 조회 API
     @GetMapping("/{clubId}/schedules/{scheduleId}")
     public ClubScheduleDetailDto readClubScheduleDetail(@PathVariable Long clubId, @PathVariable Long scheduleId) {
-        Long userId = 1L;
-        return scheduleService.readClubScheduleDetail(userId, clubId, scheduleId);
+        return scheduleService.readClubScheduleDetail(clubId, scheduleId);
     }
 
-    @GetMapping("/{clubId}/albums")
-    public List<ClubAlbumDto> readClubAlbumList(@PathVariable Long clubId, @RequestParam("page") Long page) {
-        return albumService.readClubAlbumList(clubId, page);
-    }
+//    @GetMapping("/{clubId}/albums")
+//    public List<ClubAlbumDto> readClubAlbumList(@PathVariable Long clubId, @RequestParam("page") Long page) {
+//        return albumService.readClubAlbumList(clubId, page);
+//    }
+//
+//    @GetMapping("/{clubId}/albums/{albumId}")
+//    public ClubAlbumDetailDto readClubAlbumDetail(@PathVariable Long clubId, @PathVariable Long albumId) {
+//        return albumService.readClubAlbumDetail(clubId, albumId);
+//    }
 
-    @GetMapping("/{clubId}/albums/{albumId}")
-    public ClubAlbumDetailDto readClubAlbumDetail(@PathVariable Long clubId, @PathVariable Long albumId) {
-        return albumService.readClubAlbumDetail(clubId, albumId);
-    }
-
+    // 동아리 추천 목록 조회 API
     @GetMapping("/recommends")
-    public List<ClubRecommendDto> readClubRecommend(@RequestBody List<UserTagDto> userTagDtoList) {
-        Long userId = 1L;
-        return clubService.readClubRecommend(userId, userTagDtoList);
+    public List<ClubRecommendDto> readClubRecommend(@RequestBody UserTagDto userTagDtos) {
+        Long userId = 2L;
+        return clubService.readClubRecommend(userId, userTagDtos);
     }
 
     // 동아리 가입신청서 양식 가져오기
     @GetMapping("/{clubId}/applications")
-    public ApplicationFormDto readClubApplication(@PathVariable Long clubId){
+    public ApplicationFormDto readClubApplication(@PathVariable Long clubId) {
         return clubService.readClubApplication(clubId);
     }
 

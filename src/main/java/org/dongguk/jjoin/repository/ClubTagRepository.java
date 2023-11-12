@@ -9,12 +9,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Set;
 
 @Repository
 public interface ClubTagRepository extends JpaRepository<ClubTag, Long> {
-    @Query(value = "SELECT ct FROM ClubTag AS ct WHERE ct.tag.id = :tagId AND ct.club NOT IN :userClubs")
-    List<ClubTag> findByTagIdNotInUserClub(@Param("tagId") Long tagId, @Param("userClubs") List<Club> userClubs);
+    @Query(value = "SELECT ct FROM ClubTag AS ct WHERE ct.tag IN :tags AND ct.club NOT IN :clubs")
+    List<ClubTag> findByTagAndClubNotInUserClubs(@Param("tags") List<Tag> tags, @Param("clubs") List<Club> clubs);
 
     List<ClubTag> findByClub(Club club);
 }

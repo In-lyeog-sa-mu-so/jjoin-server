@@ -74,7 +74,7 @@ public class User {
     //--------------------------------------------------------
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    List<ClubMember> groups = new ArrayList<>();
+    List<ClubMember> clubMembers = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     List<Schedule> schedules = new ArrayList<>();

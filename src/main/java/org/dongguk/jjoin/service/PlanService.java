@@ -9,6 +9,9 @@ import org.dongguk.jjoin.dto.request.PlanUpdateDto;
 import org.dongguk.jjoin.dto.response.PlanDto;
 import org.dongguk.jjoin.repository.ClubRepository;
 import org.dongguk.jjoin.repository.PlanRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,12 +27,13 @@ public class PlanService {
     private final PlanRepository planRepository;
     private final ClubRepository clubRepository;
 
-    public List<PlanDto> readPlanList(Long clubId) {
+    public List<PlanDto> readPlanList(Long clubId, Long page, Long size) {
         Club club = clubRepository.findById(clubId).get();
-        List<Plan> planList = planRepository.findByClub(club);
+        PageRequest pageable = PageRequest.of(page.intValue(), size.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<Plan> plans = planRepository.findByClub(club, pageable);
         List<PlanDto> planDtoList = new ArrayList<>();
 
-        for (Plan plan : planList) {
+        for (Plan plan : plans.getContent()) {
             planDtoList.add(PlanDto.builder()
                             .id(plan.getId())
                             .clubName(club.getName())

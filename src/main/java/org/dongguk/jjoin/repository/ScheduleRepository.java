@@ -10,11 +10,12 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
-    Schedule findByUserAndPlan(@Param("user") User user, @Param("planId") Plan plan);
+    Schedule findByUserAndPlan(User user, Plan plan);
 
     @Query(value = "SELECT p FROM Schedule AS s INNER JOIN Plan AS p ON s.plan = p " +
             "WHERE s.user = :user AND s.isAgreed = true AND p.startDate <= :targetDate AND p.endDate >= :targetDate")
