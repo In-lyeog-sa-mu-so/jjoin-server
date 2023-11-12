@@ -25,6 +25,13 @@ public class ManagerController {
     private final PlanService planService;
     private final EnrollmentService enrollmentService;
 
+    // 관리자가 관리하는 동아리 조회
+    @GetMapping("/club")
+    public List<JoinedClubDto> showJoinedClubs(){
+        Long userId = 1L;
+        return managerService.showJoinedClubs(userId);
+    }
+
     @PostMapping("/club/{clubId}/notice")
     public void createNotice(@PathVariable Long clubId, @RequestBody NoticeRequestDto noticeRequestDto) {
         Long userId = 1L;   //  로그인 구현시 @GetUser 같은 어노테이션으로 대체해야함

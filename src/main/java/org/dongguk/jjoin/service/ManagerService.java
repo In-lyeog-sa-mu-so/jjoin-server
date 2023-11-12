@@ -33,6 +33,19 @@ public class ManagerService {
     private final ApplicationRepository applicationRepository;
     private final AnswerRepository answerRepository;
 
+    // 관리자가 관리하는 동아리 조회
+    public List<JoinedClubDto> showJoinedClubs(Long userId){
+        List<Club> clubs = clubMemberRepository.findClubMemberByUserIdAndRankType(userId, RankType.MEMBER);
+        List<JoinedClubDto> joinedClubDtos = new ArrayList<>();
+        for (Club club: clubs){
+            joinedClubDtos.add(JoinedClubDto.builder()
+                    .id(club.getId())
+                    .name(club.getName())
+                    .build());
+        }
+        return joinedClubDtos;
+    }
+
     public List<NoticeListDto> showNoticeList(Long clubId, Integer page, Integer size){
         Club club = clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("no match clubId"));
         List<Notice> notices = Optional.ofNullable(club.getNotices()).orElseThrow(()-> new RuntimeException("Notice Not found!"));

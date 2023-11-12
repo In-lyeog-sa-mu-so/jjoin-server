@@ -30,4 +30,7 @@ public interface ClubMemberRepository extends JpaRepository<ClubMember, Long> {
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("DELETE FROM ClubMember AS cm WHERE cm.club.id = :clubId AND cm.user.id IN :userIds")
     void deleteAllByClubIdAndUserId(Long clubId, List<Long> userIds);
+
+    @Query("SELECT cm.club FROM ClubMember AS cm WHERE cm.user.id = :userId AND cm.rankType != :rankType")
+    List<Club> findClubMemberByUserIdAndRankType(Long userId, RankType rankType);
 }
