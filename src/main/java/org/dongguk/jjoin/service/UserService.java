@@ -53,7 +53,7 @@ public class UserService {
         User user = userRepository.findById(userId).get();
 
         return UserProfileDto.builder()
-                .userId(user.getId())
+                .id(user.getId())
                 .profileImageUuid(user.getProfileImage().getUuidName())
                 .name(user.getName())
                 .major(user.getMajor().toString())
