@@ -45,15 +45,15 @@ public class ScheduleService {
 
         List<ScheduleDayDto> scheduleDayDtoList = new ArrayList<>();
         for (Plan plan : scheduleList) {
-            Optional<Schedule> schedule = scheduleRepository.findByUserAndPlan(user, plan);
+            Schedule schedule = scheduleRepository.findByUserAndPlan(user, plan);
             scheduleDayDtoList.add(ScheduleDayDto.builder()
-                    .planId(plan.getId())
+                    .planId(schedule.getId())
                     .clubName(plan.getClub().getName())
                     .startDate(plan.getStartDate())
                     .endDate(plan.getEndDate())
                     .title(plan.getTitle())
                     .content(plan.getContent())
-                    .isAgreed(schedule.map(s -> s.getIsAgreed()).orElse(null))
+                    .isAgreed(schedule.getIsAgreed())
                     .build());
         }
 
@@ -106,26 +106,26 @@ public class ScheduleService {
         List<ClubScheduleDto> clubScheduleDtos = new ArrayList<>();
 
         for (Plan plan : plans.getContent()) {
-            Optional<Schedule> schedule = scheduleRepository.findByUserAndPlan(user, plan);
+            Schedule schedule = scheduleRepository.findByUserAndPlan(user, plan);
             clubScheduleDtos.add(ClubScheduleDto.builder()
-                    .planId(plan.getId())
+                    .id(schedule.getId())
                     .startDate(plan.getStartDate())
                     .endDate(plan.getEndDate())
                     .title(plan.getTitle())
                     .content(plan.getContent())
-                    .isAgreed(schedule.map(s -> s.getIsAgreed()).orElse(null))
+                    .isAgreed(schedule.getIsAgreed())
                     .build());
         }
         return clubScheduleDtos;
     }
 
-    public ClubScheduleDetailDto readClubScheduleDetail(Long userId, Long clubId, Long scheduleId) {
+    public ClubScheduleDetailDto readClubScheduleDetail(Long clubId, Long scheduleId) {
         Schedule schedule = scheduleRepository.findById(scheduleId).get();
         Plan plan = schedule.getPlan();
 
         return ClubScheduleDetailDto.builder()
-                .planId(plan.getId())
-                .clubName(clubRepository.findById(clubId).get().getName())
+                .id(schedule.getId())
+                .name(clubRepository.findById(clubId).get().getName())
                 .title(plan.getTitle())
                 .content(plan.getContent())
                 .startDate(plan.getStartDate())

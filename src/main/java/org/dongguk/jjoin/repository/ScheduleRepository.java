@@ -15,7 +15,7 @@ import java.util.Optional;
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
-    Optional<Schedule> findByUserAndPlan(User user, Plan plan);
+    Schedule findByUserAndPlan(User user, Plan plan);
 
     @Query(value = "SELECT p FROM Schedule AS s INNER JOIN Plan AS p ON s.plan = p " +
             "WHERE s.user = :user AND s.isAgreed = true AND p.startDate <= :targetDate AND p.endDate >= :targetDate")

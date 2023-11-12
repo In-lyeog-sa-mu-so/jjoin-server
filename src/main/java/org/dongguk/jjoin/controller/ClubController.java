@@ -52,8 +52,7 @@ public class ClubController {
 
     @GetMapping("/{clubId}/schedules/{scheduleId}")
     public ClubScheduleDetailDto readClubScheduleDetail(@PathVariable Long clubId, @PathVariable Long scheduleId) {
-        Long userId = 1L;
-        return scheduleService.readClubScheduleDetail(userId, clubId, scheduleId);
+        return scheduleService.readClubScheduleDetail(clubId, scheduleId);
     }
 
     @GetMapping("/{clubId}/albums")
