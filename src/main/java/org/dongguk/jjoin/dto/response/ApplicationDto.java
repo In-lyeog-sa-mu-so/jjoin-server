@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 
 @Getter
 public class ApplicationDto {
+    private Long id;
     private String name;
     private Long studentId;
     private String major;
@@ -14,7 +15,8 @@ public class ApplicationDto {
     private Timestamp requestDate;
 
     @Builder
-    public ApplicationDto(String name, Long studentId, String major, String email, Timestamp requestDate) {
+    public ApplicationDto(Long id, String name, Long studentId, String major, String email, Timestamp requestDate) {
+        this.id = id;
         this.name = name;
         this.studentId = studentId;
         this.major = major;

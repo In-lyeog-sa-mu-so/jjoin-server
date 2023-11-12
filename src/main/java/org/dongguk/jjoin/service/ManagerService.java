@@ -227,6 +227,7 @@ public class ManagerService {
     ApplicationDto makeApplicationDto(ClubApplication clubApplication) {
         User user = clubApplication.getUser();
         return ApplicationDto.builder()
+                .id(clubApplication.getId())
                 .name(user.getName())
                 .studentId(user.getStudentId())
                 .major(user.getMajor().toString())
