@@ -47,11 +47,12 @@ public class ScheduleService {
         for (Schedule schedule : schedules) {
             Plan plan = schedule.getPlan();
             scheduleDayDtos.add(ScheduleDayDto.builder()
-                    .planId(schedule.getId())
-                    .clubName(plan.getClub().getName())
+                    .id(schedule.getId())
+                    .name(plan.getClub().getName())
                     .startDate(plan.getStartDate())
                     .endDate(plan.getEndDate())
                     .title(plan.getTitle())
+
                     .content(plan.getContent())
                     .isAgreed(schedule.getIsAgreed())
                     .build());
@@ -71,8 +72,8 @@ public class ScheduleService {
             for (Schedule schedule : schedules) {
                 Plan plan = schedule.getPlan();
                 scheduleDayDtos.add(ScheduleDayDto.builder()
-                        .planId(schedule.getId())
-                        .clubName(plan.getClub().getName())
+                        .id(schedule.getId())
+                        .name(plan.getClub().getName())
                         .startDate(plan.getStartDate())
                         .endDate(plan.getEndDate())
                         .title(plan.getTitle())
