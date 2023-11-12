@@ -29,8 +29,7 @@ public class AdminController {
 
     @GetMapping("/enrollment/{enrollmentId}")
     public ClubEnrollmentResponseDto readEnrollment(@PathVariable Long enrollmentId){
-        Long userId = 1L;
-        return enrollmentService.readClubEnrollment(userId, enrollmentId);
+        return enrollmentService.readClubEnrollment(enrollmentId);
     }
 
     @PutMapping("/enrollment")

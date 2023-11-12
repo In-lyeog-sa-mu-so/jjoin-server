@@ -123,8 +123,7 @@ public class ManagerController {
 
     @GetMapping("/enrollment/{enrollmentId}")
     public ClubEnrollmentResponseDto readClubEnrollment(@PathVariable Long enrollmentId) {
-        Long userId = 1L;
-        return enrollmentService.readClubEnrollment(userId, enrollmentId);
+        return enrollmentService.readClubEnrollment(enrollmentId);
     }
   
     // 동아리 가입 신청서 질문 생성
