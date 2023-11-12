@@ -29,20 +29,25 @@ public class ClubController {
 
     // 동아리 게시글(공지, 홍보) 목록을 보여주는 API
     @GetMapping("/{clubId}/notices")
-    public List<NoticeListDtoByApp> readNotices(@PathVariable Long clubId, @RequestParam("page") Long page, @RequestParam("size") Long size){
-        return clubService.showNotices(clubId, page, size);
+    public List<NoticeListDtoByApp> readNotices(@PathVariable Long clubId,
+                                                @RequestParam("page") Long page,
+                                                @RequestParam("size") Long size) {
+        return clubService.readNotices(clubId, page, size);
     }
 
     // 동아리 게시글 상세정보를 보여주는 API
     @GetMapping("/{clubId}/notices/{noticeId}")
-    public NoticeDto readNotice(@PathVariable Long clubId, @PathVariable Long noticeId){
+    public NoticeDto readNotice(@PathVariable Long clubId, @PathVariable Long noticeId) {
         return clubService.readNotice(clubId, noticeId);
     }
 
+    // 특정 동아리의 일정 목록 조회 API
     @GetMapping("/{clubId}/schedules")
-    public List<ClubScheduleDto> readClubScheduleList(@PathVariable Long clubId, @RequestParam("page") Long page) {
+    public List<ClubScheduleDto> readClubSchedules(@PathVariable Long clubId,
+                                                   @RequestParam("page") Long page,
+                                                   @RequestParam("size") Long size) {
         Long userId = 1L;
-        return scheduleService.readClubSchedules(userId, clubId, page);
+        return scheduleService.readClubSchedules(userId, clubId, page, size);
     }
 
     @GetMapping("/{clubId}/schedules/{scheduleId}")
@@ -69,7 +74,7 @@ public class ClubController {
 
     // 동아리 가입신청서 양식 가져오기
     @GetMapping("/{clubId}/applications")
-    public ApplicationFormDto readClubApplication(@PathVariable Long clubId){
+    public ApplicationFormDto readClubApplication(@PathVariable Long clubId) {
         return clubService.readClubApplication(clubId);
     }
 

@@ -15,12 +15,16 @@ import org.dongguk.jjoin.repository.PlanRepository;
 import org.dongguk.jjoin.repository.ScheduleRepository;
 import org.dongguk.jjoin.repository.UserRepository;
 import org.dongguk.jjoin.util.DateUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +45,7 @@ public class ScheduleService {
 
         List<ScheduleDayDto> scheduleDayDtoList = new ArrayList<>();
         for (Plan plan : scheduleList) {
-            Schedule schedule = scheduleRepository.findByUserAndPlan(user, plan);
+            Optional<Schedule> schedule = scheduleRepository.findByUserAndPlan(user, plan);
             scheduleDayDtoList.add(ScheduleDayDto.builder()
                     .planId(plan.getId())
                     .clubName(plan.getClub().getName())
@@ -49,7 +53,7 @@ public class ScheduleService {
                     .endDate(plan.getEndDate())
                     .title(plan.getTitle())
                     .content(plan.getContent())
-                    .isAgreed(schedule.getIsAgreed())
+                    .isAgreed(schedule.map(s -> s.getIsAgreed()).orElse(null))
                     .build());
         }
 
@@ -93,25 +97,26 @@ public class ScheduleService {
         return true;
     }
 
-    public List<ClubScheduleDto> readClubSchedules(Long userId, Long clubId, Long page) {
+    // 특정 동아리의 일정 목록 반환
+    public List<ClubScheduleDto> readClubSchedules(Long userId, Long clubId, Long page, Long size) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
-        Club club = clubRepository.findById(clubId).get();
-        List<Plan> planList = planRepository.findByClub(club);
-        List<ClubScheduleDto> clubScheduleDtoList = new ArrayList<>();
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("no match clubId"));
+        PageRequest pageable = PageRequest.of(page.intValue(), size.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<Plan> plans = planRepository.findByClub(club, pageable);
+        List<ClubScheduleDto> clubScheduleDtos = new ArrayList<>();
 
-        for (Plan plan : planList) {
-            Schedule schedule = scheduleRepository.findByUserAndPlan(user, plan);
-            clubScheduleDtoList.add(ClubScheduleDto.builder()
-                            .planId(plan.getId())
-                            .startDate(plan.getStartDate())
-                            .endDate(plan.getEndDate())
-                            .title(plan.getTitle())
-                            .content(plan.getContent())
-                            .isAgreed(schedule.getIsAgreed())
+        for (Plan plan : plans.getContent()) {
+            Optional<Schedule> schedule = scheduleRepository.findByUserAndPlan(user, plan);
+            clubScheduleDtos.add(ClubScheduleDto.builder()
+                    .planId(plan.getId())
+                    .startDate(plan.getStartDate())
+                    .endDate(plan.getEndDate())
+                    .title(plan.getTitle())
+                    .content(plan.getContent())
+                    .isAgreed(schedule.map(s -> s.getIsAgreed()).orElse(null))
                     .build());
         }
-
-        return clubScheduleDtoList;
+        return clubScheduleDtos;
     }
 
     public ClubScheduleDetailDto readClubScheduleDetail(Long userId, Long clubId, Long scheduleId) {

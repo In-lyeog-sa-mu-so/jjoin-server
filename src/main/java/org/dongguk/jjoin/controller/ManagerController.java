@@ -54,8 +54,10 @@ public class ManagerController {
     }
 
     @GetMapping("/club/{clubId}/plan")
-    public List<PlanDto> readPlanList(@PathVariable Long clubId) {
-        return planService.readPlanList(clubId);
+    public List<PlanDto> readPlanList(@PathVariable Long clubId,
+                                      @RequestParam Long page,
+                                      @RequestParam Long size) {
+        return planService.readPlanList(clubId, page, size);
     }
 
     @PostMapping("/club/{clubId}/plan")

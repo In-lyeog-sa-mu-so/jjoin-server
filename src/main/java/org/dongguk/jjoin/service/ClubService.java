@@ -32,7 +32,7 @@ public class ClubService {
     private final AnswerRepository answerRepository;
 
     // 동아리 게시글(공지, 홍보) 목록 반환
-    public List<NoticeListDtoByApp> showNotices(Long clubId, Long page, Long size) {
+    public List<NoticeListDtoByApp> readNotices(Long clubId, Long page, Long size) {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("no match clubId"));
         List<Notice> notices = club.getNotices();
         notices.removeIf(notice -> notice.isDeleted());
