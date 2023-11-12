@@ -29,10 +29,10 @@ public class Schedule {
     private Boolean isAgreed;
 
     @Builder
-    public Schedule(User user, Plan plans) {
+    public Schedule(User user, Plan plan) {
         this.user = user;
-        this.plan = plans;
-        this.isAgreed = false;
+        this.plan = plan;
+        this.isAgreed = null;
     }
 
     public void scheduleDecidedBy(boolean isAgreed) {

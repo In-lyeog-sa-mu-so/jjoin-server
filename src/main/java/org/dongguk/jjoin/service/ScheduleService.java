@@ -99,11 +99,10 @@ public class ScheduleService {
     public List<ClubScheduleDto> readClubSchedules(Long userId, Long clubId, Long page, Long size) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("no match clubId"));
-        PageRequest pageable = PageRequest.of(page.intValue(), size.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
-        Page<Plan> plans = planRepository.findByClub(club, pageable);
+        List<Plan> plans = planRepository.findByClub(club);
         List<ClubScheduleDto> clubScheduleDtos = new ArrayList<>();
 
-        for (Plan plan : plans.getContent()) {
+        for (Plan plan : plans) {
             Schedule schedule = scheduleRepository.findByUserAndPlan(user, plan);
             clubScheduleDtos.add(ClubScheduleDto.builder()
                     .id(schedule.getId())
