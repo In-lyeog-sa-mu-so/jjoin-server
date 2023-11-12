@@ -129,6 +129,7 @@ public class ManagerController {
         return enrollmentService.readClubEnrollments(userId);
     }
 
+    // 동아리 개설 API
     @PostMapping("/enrollment")
     public Boolean createClubEnrollment(@RequestPart ClubEnrollmentRequestDto data,
                                         @RequestPart MultipartFile clubImageFile,

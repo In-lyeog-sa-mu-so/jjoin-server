@@ -140,19 +140,18 @@ public class EnrollmentService {
                 .name(data.getName())
                 .introduction(data.getIntroduction())
                 .leader(user)
-                .dependent(data.getDependentType())
+                .dependent(data.getDependent())
                 .clubImage(clubImage)
-                .backgroundImage(backgroundImage).build());
+                .backgroundImage(backgroundImage)
+                .build());
 
-        List<String> tagNames = data.getTags();
-        List<Tag> tags = tagRepository.findByNames(tagNames);
+        List<Tag> tags = tagRepository.findByNames(data.getTags());
         for (Tag tag : tags) {
             clubTagRepository.save(ClubTag.builder()
                     .club(club)
                     .tag(tag)
                     .build());
         }
-
         enrollmentRepository.save(Enrollment.builder()
                 .club(club)
                 .build());

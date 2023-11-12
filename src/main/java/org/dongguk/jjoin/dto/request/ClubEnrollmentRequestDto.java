@@ -13,6 +13,6 @@ import java.util.List;
 public class ClubEnrollmentRequestDto {
     private String name;
     private String introduction;
-    private DependentType dependentType;
+    private DependentType dependent;
     private List<String> tags;
 }
