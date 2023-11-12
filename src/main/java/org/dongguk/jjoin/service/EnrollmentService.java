@@ -10,9 +10,15 @@ import org.dongguk.jjoin.dto.response.ClubEnrollmentDto;
 import org.dongguk.jjoin.dto.response.ClubEnrollmentResponseDto;
 import org.dongguk.jjoin.dto.response.EnrollmentDto;
 import org.dongguk.jjoin.repository.*;
+import org.dongguk.jjoin.util.FileUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.print.Pageable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,49 +36,53 @@ public class EnrollmentService {
     private final ImageRepository imageRepository;
     private final TagRepository tagRepository;
     private final ClubTagRepository clubTagRepository;
+    private final FileUtil fileUtil;
 
-    public List<EnrollmentDto> readEnrollmentList() {
-        List<Enrollment> enrollmentList = enrollmentRepository.findAll();
-        List<EnrollmentDto> enrollmentDtoList = new ArrayList<>();
+    // 모든 개설 신청서 조회
+    public List<EnrollmentDto> readEnrollments(Long page, Long size) {
+        PageRequest pageable = PageRequest.of(page.intValue(), size.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<Enrollment> enrollments = enrollmentRepository.findAll(pageable);
+        List<EnrollmentDto> enrollmentDtos = new ArrayList<>();
 
-        for (Enrollment enrollment : enrollmentList) {
+        for (Enrollment enrollment : enrollments.getContent()) {
             Club club = enrollment.getClub();
-            List<ClubTag> clubTagList = club.getTags();
-            List<String> tagList = new ArrayList<>();
-            clubTagList.forEach(tags -> tagList.add(tags.getTag().getName()));
-            enrollmentDtoList.add(EnrollmentDto.builder()
-                            .id(enrollment.getId())
-                            .clubName(club.getName())
-                            .dependent(club.getDependent().toString())
-                            .tags(tagList)
-                            .createdDate(Timestamp.valueOf(LocalDateTime.now()))
-                            .createdDate(enrollment.getCreatedDate())
+            List<String> tags = club.getTags().stream()
+                    .map(clubTag -> clubTag.getTag().getName()).collect(Collectors.toList());
+
+            enrollmentDtos.add(EnrollmentDto.builder()
+                    .id(enrollment.getId())
+                    .clubName(club.getName())
+                    .dependent(club.getDependent().toString())
+                    .tags(tags)
+                    .createdDate(Timestamp.valueOf(LocalDateTime.now()))
+                    .createdDate(enrollment.getCreatedDate())
                     .build());
         }
-
-        return enrollmentDtoList;
+        return enrollmentDtos;
     }
 
-    public Boolean updateEnrollmentList(EnrollmentUpdateDto enrollmentUpdateDto) {
-        List<Long> idList = enrollmentUpdateDto.getId();
+    // 동아리 개설 신청 승인
+    public Boolean updateEnrollments(EnrollmentUpdateDto enrollmentUpdateDto) {
+        List<Long> ids = enrollmentUpdateDto.getIds();
 
-        for (Long id : idList) {
-            Enrollment enrollment = enrollmentRepository.findById(id).get();
-            enrollment.getClub().enrollClub();
-            enrollmentRepository.deleteById(id);
+        for (Long id : ids) {
+            enrollmentRepository.findById(id).get()
+                    .getClub().enrollClub();
         }
+        enrollmentRepository.deleteByIds(ids);
 
-        return true;
+        return Boolean.TRUE;
     }
 
+    // 동아리 개설 신청 거부
     public Boolean deleteEnrollmentList(EnrollmentUpdateDto enrollmentUpdateDto) {
-        List<Long> idList = enrollmentUpdateDto.getId();
+        List<Long> ids = enrollmentUpdateDto.getIds();
 
-        for (Long id : idList) {
+        for (Long id : ids) {
+            Club club = enrollmentRepository.findById(id).get().getClub();
             enrollmentRepository.deleteById(id);
         }
-
-        return true;
+        return Boolean.TRUE;
     }
 
     public List<ClubEnrollmentDto> readClubEnrollmentList(Long userId) {
@@ -83,47 +93,52 @@ public class EnrollmentService {
         for (Enrollment enrollment : enrollments) {
             Club club = enrollment.getClub();
             clubEnrollmentDtos.add(ClubEnrollmentDto.builder()
-                            .id(enrollment.getId())
-                            .clubName(club.getName())
-                            .dependent(club.getDependent().toString())
-                            .tags(club.getTags().stream().map(clubTag -> clubTag.getTag().getName())
-                                    .collect(Collectors.toList()))
-                            .createdDate(enrollment.getCreatedDate())
+                    .id(enrollment.getId())
+                    .clubName(club.getName())
+                    .dependent(club.getDependent().toString())
+                    .tags(club.getTags().stream().map(clubTag -> clubTag.getTag().getName())
+                            .collect(Collectors.toList()))
+                    .createdDate(enrollment.getCreatedDate())
                     .build());
         }
 
         return clubEnrollmentDtos;
     }
 
-    public Boolean createClubEnrollment(Long userId, ClubEnrollmentRequestDto clubEnrollmentRequestDto) {
+    public Boolean createClubEnrollment(Long userId, ClubEnrollmentRequestDto data, MultipartFile clubImageFile, MultipartFile backgroundImageFile) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
 
-        // 이미지 처리 필요
+        String clubImageOriginName = clubImageFile.getOriginalFilename();
+        String clubImageUuidName = fileUtil.storeFile(clubImageFile);
         Image clubImage = imageRepository.save(Image.builder()
                 .user(user)
                 .album(null)
                 .notice(null)
-                .originName(clubEnrollmentRequestDto.getClubImageOriginName())
-                .uuidName(clubEnrollmentRequestDto.getClubImageUuidName())
-                .type(ImageType.JPG).build());
-        // 이미지 처리 필요
+                .originName(clubImageOriginName)
+                .uuidName(clubImageUuidName)
+                .type(ImageType.valueOf(fileUtil.getFileExtension(clubImageOriginName).toUpperCase()))
+                .build());
+
+        String backgroundImageOriginName = backgroundImageFile.getOriginalFilename();
+        String backgroundImageUuidName = fileUtil.storeFile(backgroundImageFile);
         Image backgroundImage = imageRepository.save(Image.builder()
                 .user(user)
                 .album(null)
                 .notice(null)
-                .originName(clubEnrollmentRequestDto.getBackgroundImageOriginName())
-                .uuidName(clubEnrollmentRequestDto.getBackgroundImageUuidName())
-                .type(ImageType.JPG).build());
+                .originName(backgroundImageOriginName)
+                .uuidName(backgroundImageUuidName)
+                .type(ImageType.valueOf(fileUtil.getFileExtension(backgroundImageOriginName).toUpperCase()))
+                .build());
 
         Club club = clubRepository.save(Club.builder()
-                .name(clubEnrollmentRequestDto.getName())
-                .introduction(clubEnrollmentRequestDto.getIntroduction())
+                .name(data.getName())
+                .introduction(data.getIntroduction())
                 .leader(user)
-                .dependent(clubEnrollmentRequestDto.getDependentType())
+                .dependent(data.getDependentType())
                 .clubImage(clubImage)
                 .backgroundImage(backgroundImage).build());
 
-        List<String> tagNames = clubEnrollmentRequestDto.getTags();
+        List<String> tagNames = data.getTags();
         List<Tag> tags = tagRepository.findByNames(tagNames);
         for (Tag tag : tags) {
             clubTagRepository.save(ClubTag.builder()
@@ -152,7 +167,7 @@ public class EnrollmentService {
                 .clubImageUuidName(clubImage.getUuidName())
                 .backgroundImageUuidName(backgroundImage.getUuidName())
                 .tags(club.getTags().stream().map(
-                        clubTag -> clubTag.getTag().getName())
+                                clubTag -> clubTag.getTag().getName())
                         .collect(Collectors.toList())
                 )
                 .build();

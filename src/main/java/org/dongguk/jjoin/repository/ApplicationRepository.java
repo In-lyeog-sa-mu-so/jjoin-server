@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ApplicationRepository extends JpaRepository<ClubApplication, Long>{
+public interface ApplicationRepository extends JpaRepository<ClubApplication, Long> {
     @Query("SELECT ca FROM ClubApplication AS ca WHERE ca.club.id = :clubId ORDER BY ca.requestDate")
     List<ClubApplication> findApplicationList(Long clubId, Pageable pageable);
 

@@ -3,17 +3,23 @@ package org.dongguk.jjoin.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.domain.*;
+import org.dongguk.jjoin.domain.type.ImageType;
 import org.dongguk.jjoin.domain.type.RankType;
 import org.dongguk.jjoin.dto.request.ApplicationQuestionDto;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
 import org.dongguk.jjoin.dto.response.*;
 import org.dongguk.jjoin.dto.ClubMemberDtoByWeb;
+import org.dongguk.jjoin.dto.response.ClubMainPageUpdateDto;
+import org.dongguk.jjoin.dto.response.NoticeDto;
+import org.dongguk.jjoin.dto.response.NoticeListDto;
 import org.dongguk.jjoin.repository.*;
+import org.dongguk.jjoin.util.FileUtil;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -29,6 +35,7 @@ public class ManagerService {
     private final ClubMemberRepository clubMemberRepository;
     private final RecruitedPeriodRepository recruitedPeriodRepository;
     private final ImageRepository imageRepository;
+    private final FileUtil fileUtil;
     private final QuestionRepository questionRepository;
     private final ApplicationRepository applicationRepository;
     private final AnswerRepository answerRepository;
@@ -150,8 +157,8 @@ public class ManagerService {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
         Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClub(club).orElseThrow(()->new RuntimeException("No match Club"));
         return ClubMainPageDtoByWeb.builder()
-                .clubImage(club.getClubImage().getUuidName())
-                .backgroundImage(club.getBackgroundImage().getUuidName())
+                .clubImageUuid(club.getClubImage().getUuidName())
+                .backgroundImageUuid(club.getBackgroundImage().getUuidName())
                 .introduction(club.getIntroduction())
                 .isFinished(recruitedPeriod.getIsFinished())
                 .startDate(recruitedPeriod.getStartDate())
@@ -159,31 +166,36 @@ public class ManagerService {
                 .build();
     }
 
-    // 수정 결과로 받아온 사진들이 이미 존재한 사진인지 확인. 변경된 새로운 사진일 경우 새롭게 저장
-    public Image checkisExistImage(Long clubId, String originName){
-        return imageRepository.findByOriginName(originName).orElseGet(() -> imageRepository.save(
-                Image.builder()
-//                        .user(GetUser())
-//                        .album()
-//                        .notice()
-//                        .originName(originName)
-//                        .uuidName()
-//                        .type()
-                        .build()
-        ));
-    }
 
     // 동아리 메인페이지 수정
-    public void modifyClubMainPage(Long clubId, ClubMainPageDtoByWeb clubMainPageDtoByWeb){
+    public void modifyClubMainPage(Long clubId, ClubMainPageUpdateDto data,
+                                   MultipartFile clubImageFile, MultipartFile backgroundImageFile) {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
         Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClub(club).orElseThrow(() -> new RuntimeException("No Recruit_periods"));
-//        Image clubImage = checkisExistImage(clubId, clubMainPageDtoByWeb.getClubImage());
-//        Image backgroundImage = checkisExistImage(clubId, clubMainPageDtoByWeb.getBackgroundImage());
-        // club 사진들을 업데이트 로직 추가 필요.
-        club.setIntroduction(clubMainPageDtoByWeb.getIntroduction());
-        recruitedPeriod.setIsFinished(clubMainPageDtoByWeb.getIsFinished());
-        recruitedPeriod.setStartDate(clubMainPageDtoByWeb.getStartDate());
-        recruitedPeriod.setEndDate(clubMainPageDtoByWeb.getEndDate());
+
+        String clubImageOriginName = clubImageFile.getOriginalFilename();
+        String clubImageUuidName = fileUtil.storeFile(clubImageFile);
+        Image clubImage = imageRepository.save(Image.builder()
+                .user(club.getLeader())
+                .album(null)
+                .notice(null)
+                .originName(clubImageOriginName)
+                .uuidName(clubImageUuidName)
+                .type(ImageType.valueOf(fileUtil.getFileExtension(clubImageOriginName).toUpperCase())).build());
+
+        String backgroundImageOriginName = backgroundImageFile.getOriginalFilename();
+        String backgroundImageUuidName = fileUtil.storeFile(backgroundImageFile);
+        Image backgroundImage = imageRepository.save(Image.builder()
+                .user(club.getLeader())
+                .album(null)
+                .notice(null)
+                .originName(backgroundImageOriginName)
+                .uuidName(backgroundImageUuidName)
+                .type(ImageType.valueOf(fileUtil.getFileExtension(backgroundImageOriginName).toUpperCase())).build());
+
+        club.modifyClubMain(data.getIntroduction(), clubImage, backgroundImage);
+        recruitedPeriod.updatePeriod(data.getStartDate(), data.getEndDate(),
+                data.getIsFinished());
     }
 
     // 동아리 가입 신청서 질문 생성

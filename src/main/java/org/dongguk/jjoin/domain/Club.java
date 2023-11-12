@@ -40,13 +40,16 @@ public class Club {
     @Column(name = "created_date")
     private Timestamp createdDate;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "club_image")
     private Image clubImage;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "background_image")
     private Image backgroundImage;
+
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted;
 
     //--------------------------------------------------------
 
@@ -82,7 +85,18 @@ public class Club {
         this.backgroundImage = backgroundImage;
     }
 
+    // 동아리 개설
     public void enrollClub() {
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());
+    }
+
+    public void modifyClubMain(String introduction, Image clubImage, Image backgroundImage) {
+        this.introduction = introduction;
+        this.clubImage = clubImage;
+        this.backgroundImage = backgroundImage;
+    }
+
+    public void deleteClub() {
+        this.isDeleted = Boolean.TRUE;
     }
 }

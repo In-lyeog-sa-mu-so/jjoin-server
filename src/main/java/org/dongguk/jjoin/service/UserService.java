@@ -5,15 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.domain.Club;
 import org.dongguk.jjoin.domain.Image;
 import org.dongguk.jjoin.domain.User;
+import org.dongguk.jjoin.domain.type.ImageType;
 import org.dongguk.jjoin.dto.request.UserProfileUpdateDto;
 import org.dongguk.jjoin.dto.response.ClubCardDto;
 import org.dongguk.jjoin.dto.response.UserProfileDto;
-import org.dongguk.jjoin.repository.ClubMemberRepository;
-import org.dongguk.jjoin.repository.ClubRepository;
-import org.dongguk.jjoin.repository.NoticeRepository;
-import org.dongguk.jjoin.repository.UserRepository;
+import org.dongguk.jjoin.repository.*;
+import org.dongguk.jjoin.util.FileUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +25,9 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final ClubMemberRepository clubMemberRepository;
-    private final ClubRepository clubRepository;
     private final NoticeRepository noticeRepository;
+    private final ImageRepository imageRepository;
+    private final FileUtil fileUtil;
 
     public List<ClubCardDto> readUserClubs(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
@@ -61,11 +62,20 @@ public class UserService {
                 .build();
     }
 
-    public Boolean updateUserProfile(Long userId, UserProfileUpdateDto userProfileUpdateDto) {
+    public Boolean updateUserProfile(Long userId, UserProfileUpdateDto userProfileUpdateDto,
+                                     MultipartFile userProfileImageFile) {
         User user = userRepository.findById(userId).get();
-        Image profileImage = user.getProfileImage();
-        user.setIntroduction(userProfileUpdateDto.getIntroduction());
-        profileImage.setUuidName(userProfileUpdateDto.getProfileImageUuid());
+        String userProfileImageOriginName = userProfileImageFile.getOriginalFilename();
+        String userProfileImageUuidName = fileUtil.storeFile(userProfileImageFile);
+        Image userProfileImage = imageRepository.save(Image.builder()
+                .user(user)
+                .album(null)
+                .notice(null)
+                .originName(userProfileImageOriginName)
+                .uuidName(userProfileImageUuidName)
+                .type(ImageType.valueOf(fileUtil.getFileExtension(userProfileImageOriginName).toUpperCase()))
+                .build());
+        user.updateUserProfile(userProfileUpdateDto.getIntroduction(), userProfileImage);
 
         return true;
     }
