@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,8 +19,10 @@ import java.util.List;
 public class SearchController {
     private final SearchService searchService;
     @GetMapping
-    public List<SearchClubDto> searchClubs(@RequestParam String keyword, @RequestParam List<String> tags, @RequestParam Integer page, @RequestParam Integer size){
-        return searchService.searchClubs(keyword, tags, page, size);
+    public Map<String, Object> searchClubs(@RequestParam String keyword, @RequestParam List<String> tags, @RequestParam Integer page, @RequestParam Integer size){
+        Map<String, Object> result = new HashMap<>();
+        result.put("clubs", searchService.searchClubs(keyword, tags, page, size));
+        return result;
     }
 
     // 동아리 검색하기 위해 모든 태그 목록 조회

@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import org.dongguk.jjoin.dto.request.UserTagDto;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -29,10 +31,12 @@ public class ClubController {
 
     // 동아리 게시글(공지, 홍보) 목록을 보여주는 API
     @GetMapping("/{clubId}/notices")
-    public List<NoticeListDtoByApp> readNotices(@PathVariable Long clubId,
+    public Map<String, Object> readNotices(@PathVariable Long clubId,
                                                 @RequestParam("page") Long page,
                                                 @RequestParam("size") Long size) {
-        return clubService.readNotices(clubId, page, size);
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", clubService.readNotices(clubId, page, size));
+        return result;
     }
 
     // 동아리 게시글 상세정보를 보여주는 API
