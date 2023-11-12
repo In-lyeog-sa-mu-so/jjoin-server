@@ -149,10 +149,8 @@ public class EnrollmentService {
         return ClubEnrollmentResponseDto.builder()
                 .name(club.getName())
                 .introduction(club.getIntroduction())
-                .dependentType(club.getDependent().getDescription())
-                .clubImageOriginName(clubImage.getOriginName())
+                .dependent(club.getDependent().getDescription())
                 .clubImageUuidName(clubImage.getUuidName())
-                .backgroundImageOriginName(backgroundImage.getOriginName())
                 .backgroundImageUuidName(backgroundImage.getUuidName())
                 .tags(club.getTags().stream().map(
                         clubTag -> clubTag.getTag().getName())

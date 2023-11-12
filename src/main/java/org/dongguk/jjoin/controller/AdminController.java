@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.dto.request.ClubDeletionUpdateDto;
 import org.dongguk.jjoin.dto.request.EnrollmentUpdateDto;
 import org.dongguk.jjoin.dto.response.ClubDeletionDto;
+import org.dongguk.jjoin.dto.response.ClubEnrollmentDto;
+import org.dongguk.jjoin.dto.response.ClubEnrollmentResponseDto;
 import org.dongguk.jjoin.dto.response.EnrollmentDto;
 import org.dongguk.jjoin.service.ClubDeletionService;
 import org.dongguk.jjoin.service.EnrollmentService;
@@ -23,6 +25,12 @@ public class AdminController {
     @GetMapping("/enrollment")
     public List<EnrollmentDto> readEnrollmentList() {
         return enrollmentService.readEnrollmentList();
+    }
+
+    @GetMapping("/enrollment/{enrollmentId}")
+    public ClubEnrollmentResponseDto readEnrollment(@PathVariable Long enrollmentId){
+        Long userId = 1L;
+        return enrollmentService.readClubEnrollment(userId, enrollmentId);
     }
 
     @PutMapping("/enrollment")
