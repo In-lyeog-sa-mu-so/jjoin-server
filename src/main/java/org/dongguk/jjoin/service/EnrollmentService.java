@@ -55,7 +55,6 @@ public class EnrollmentService {
                     .clubName(club.getName())
                     .dependent(club.getDependent().toString())
                     .tags(tags)
-                    .createdDate(Timestamp.valueOf(LocalDateTime.now()))
                     .createdDate(enrollment.getCreatedDate())
                     .build());
         }

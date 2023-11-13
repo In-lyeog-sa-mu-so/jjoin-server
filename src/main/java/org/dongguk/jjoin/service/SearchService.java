@@ -61,6 +61,7 @@ public class SearchService {
                     .profileImageUuid(club.getClubImage().getUuidName())
                     .startDate(period[0])
                     .endDate(period[1])
+                    .isFinished(recruitedPeriod.map(rp -> rp.getIsFinished()).orElse(null))
                     .build());
         }
         return searchClubDtos;
