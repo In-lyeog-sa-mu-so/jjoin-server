@@ -165,6 +165,7 @@ public class ManagerService {
                 .introduction(club.getIntroduction())
                 .startDate(period[0])
                 .endDate(period[1])
+                .isFinished(recruitedPeriod.map(rp -> rp.getIsFinished()).orElse(null))
                 .build();
     }
 

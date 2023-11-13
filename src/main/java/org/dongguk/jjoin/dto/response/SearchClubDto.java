@@ -20,7 +20,7 @@ public class SearchClubDto {
     private Timestamp endDate;
 
     @Builder
-    public SearchClubDto(Long clubId, String clubName, String introduction, Long userNumber, String leaderName, String dependent, String profileImageUuid, Timestamp startDate, Timestamp endDate) {
+    public SearchClubDto(Long clubId, String clubName, String introduction, Long userNumber, String leaderName, String dependent, String profileImageUuid, Timestamp startDate, Timestamp endDate, Boolean isFinished) {
         this.clubId = clubId;
         this.clubName = clubName;
         this.introduction = introduction;
@@ -30,11 +30,6 @@ public class SearchClubDto {
         this.profileImageUuid = profileImageUuid;
         this.startDate = startDate;
         this.endDate = endDate;
-        if (Timestamp.valueOf(LocalDateTime.now()).getTime() >= startDate.getTime()
-                && Timestamp.valueOf(LocalDateTime.now()).getTime() <= endDate.getTime()) {
-            this.isFinished = true;
-        }
-        else
-            this.isFinished = false;
+        this.isFinished = isFinished;
     }
 }

@@ -113,6 +113,7 @@ public class ClubService {
                 .createdDate(club.getCreatedDate())
                 .startDate(period[0])
                 .endDate(period[1])
+                .isFinished(recruitedPeriod.map(rp -> rp.getIsFinished()).orElse(null))
                 .build();
     }
 
