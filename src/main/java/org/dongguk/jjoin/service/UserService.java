@@ -55,6 +55,7 @@ public class UserService {
 
         return UserProfileDto.builder()
                 .id(user.getId())
+                .studentId(user.getStudentId())
                 .profileImageUuid(user.getProfileImage().getUuidName())
                 .name(user.getName())
                 .major(user.getMajor().toString())
