@@ -44,7 +44,7 @@ public class UserService {
                     .numberOfMembers(clubMemberRepository.countAllByClub(club))
                     .dependent(club.getDependent().toString())
                     .profileImageUuid(club.getClubImage().getUuidName())
-                    .newestNotice(noticeRepository.findByClubOrderByCreatedDateDesc(club).getTitle())
+                    .newestNotice(noticeRepository.findFirstByClubOrderByCreatedDateDesc(club).getTitle())
                     .build());
         }
         return clubCardDtos;

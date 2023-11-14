@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
-    Notice findByClubOrderByCreatedDateDesc(Club club);
+    Notice findFirstByClubOrderByCreatedDateDesc(Club club);
 }
