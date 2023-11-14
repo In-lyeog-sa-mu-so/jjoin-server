@@ -41,8 +41,7 @@ public class ScheduleService {
     public List<ScheduleDayDto> readDaySchedules(Long userId, String targetDate) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
         Timestamp date = dateUtil.stringToTimestamp(targetDate);
-        List<Schedule> schedules = scheduleRepository.findAgreedPlansByDate(user, date);
-        schedules.addAll(scheduleRepository.findUnplansByDate(user, date));
+        List<Schedule> schedules = scheduleRepository.findAllPlansByDate(user, date);
 
         List<ScheduleDayDto> scheduleDayDtos = new ArrayList<>();
         for (Schedule schedule : schedules) {
