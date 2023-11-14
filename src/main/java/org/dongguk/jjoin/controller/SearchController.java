@@ -27,7 +27,9 @@ public class SearchController {
 
     // 동아리 검색하기 위해 모든 태그 목록 조회
     @GetMapping("/tags")
-    public List<TagDto> readAllTags() {
-        return searchService.readAllTags();
+    public Map<String, Object> readAllTags() {
+        Map<String, Object> result = new HashMap<>();
+        result.put("clubs", searchService.readAllTags());
+        return result;
     }
 }

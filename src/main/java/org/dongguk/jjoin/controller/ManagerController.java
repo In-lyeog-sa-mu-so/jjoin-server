@@ -15,7 +15,9 @@ import org.dongguk.jjoin.service.PlanService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -28,9 +30,11 @@ public class ManagerController {
 
     // 관리자가 관리하는 동아리 조회
     @GetMapping("/club")
-    public List<ManagingClubDto> showJoinedClubs(){
+    public Map<String, Object> showJoinedClubs(){
         Long userId = 1L;
-        return managerService.showJoinedClubs(userId);
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", managerService.showJoinedClubs(userId));
+        return result;
     }
 
     @PostMapping("/club/{clubId}/notice")
@@ -40,8 +44,10 @@ public class ManagerController {
     }
 
     @GetMapping("/club/{clubId}/notice")
-    public List<NoticeListDto> showNoticeList(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size) {
-        return managerService.showNoticeList(clubId, page, size);
+    public Map<String, Object> showNoticeList(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", managerService.showNoticeList(clubId, page, size));
+        return result;
     }
 
     @GetMapping("/club/{clubId}/notice/{noticeId}")
@@ -62,8 +68,10 @@ public class ManagerController {
 
     // 특정 동아리의 일정 목록 조회 API
     @GetMapping("/club/{clubId}/plan")
-    public List<PlanDto> readPlans(@PathVariable Long clubId) {
-        return planService.readPlans(clubId);
+    public Map<String, Object> readPlans(@PathVariable Long clubId) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", planService.readPlans(clubId));
+        return result;
     }
 
     // 특정 동아리의 일정 등록 API
@@ -92,8 +100,10 @@ public class ManagerController {
 
     // 동아리 멤버 목록 조회
     @GetMapping("/club/{clubId}/member")
-    public List<ClubMemberDtoByWeb> readClubMembers(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size) {
-        return managerService.readClubMembers(clubId, page, size);
+    public Map<String, Object> readClubMembers(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", managerService.readClubMembers(clubId, page, size));
+        return result;
     }
 
     // 동아리 멤버 권한 수정
@@ -124,9 +134,11 @@ public class ManagerController {
 
     // 동아리 개설 신청서 목록 조회 API
     @GetMapping("/enrollment")
-    public List<ClubEnrollmentDto> readClubEnrollments() {
+    public Map<String, Object> readClubEnrollments() {
         Long userId = 1L;
-        return enrollmentService.readClubEnrollments(userId);
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", enrollmentService.readClubEnrollments(userId));
+        return result;
     }
 
     // 동아리 개설 API
@@ -152,8 +164,10 @@ public class ManagerController {
 
     // 동아리 가입 신청 목록
     @GetMapping("/club/{clubId}/application")
-    public List<ApplicationDto> readApplicationList(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size){
-        return managerService.readApplicationList(clubId, page, size);
+    public Map<String, Object> readApplicationList(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size){
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", managerService.readApplicationList(clubId, page, size));
+        return result;
     }
 
     // 동아리 가입 신청 상세보기
