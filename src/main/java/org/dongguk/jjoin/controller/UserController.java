@@ -42,7 +42,7 @@ public class UserController {
         Long userId = 1L;
         String targetDate = LocalDateTime.now().toString().substring(0, 10).replaceAll("-", "");
         Map<String, Object> result = new HashMap<>();
-        result.put("data", scheduleService.readDaySchedules(userId, targetDate));
+        result.put("data", scheduleService.readUnplans(userId, targetDate));
         return result;
     }
 

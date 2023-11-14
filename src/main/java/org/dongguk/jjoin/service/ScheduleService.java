@@ -90,6 +90,30 @@ public class ScheduleService {
         return scheduleDaysDtos;
     }
 
+    // 미정 일정 리스트 반환
+    // 특정 날짜에 해당하는 일정 목록 반환
+    public List<ScheduleDayDto> readUnplans(Long userId, String targetDate) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
+        Timestamp date = dateUtil.stringToTimestamp(targetDate);
+        List<Schedule> schedules = scheduleRepository.findUnplansByDate(user, date);
+
+        List<ScheduleDayDto> scheduleDayDtos = new ArrayList<>();
+        for (Schedule schedule : schedules) {
+            Plan plan = schedule.getPlan();
+            scheduleDayDtos.add(ScheduleDayDto.builder()
+                    .id(schedule.getId())
+                    .clubId(plan.getClub().getId())
+                    .name(plan.getClub().getName())
+                    .startDate(plan.getStartDate())
+                    .endDate(plan.getEndDate())
+                    .title(plan.getTitle())
+                    .content(plan.getContent())
+                    .isAgreed(schedule.getIsAgreed())
+                    .build());
+        }
+        return scheduleDayDtos;
+    }
+
     // 개인 일정 동의 및 거부
     public Boolean updateSchedule(Long scheduleId, ScheduleDecideDto scheduleDecideDto) {
         Schedule schedule = scheduleRepository.findById(scheduleId).get();
