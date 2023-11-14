@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -27,17 +29,21 @@ public class UserController {
 
     // 홈화면에서의 가입한 동아리 조회 API
     @GetMapping("/clubs")
-    public List<ClubCardDto> readUserClubs() {
+    public Map<String, Object> readUserClubs() {
         Long userId = 1L;
-        return userService.readUserClubs(userId);
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", userService.readUserClubs(userId));
+        return result;
     }
 
     // 홈화면에서의 사용자의 스케줄 조회 API
     @GetMapping("/schedules")
-    public List<ScheduleDayDto> readUserSchedules() {
+    public Map<String, Object> readUserSchedules() {
         Long userId = 1L;
         String targetDate = LocalDateTime.now().toString().substring(0, 10).replaceAll("-", "");
-        return scheduleService.readDaySchedules(userId, targetDate);
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", scheduleService.readDaySchedules(userId, targetDate));
+        return result;
     }
 
     // 사용자 조회 API
@@ -61,7 +67,9 @@ public class UserController {
 
     // 마이페이지에서의 사용자 동아리 조회 API
     @GetMapping("/{userId}/clubs")
-    public List<UserClubDto> readUserClubs(@PathVariable Long userId) {
-        return clubService.readUserClubs(userId);
+    public Map<String, Object> readUserClubs(@PathVariable Long userId) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", clubService.readUserClubs(userId));
+        return result;
     }
 }

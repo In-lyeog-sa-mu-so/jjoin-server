@@ -47,11 +47,13 @@ public class ClubController {
 
     // 특정 동아리의 일정 목록 조회 API
     @GetMapping("/{clubId}/schedules")
-    public List<ClubScheduleDto> readClubSchedules(@PathVariable Long clubId,
+    public Map<String, Object> readClubSchedules(@PathVariable Long clubId,
                                                    @RequestParam("page") Long page,
                                                    @RequestParam("size") Long size) {
         Long userId = 1L;
-        return scheduleService.readClubSchedules(userId, clubId, page, size);
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", scheduleService.readClubSchedules(userId, clubId, page, size));
+        return result;
     }
 
     // 특정 동아리의 일정 상세 조회 API
@@ -72,9 +74,11 @@ public class ClubController {
 
     // 동아리 추천 목록 조회 API
     @GetMapping("/recommends")
-    public List<ClubRecommendDto> readClubRecommend(@RequestBody UserTagDto userTagDtos) {
-        Long userId = 2L;
-        return clubService.readClubRecommend(userId, userTagDtos);
+    public Map<String, Object> readClubRecommend(@RequestBody UserTagDto userTagDtos) {
+        Long userId = 1L;
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", clubService.readClubRecommend(userId, userTagDtos));
+        return result;
     }
 
     // 동아리 가입신청서 양식 가져오기

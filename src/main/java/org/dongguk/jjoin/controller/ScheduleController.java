@@ -7,7 +7,9 @@ import org.dongguk.jjoin.dto.response.ScheduleDaysDto;
 import org.dongguk.jjoin.service.ScheduleService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,17 +19,21 @@ public class ScheduleController {
 
     // 하루에 해당하는 일정 조회 API
     @GetMapping("/days/{day}")
-    public List<ScheduleDayDto> readDayPlans(@PathVariable String day) {
+    public Map<String, Object> readDayPlans(@PathVariable String day) {
         Long userId = 1L;
-        return scheduleService.readDaySchedules(userId, day);
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", scheduleService.readDaySchedules(userId, day));
+        return result;
     }
 
     // 기간에 해당하는 일정 조회 API
     @GetMapping("")
-    public List<ScheduleDaysDto> readPeriodPlans(@RequestParam String startDate,
+    public Map<String, Object> readPeriodPlans(@RequestParam String startDate,
                                                 @RequestParam String endDate) {
         Long userId = 1L;
-        return scheduleService.readPeriodPlans(userId, startDate, endDate);
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", scheduleService.readPeriodPlans(userId, startDate, endDate));
+        return result;
     }
 
     // 개인 일정 수락 및 거절

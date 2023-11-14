@@ -12,7 +12,9 @@ import org.dongguk.jjoin.service.ClubDeletionService;
 import org.dongguk.jjoin.service.EnrollmentService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -24,8 +26,10 @@ public class AdminController {
 
     // 관리자가 동아리 개설 신청서를 읽어오는 API
     @GetMapping("/enrollment")
-    public List<EnrollmentDto> readEnrollments(@RequestParam Long page, @RequestParam Long size) {
-        return enrollmentService.readEnrollments(page, size);
+    public Map<String, Object> readEnrollments(@RequestParam Long page, @RequestParam Long size) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", enrollmentService.readEnrollments(page, size));
+        return result;
     }
 
     @GetMapping("/enrollment/{enrollmentId}")
@@ -47,8 +51,10 @@ public class AdminController {
 
     // 관리자가 동아리 삭제 신청 목록을 조회하는 API
     @GetMapping("/deletion")
-    public List<ClubDeletionDto> readClubDeletions(@RequestParam Long page, @RequestParam Long size) {
-        return clubDeletionService.readClubDeletions(page, size);
+    public Map<String, Object> readClubDeletions(@RequestParam Long page, @RequestParam Long size) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", clubDeletionService.readClubDeletions(page, size));
+        return result;
     }
 
     // 관리자가 동아리 삭제 신청을 승인하는 API
