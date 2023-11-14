@@ -25,14 +25,14 @@ public interface ClubMemberRepository extends JpaRepository<ClubMember, Long> {
     List<ClubMember> findByClubId(Long clubId, Pageable pageable);
 
     @Query("SELECT cm FROM ClubMember AS cm WHERE cm.club.id = :clubId AND cm.user.id = :userId")
-    Optional<ClubMember> findClubMemberByClubIdAndUserId(Long clubId, Long userId);
+    Optional<ClubMember> findClubMemberByClubIdAndUserId(@Param("clubId") Long clubId, @Param("userId") Long userId);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("DELETE FROM ClubMember AS cm WHERE cm.club.id = :clubId AND cm.user.id IN :userIds")
-    void deleteAllByClubIdAndUserId(Long clubId, List<Long> userIds);
+    void deleteAllByClubIdAndUserId(@Param("clubId") Long clubId, @Param("userIds") List<Long> userIds);
 
     @Query("SELECT cm.club FROM ClubMember AS cm WHERE cm.user.id = :userId AND cm.rankType != :rankType")
-    List<Club> findClubMemberByUserIdAndRankType(Long userId, RankType rankType);
+    List<Club> findClubMemberByUserIdAndRankType(@Param("userId") Long userId, @Param("rankType") RankType rankType);
 
     List<ClubMember> findByClub(Club club);
 }
