@@ -33,7 +33,7 @@ public class DateUtil {
         cal.setTime(startDay);
         List<Timestamp> timestamps = new ArrayList<>();
 
-        while (cal.getTime().getTime() < endDay.getTime()) {
+        while (cal.getTime().getTime() <= endDay.getTime()) {
             timestamps.add(new Timestamp(cal.getTime().getTime()));
             cal.add(Calendar.DATE, 1);
         }
