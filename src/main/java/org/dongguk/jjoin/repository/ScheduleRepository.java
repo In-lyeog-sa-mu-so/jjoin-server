@@ -18,11 +18,13 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     Schedule findByUserAndPlan(User user, Plan plan);
 
     @Query(value = "SELECT s FROM Schedule AS s INNER JOIN Plan AS p ON s.plan = p " +
-            "WHERE s.user = :user AND s.isAgreed = TRUE AND :targetDate BETWEEN p.startDate AND p.endDate")
+            "WHERE s.user = :user AND s.isAgreed = TRUE " +
+            "AND DATE_FORMAT(:targetDate, '%Y%m%d') BETWEEN DATE_FORMAT(p.startDate, '%Y%m%d') AND DATE_FORMAT(p.endDate, '%Y%m%d')")
     List<Schedule> findAgreedPlansByDate(@Param("user") User user, @Param("targetDate") Timestamp targetDate);
 
     @Query(value = "SELECT s FROM Schedule AS s INNER JOIN Plan AS p ON s.plan = p " +
-            "WHERE s.user = :user AND (s.isAgreed = NULL OR s.isAgreed = TRUE) AND :targetDate BETWEEN p.startDate AND p.endDate")
+            "WHERE s.user = :user AND (s.isAgreed = NULL OR s.isAgreed = TRUE) " +
+            "AND (DATE_FORMAT(:targetDate, '%Y%m%d') BETWEEN DATE_FORMAT(p.startDate, '%Y%m%d') AND DATE_FORMAT(p.endDate, '%Y%m%d'))")
     List<Schedule> findAllPlansByDate(@Param("user") User user, @Param("targetDate") Timestamp targetDate);
 
     Long countByPlanAndIsAgreed(Plan plan, Boolean isAgreed);
