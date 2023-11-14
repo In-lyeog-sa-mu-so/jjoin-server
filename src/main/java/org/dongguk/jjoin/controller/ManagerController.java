@@ -157,7 +157,7 @@ public class ManagerController {
     }
   
     // 동아리 가입 신청서 질문 생성
-    @PostMapping("/club/{clubId}/application")
+    @PostMapping("/club/{clubId}/question")
     public void makeApplicationQuestion(@PathVariable Long clubId, @RequestBody List<ApplicationQuestionDto> applicationQuestionDtos){
         managerService.makeApplicationQuestion(clubId, applicationQuestionDtos);
     }
