@@ -143,9 +143,9 @@ public class ClubService {
             throw new RuntimeException("A Club has No application");
         }
 
-        List<ApplicationQuestionDto> applicationQuestionDtos = new ArrayList<>();
+        List<ApplicationQuestionResponseDto> applicationQuestionResponseDtos = new ArrayList<>();
         for (Application_question aQ : applicationQuestions) {
-            applicationQuestionDtos.add(ApplicationQuestionDto.builder()
+            applicationQuestionResponseDtos.add(ApplicationQuestionResponseDto.builder()
                     .id(aQ.getId())
                     .content(aQ.getContent())
                     .build());
@@ -154,7 +154,7 @@ public class ClubService {
                 .clubName(club.getName())
                 .startDate(period[0])
                 .endDate(period[1])
-                .applicationQuestionDtos(applicationQuestionDtos)
+                .applicationQuestionResponseDtos(applicationQuestionResponseDtos)
                 .build();
     }
 

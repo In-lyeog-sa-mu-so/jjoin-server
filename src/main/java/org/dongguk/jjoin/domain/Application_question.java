@@ -35,4 +35,6 @@ public class Application_question {
     //-------------------
     @OneToMany(mappedBy = "applicationQuestion", fetch = FetchType.LAZY)
     List<Application_answer> applicationAnswers = new ArrayList<>();
+
+    public void modifyContent(String content){ this.content = content; }
 }

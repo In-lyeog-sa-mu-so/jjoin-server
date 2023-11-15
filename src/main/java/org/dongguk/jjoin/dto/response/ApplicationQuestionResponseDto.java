@@ -4,11 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class ApplicationQuestionDto {
+public class ApplicationQuestionResponseDto {
     private Long id;
     private String content;
     @Builder
-    public ApplicationQuestionDto(Long id, String content) {
+    public ApplicationQuestionResponseDto(Long id, String content) {
         this.id = id;
         this.content = content;
     }
