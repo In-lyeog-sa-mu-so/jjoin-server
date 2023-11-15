@@ -6,6 +6,7 @@ import org.dongguk.jjoin.domain.*;
 import org.dongguk.jjoin.domain.type.ImageType;
 import org.dongguk.jjoin.domain.type.RankType;
 import org.dongguk.jjoin.dto.request.ApplicationQuestionDto;
+import org.dongguk.jjoin.dto.request.QuestionModifyDto;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
 import org.dongguk.jjoin.dto.response.*;
 import org.dongguk.jjoin.dto.ClubMemberDtoByWeb;
@@ -221,6 +222,29 @@ public class ManagerService {
                             .build()
             );
             questionRepository.saveAll(applicationQuestions);
+        }
+    }
+
+    // 동아리 가입 신청 질문 조회
+    public List<ApplicationQuestionResponseDto> readApplicationQuestion(Long clubId) {
+        clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
+        List<Application_question> applicationQuestions = questionRepository.findAllByClubId(clubId);
+        List<ApplicationQuestionResponseDto> applicationQuestionDtos = new ArrayList<>();
+        for (Application_question aQ : applicationQuestions) {
+            applicationQuestionDtos.add(ApplicationQuestionResponseDto.builder()
+                    .id(aQ.getId())
+                    .content(aQ.getContent())
+                    .build());
+        };
+        return applicationQuestionDtos;
+    }
+
+    // 동아리 가입 신청서 질문 수정
+    public void modifyApplicationQuestion(Long clubId, List<QuestionModifyDto> questionModifyDtos) {
+        clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
+        for (QuestionModifyDto questionModifyDto : questionModifyDtos){
+            Application_question applicationQuestion = questionRepository.findById(questionModifyDto.getId()).orElseThrow(() -> new RuntimeException("No application question"));
+            applicationQuestion.modifyContent(questionModifyDto.getContent());
         }
     }
 

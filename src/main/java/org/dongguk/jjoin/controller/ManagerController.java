@@ -2,13 +2,8 @@ package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dongguk.jjoin.dto.request.ClubEnrollmentRequestDto;
-import org.dongguk.jjoin.dto.request.ApplicationQuestionDto;
-import org.dongguk.jjoin.dto.request.NoticeRequestDto;
-import org.dongguk.jjoin.dto.request.PlanRequestDto;
-import org.dongguk.jjoin.dto.request.PlanUpdateDto;
+import org.dongguk.jjoin.dto.request.*;
 import org.dongguk.jjoin.dto.response.*;
-import org.dongguk.jjoin.dto.ClubMemberDtoByWeb;
 import org.dongguk.jjoin.service.EnrollmentService;
 import org.dongguk.jjoin.service.ManagerService;
 import org.dongguk.jjoin.service.PlanService;
@@ -160,6 +155,20 @@ public class ManagerController {
     @PostMapping("/club/{clubId}/question")
     public void makeApplicationQuestion(@PathVariable Long clubId, @RequestBody List<ApplicationQuestionDto> applicationQuestionDtos){
         managerService.makeApplicationQuestion(clubId, applicationQuestionDtos);
+    }
+
+    // 동아리 가입 신청서 질문 조회
+    @GetMapping("/club/{clubId}/question")
+    public Map<String, Object> readApplicationQuestion(@PathVariable Long clubId) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", managerService.readApplicationQuestion(clubId));
+        return result;
+    }
+
+    // 동아리 가입 신청서 질문 수정
+    @PatchMapping("/club/{clubId}/question")
+    public void modifyApplicationQuestion(@PathVariable Long clubId, @RequestBody List<QuestionModifyDto> questionModifyDtos) {
+        managerService.modifyApplicationQuestion(clubId, questionModifyDtos);
     }
 
     // 동아리 가입 신청 목록
