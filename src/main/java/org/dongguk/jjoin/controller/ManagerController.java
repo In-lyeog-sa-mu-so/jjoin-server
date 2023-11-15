@@ -171,6 +171,12 @@ public class ManagerController {
         managerService.modifyApplicationQuestion(clubId, questionModifyDtos);
     }
 
+    // 동알 가입 신청서 질문 삭제
+    @DeleteMapping("/club/{clubId}/question")
+    public void deleteApplicationQuestion(@PathVariable Long clubId, @RequestBody List<QuestionDeleteDto> questionDeleteDtos) {
+        managerService.deleteApplicationQuestion(clubId, questionDeleteDtos);
+    }
+
     // 동아리 가입 신청 목록
     @GetMapping("/club/{clubId}/application")
     public Map<String, Object> readApplicationList(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size){

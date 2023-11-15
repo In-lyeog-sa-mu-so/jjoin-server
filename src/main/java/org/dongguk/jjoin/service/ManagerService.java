@@ -6,6 +6,7 @@ import org.dongguk.jjoin.domain.*;
 import org.dongguk.jjoin.domain.type.ImageType;
 import org.dongguk.jjoin.domain.type.RankType;
 import org.dongguk.jjoin.dto.request.ApplicationQuestionDto;
+import org.dongguk.jjoin.dto.request.QuestionDeleteDto;
 import org.dongguk.jjoin.dto.request.QuestionModifyDto;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
 import org.dongguk.jjoin.dto.response.*;
@@ -243,9 +244,19 @@ public class ManagerService {
     public void modifyApplicationQuestion(Long clubId, List<QuestionModifyDto> questionModifyDtos) {
         clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
         for (QuestionModifyDto questionModifyDto : questionModifyDtos){
-            Application_question applicationQuestion = questionRepository.findByIdAndClubId(questionModifyDto.getId(), clubId).orElseThrow(() -> new RuntimeException("No application question"));
+            Application_question applicationQuestion = questionRepository.findByClubIdAndId(clubId, questionModifyDto.getId()).orElseThrow(() -> new RuntimeException("No application question"));
             applicationQuestion.modifyContent(questionModifyDto.getContent());
         }
+    }
+
+    // 동아리 가입 신청서 질문 삭제
+    public void deleteApplicationQuestion(Long clubId, List<QuestionDeleteDto> questionDeleteDtos) {
+        clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
+        List<Long> ids = new ArrayList<>();
+        for (QuestionDeleteDto aq : questionDeleteDtos) {
+            ids.add(aq.getId());
+        }
+        questionRepository.deleteAllByClubIdAndId(clubId, ids);
     }
 
     // 가입 신청 목록, 상세보기에 쓰이는 ClubApplication 엔티티를 입력으로 받아 applicationDtos 만드는 함수
