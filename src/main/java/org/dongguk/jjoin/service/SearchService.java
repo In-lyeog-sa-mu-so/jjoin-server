@@ -7,6 +7,7 @@ import org.dongguk.jjoin.domain.Recruited_period;
 import org.dongguk.jjoin.domain.Tag;
 import org.dongguk.jjoin.dto.page.PageInfo;
 import org.dongguk.jjoin.dto.page.SearchClubPageDto;
+import org.dongguk.jjoin.dto.page.TagPageDto;
 import org.dongguk.jjoin.dto.response.SearchClubDto;
 import org.dongguk.jjoin.dto.response.TagDto;
 import org.dongguk.jjoin.repository.*;
@@ -80,14 +81,25 @@ public class SearchService {
     }
 
     // 동아리 검색하기 위해 모든 태그 목록 조회
-    public List<TagDto> readAllTags() {
+    public TagPageDto readAllTags(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
         List<TagDto> tagDtos = new ArrayList<>();
-        for (Tag tag : tagRepository.findAllSort()) {
+        Page<Tag> tags = tagRepository.findAllSort(pageable);
+
+        for (Tag tag : tags.getContent()) {
             tagDtos.add(TagDto.builder()
                     .id(tag.getId())
                     .name(tag.getName())
                     .build());
         }
-        return tagDtos;
+        return TagPageDto.builder()
+                .data(tagDtos)
+                .pageInfo(PageInfo.builder()
+                        .page(page)
+                        .size(size)
+                        .totalElements(tags.getTotalElements())
+                        .totalPages(tags.getTotalPages())
+                        .build())
+                .build();
     }
 }
