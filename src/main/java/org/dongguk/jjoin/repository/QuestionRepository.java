@@ -14,6 +14,6 @@ public interface QuestionRepository extends JpaRepository<Application_question, 
     List<Application_question> findAllByClubId(Long clubId);
     Optional<Application_question> findById(Long id);
 
-    @Query("SELECT q FROM Application_question AS q WHERE q.id = :id")
-    Optional<Application_question> findByClubId(@Param("id") Long id);
+    @Query("SELECT q FROM Application_question AS q WHERE q.id = :id AND q.club.id = :clubId")
+    Optional<Application_question> findByIdAndClubId(@Param("id") Long id, @Param("clubId") Long clubId);
 }

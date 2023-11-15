@@ -243,7 +243,7 @@ public class ManagerService {
     public void modifyApplicationQuestion(Long clubId, List<QuestionModifyDto> questionModifyDtos) {
         clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
         for (QuestionModifyDto questionModifyDto : questionModifyDtos){
-            Application_question applicationQuestion = questionRepository.findById(questionModifyDto.getId()).orElseThrow(() -> new RuntimeException("No application question"));
+            Application_question applicationQuestion = questionRepository.findByIdAndClubId(questionModifyDto.getId(), clubId).orElseThrow(() -> new RuntimeException("No application question"));
             applicationQuestion.modifyContent(questionModifyDto.getContent());
         }
     }
