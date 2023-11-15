@@ -11,13 +11,13 @@ public class ApplicationFormDto {
     private String clubName;
     private Timestamp startDate;
     private Timestamp endDate;
-    private List<ApplicationQuestionDto> applicationQuestionDtos;
+    private List<ApplicationQuestionResponseDto> applicationQuestionResponseDtos;
 
     @Builder
-    public ApplicationFormDto(String clubName, Timestamp startDate, Timestamp endDate, List<ApplicationQuestionDto> applicationQuestionDtos) {
+    public ApplicationFormDto(String clubName, Timestamp startDate, Timestamp endDate, List<ApplicationQuestionResponseDto> applicationQuestionResponseDtos) {
         this.clubName = clubName;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.applicationQuestionDtos = applicationQuestionDtos;
+        this.applicationQuestionResponseDtos = applicationQuestionResponseDtos;
     }
 }
