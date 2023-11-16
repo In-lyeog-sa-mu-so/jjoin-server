@@ -1,6 +1,5 @@
 package org.dongguk.jjoin.dto.page;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,7 @@
 package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.dongguk.jjoin.dto.page.NoticeAppPageDto;
 import org.dongguk.jjoin.dto.request.ApplicationAnswerDto;
 import org.dongguk.jjoin.dto.response.*;
 import org.dongguk.jjoin.service.AlbumService;
@@ -31,12 +32,10 @@ public class ClubController {
 
     // 동아리 게시글(공지, 홍보) 목록을 보여주는 API
     @GetMapping("/{clubId}/notices")
-    public Map<String, Object> readNotices(@PathVariable Long clubId,
-                                                @RequestParam("page") Long page,
-                                                @RequestParam("size") Long size) {
-        Map<String, Object> result = new HashMap<>();
-        result.put("data", clubService.readNotices(clubId, page, size));
-        return result;
+    public NoticeAppPageDto readNotices(@PathVariable Long clubId,
+                                        @RequestParam("page") Integer page,
+                                        @RequestParam("size") Integer size) {
+        return clubService.readNotices(clubId, page, size);
     }
 
     // 동아리 게시글 상세정보를 보여주는 API
