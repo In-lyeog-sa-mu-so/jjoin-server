@@ -2,6 +2,9 @@ package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dongguk.jjoin.dto.page.ApplicationPageDto;
+import org.dongguk.jjoin.dto.page.ClubMemberPageDto;
+import org.dongguk.jjoin.dto.page.NoticeWebPageDto;
 import org.dongguk.jjoin.dto.request.*;
 import org.dongguk.jjoin.dto.response.*;
 import org.dongguk.jjoin.service.EnrollmentService;
@@ -32,24 +35,26 @@ public class ManagerController {
         return result;
     }
 
+    // 동아리 게시글 생성
     @PostMapping("/club/{clubId}/notice")
     public void createNotice(@PathVariable Long clubId, @RequestBody NoticeRequestDto noticeRequestDto) {
         Long userId = 1L;   //  로그인 구현시 @GetUser 같은 어노테이션으로 대체해야함
         managerService.createNotice(userId, clubId, noticeRequestDto);
     }
 
+    // 동아리 게시글 목록 조회
     @GetMapping("/club/{clubId}/notice")
-    public Map<String, Object> showNoticeList(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size) {
-        Map<String, Object> result = new HashMap<>();
-        result.put("data", managerService.showNoticeList(clubId, page, size));
-        return result;
+    public NoticeWebPageDto showNoticeList(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+        return managerService.showNoticeList(clubId, page, size);
     }
 
+    // 동아리 게시글 상세보기
     @GetMapping("/club/{clubId}/notice/{noticeId}")
     public NoticeDto readNotice(@PathVariable Long clubId, @PathVariable Long noticeId) {
         return managerService.readNotice(clubId, noticeId);
     }
 
+    // 동아리 게시글 수정
     @PutMapping("/club/{clubId}/notice/{noticeId}")
     public void updateNotice(@PathVariable Long clubId, @PathVariable Long noticeId, @RequestBody NoticeRequestDto noticeRequestDto) {
         managerService.updateNotice(clubId, noticeId, noticeRequestDto);
@@ -95,10 +100,8 @@ public class ManagerController {
 
     // 동아리 멤버 목록 조회
     @GetMapping("/club/{clubId}/member")
-    public Map<String, Object> readClubMembers(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size) {
-        Map<String, Object> result = new HashMap<>();
-        result.put("data", managerService.readClubMembers(clubId, page, size));
-        return result;
+    public ClubMemberPageDto readClubMembers(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+        return managerService.readClubMembers(clubId, page, size);
     }
 
     // 동아리 멤버 권한 수정
@@ -179,10 +182,8 @@ public class ManagerController {
 
     // 동아리 가입 신청 목록
     @GetMapping("/club/{clubId}/application")
-    public Map<String, Object> readApplicationList(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size){
-        Map<String, Object> result = new HashMap<>();
-        result.put("data", managerService.readApplicationList(clubId, page, size));
-        return result;
+    public ApplicationPageDto readApplicationList(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size){
+        return managerService.readApplicationList(clubId, page, size);
     }
 
     // 동아리 가입 신청 상세보기

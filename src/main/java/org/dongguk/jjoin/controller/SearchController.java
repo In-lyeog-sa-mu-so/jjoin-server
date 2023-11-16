@@ -1,6 +1,8 @@
 package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.dongguk.jjoin.dto.page.SearchClubPageDto;
+import org.dongguk.jjoin.dto.page.TagPageDto;
 import org.dongguk.jjoin.dto.response.SearchClubDto;
 import org.dongguk.jjoin.dto.response.TagDto;
 import org.dongguk.jjoin.service.SearchService;
@@ -18,18 +20,16 @@ import java.util.Map;
 @RequestMapping("/search")
 public class SearchController {
     private final SearchService searchService;
+
+    // 동아리 검색 API
     @GetMapping
-    public Map<String, Object> searchClubs(@RequestParam String keyword, @RequestParam List<String> tags, @RequestParam Integer page, @RequestParam Integer size){
-        Map<String, Object> result = new HashMap<>();
-        result.put("clubs", searchService.searchClubs(keyword, tags, page, size));
-        return result;
+    public SearchClubPageDto searchClubs(@RequestParam String keyword, @RequestParam List<String> tags, @RequestParam Integer page, @RequestParam Integer size){
+        return searchService.searchClubs(keyword, tags, page, size);
     }
 
     // 동아리 검색하기 위해 모든 태그 목록 조회
     @GetMapping("/tags")
-    public Map<String, Object> readAllTags() {
-        Map<String, Object> result = new HashMap<>();
-        result.put("clubs", searchService.readAllTags());
-        return result;
+    public TagPageDto readAllTags(@RequestParam Integer page, @RequestParam Integer size) {
+        return searchService.readAllTags(page, size);
     }
 }

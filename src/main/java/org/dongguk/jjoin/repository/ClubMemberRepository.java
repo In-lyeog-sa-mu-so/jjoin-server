@@ -22,7 +22,7 @@ public interface ClubMemberRepository extends JpaRepository<ClubMember, Long> {
 
     Long countAllByClub(Club club);
 
-    List<ClubMember> findByClubId(Long clubId, Pageable pageable);
+    Page<ClubMember> findByClubId(Long clubId, Pageable pageable);
 
     @Query("SELECT cm FROM ClubMember AS cm WHERE cm.club.id = :clubId AND cm.user.id = :userId")
     Optional<ClubMember> findClubMemberByClubIdAndUserId(@Param("clubId") Long clubId, @Param("userId") Long userId);

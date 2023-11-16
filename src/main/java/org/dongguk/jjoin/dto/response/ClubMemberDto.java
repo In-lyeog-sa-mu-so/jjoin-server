@@ -1,15 +1,14 @@
-package org.dongguk.jjoin.dto;
+package org.dongguk.jjoin.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.dongguk.jjoin.domain.type.DependentType;
 import org.dongguk.jjoin.domain.type.MajorType;
 import org.dongguk.jjoin.domain.type.RankType;
 
 import java.sql.Timestamp;
 
 @Getter
-public class ClubMemberDtoByWeb {
+public class ClubMemberDto {
     private Long userId;
     private String userName;
     private Long studentId;
@@ -18,7 +17,7 @@ public class ClubMemberDtoByWeb {
     private RankType position;
 
     @Builder
-    public ClubMemberDtoByWeb(Long userId, String userName, MajorType major, Long studentId, Timestamp registerDate, RankType position) {
+    public ClubMemberDto(Long userId, String userName, MajorType major, Long studentId, Timestamp registerDate, RankType position) {
         this.userId = userId;
         this.userName = userName;
         this.major = major;

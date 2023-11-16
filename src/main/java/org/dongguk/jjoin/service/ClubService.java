@@ -5,9 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.dongguk.jjoin.domain.Club;
 import org.dongguk.jjoin.domain.Notice;
+import org.dongguk.jjoin.dto.page.NoticeAppPageDto;
+import org.dongguk.jjoin.dto.page.PageInfo;
 import org.dongguk.jjoin.dto.request.ApplicationAnswerDto;
 import org.dongguk.jjoin.dto.response.*;
 import org.dongguk.jjoin.repository.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.dongguk.jjoin.domain.*;
@@ -31,25 +37,31 @@ public class ClubService {
     private final ApplicationRepository applicationRepository;
     private final AnswerRepository answerRepository;
     private final TagRepository tagRepository;
+    private final NoticeRepository noticeRepository;
 
     // 동아리 게시글(공지, 홍보) 목록 반환
-    public List<NoticeListDtoByApp> readNotices(Long clubId, Long page, Long size) {
+    public NoticeAppPageDto readNotices(Long clubId, Integer page, Integer size) {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("no match clubId"));
-        List<Notice> notices = club.getNotices();
-        notices.removeIf(notice -> notice.isDeleted());
-        notices.sort(Comparator.comparing(Notice::getUpdatedDate).reversed());
-        int startIdx = page.intValue() * size.intValue();
-        List<Notice> showNotices = notices.subList(startIdx, Math.min(startIdx + size.intValue(), notices.size()));
+        Pageable pageable = PageRequest.of(page, size, Sort.by("updatedDate").descending());
+        Page<Notice> notices = noticeRepository.findAllByClubAndNotDeleted(club, pageable);
         List<NoticeListDtoByApp> noticeListDtoByApps = new ArrayList<>();
 
-        for (Notice notice : showNotices) {
+        for (Notice notice : notices) {
             noticeListDtoByApps.add(NoticeListDtoByApp.builder()
                     .id(notice.getId())
                     .title(notice.getTitle())
                     .content(notice.getContent())
                     .updatedDate(notice.getUpdatedDate()).build());
         }
-        return noticeListDtoByApps;
+        return NoticeAppPageDto.builder()
+                .data(noticeListDtoByApps)
+                .pageInfo(PageInfo.builder()
+                        .page(page)
+                        .size(size)
+                        .totalElements(notices.getTotalElements())
+                        .totalPages(notices.getTotalPages())
+                        .build())
+                .build();
     }
 
     // 동아리 게시글 상세정보를 보여주는 API
