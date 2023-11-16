@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.domain.*;
 import org.dongguk.jjoin.domain.type.ImageType;
 import org.dongguk.jjoin.domain.type.RankType;
+import org.dongguk.jjoin.dto.page.NoticeWebPageDto;
+import org.dongguk.jjoin.dto.page.PageInfo;
 import org.dongguk.jjoin.dto.request.ApplicationQuestionDto;
 import org.dongguk.jjoin.dto.request.QuestionDeleteDto;
 import org.dongguk.jjoin.dto.request.QuestionModifyDto;
@@ -16,7 +18,10 @@ import org.dongguk.jjoin.dto.response.NoticeDto;
 import org.dongguk.jjoin.dto.response.NoticeListDto;
 import org.dongguk.jjoin.repository.*;
 import org.dongguk.jjoin.util.FileUtil;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -55,24 +60,7 @@ public class ManagerService {
         return managingClubDtos;
     }
 
-    public List<NoticeListDto> showNoticeList(Long clubId, Integer page, Integer size){
-        Club club = clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("no match clubId"));
-        List<Notice> notices = Optional.ofNullable(club.getNotices()).orElseThrow(()-> new RuntimeException("Notice Not found!"));
-        notices.removeIf(notice -> notice.isDeleted());
-        notices.sort(Comparator.comparing(Notice::getUpdatedDate).reversed());
-
-        int startIdx = page * size;
-        List<Notice> showNotices = notices.subList(startIdx, Math.min(startIdx + size, notices.size()));
-        List<NoticeListDto> noticeListDtos = new ArrayList<>();
-        for (Notice n : showNotices) {
-            noticeListDtos.add(NoticeListDto.builder()
-                    .id(n.getId())
-                    .title(n.getTitle())
-                    .updatedDate(n.getUpdatedDate()).build());
-        }
-        return noticeListDtos;
-    }
-
+    // 동아리 게시글 생성
     public void createNotice(Long userId, Long clubId, NoticeRequestDto noticeRequestDto) {
         // 유저 유무, 클럽 존재유무 확인
         //User user = userRepository.findById(userId).orElseThrow(()-> new RuntimeException("createNotice club없음!"));
@@ -84,6 +72,31 @@ public class ManagerService {
                 .content(noticeRequestDto.getContent())
                 .club(club).build());
     }
+
+    // 동아리 게시글 목록 조회
+    public NoticeWebPageDto showNoticeList(Long clubId, Integer page, Integer size){
+        Club club = clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("no match clubId"));
+        Pageable pageable = PageRequest.of(page, size, Sort.by("updatedDate").descending());
+        Page<Notice> notices = noticeRepository.findAllByClubAndNotDeleted(club, pageable);
+
+        List<NoticeListDto> noticeListDtos = new ArrayList<>();
+        for (Notice n : notices) {
+            noticeListDtos.add(NoticeListDto.builder()
+                    .id(n.getId())
+                    .title(n.getTitle())
+                    .updatedDate(n.getUpdatedDate()).build());
+        }
+        return NoticeWebPageDto.builder()
+                .data(noticeListDtos)
+                .pageInfo(PageInfo.builder()
+                        .page(page)
+                        .size(size)
+                        .totalElements(notices.getTotalElements())
+                        .totalPages(notices.getTotalPages())
+                        .build())
+                .build();
+    }
+
 
     public Notice searchNotice(Long clubId, Long noticeId) {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("no match clubId"));

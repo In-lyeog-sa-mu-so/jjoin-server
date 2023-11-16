@@ -2,6 +2,7 @@ package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dongguk.jjoin.dto.page.NoticeWebPageDto;
 import org.dongguk.jjoin.dto.request.*;
 import org.dongguk.jjoin.dto.response.*;
 import org.dongguk.jjoin.service.EnrollmentService;
@@ -32,19 +33,20 @@ public class ManagerController {
         return result;
     }
 
+    // 동아리 게시글 생성
     @PostMapping("/club/{clubId}/notice")
     public void createNotice(@PathVariable Long clubId, @RequestBody NoticeRequestDto noticeRequestDto) {
         Long userId = 1L;   //  로그인 구현시 @GetUser 같은 어노테이션으로 대체해야함
         managerService.createNotice(userId, clubId, noticeRequestDto);
     }
 
+    // 동아리 게시글 목록 조회
     @GetMapping("/club/{clubId}/notice")
-    public Map<String, Object> showNoticeList(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size) {
-        Map<String, Object> result = new HashMap<>();
-        result.put("data", managerService.showNoticeList(clubId, page, size));
-        return result;
+    public NoticeWebPageDto showNoticeList(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+        return managerService.showNoticeList(clubId, page, size);
     }
 
+    // 동아리 게시글 상세보성
     @GetMapping("/club/{clubId}/notice/{noticeId}")
     public NoticeDto readNotice(@PathVariable Long clubId, @PathVariable Long noticeId) {
         return managerService.readNotice(clubId, noticeId);
