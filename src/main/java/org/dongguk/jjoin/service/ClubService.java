@@ -54,7 +54,7 @@ public class ClubService {
                     .updatedDate(notice.getUpdatedDate()).build());
         }
         return NoticeAppPageDto.builder()
-                .noticeListDtoByApps(noticeListDtoByApps)
+                .data(noticeListDtoByApps)
                 .pageInfo(PageInfo.builder()
                         .page(page)
                         .size(size)
