@@ -3,6 +3,7 @@ package org.dongguk.jjoin.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.dto.page.ApplicationPageDto;
+import org.dongguk.jjoin.dto.page.ClubMemberPageDto;
 import org.dongguk.jjoin.dto.page.NoticeWebPageDto;
 import org.dongguk.jjoin.dto.request.*;
 import org.dongguk.jjoin.dto.response.*;
@@ -99,10 +100,8 @@ public class ManagerController {
 
     // 동아리 멤버 목록 조회
     @GetMapping("/club/{clubId}/member")
-    public Map<String, Object> readClubMembers(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size) {
-        Map<String, Object> result = new HashMap<>();
-        result.put("data", managerService.readClubMembers(clubId, page, size));
-        return result;
+    public ClubMemberPageDto readClubMembers(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+        return managerService.readClubMembers(clubId, page, size);
     }
 
     // 동아리 멤버 권한 수정

@@ -6,6 +6,7 @@ import org.dongguk.jjoin.domain.*;
 import org.dongguk.jjoin.domain.type.ImageType;
 import org.dongguk.jjoin.domain.type.RankType;
 import org.dongguk.jjoin.dto.page.ApplicationPageDto;
+import org.dongguk.jjoin.dto.page.ClubMemberPageDto;
 import org.dongguk.jjoin.dto.page.NoticeWebPageDto;
 import org.dongguk.jjoin.dto.page.PageInfo;
 import org.dongguk.jjoin.dto.request.ApplicationQuestionDto;
@@ -13,7 +14,7 @@ import org.dongguk.jjoin.dto.request.QuestionDeleteDto;
 import org.dongguk.jjoin.dto.request.QuestionModifyDto;
 import org.dongguk.jjoin.dto.request.NoticeRequestDto;
 import org.dongguk.jjoin.dto.response.*;
-import org.dongguk.jjoin.dto.ClubMemberDtoByWeb;
+import org.dongguk.jjoin.dto.response.ClubMemberDto;
 import org.dongguk.jjoin.dto.response.ClubMainPageUpdateDto;
 import org.dongguk.jjoin.dto.response.NoticeDto;
 import org.dongguk.jjoin.dto.response.NoticeListDto;
@@ -29,7 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -131,13 +131,13 @@ public class ManagerService {
     }
 
     // 동아리 멤버 목록 조회
-    public List<ClubMemberDtoByWeb> readClubMembers(Long clubId, Integer page, Integer size) {
+    public ClubMemberPageDto readClubMembers(Long clubId, Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        List<ClubMember> clubMembers = clubMemberRepository.findByClubId(clubId, pageRequest);
-        List<ClubMemberDtoByWeb> clubMemberDtoByWebs = new ArrayList<>();
+        Page<ClubMember> clubMembers = clubMemberRepository.findByClubId(clubId, pageRequest);
+        List<ClubMemberDto> clubMemberDtos = new ArrayList<>();
         for (ClubMember cm : clubMembers) {
             User user = cm.getUser();
-            clubMemberDtoByWebs.add(ClubMemberDtoByWeb.builder()
+            clubMemberDtos.add(ClubMemberDto.builder()
                     .userId(user.getId())
                     .userName(user.getName())
                     .major(user.getMajor())
@@ -146,7 +146,15 @@ public class ManagerService {
                     .position(cm.getRankType())
                     .build());
         }
-        return clubMemberDtoByWebs;
+        return ClubMemberPageDto.builder()
+                .data(clubMemberDtos)
+                .pageInfo(PageInfo.builder()
+                        .page(page)
+                        .size(size)
+                        .totalElements(clubMembers.getTotalElements())
+                        .totalPages(clubMembers.getTotalPages())
+                        .build())
+                .build();
     }
 
     // 동아리 멤버 권한 수정
