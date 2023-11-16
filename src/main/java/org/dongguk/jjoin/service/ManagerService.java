@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.domain.*;
 import org.dongguk.jjoin.domain.type.ImageType;
 import org.dongguk.jjoin.domain.type.RankType;
+import org.dongguk.jjoin.dto.page.ApplicationPageDto;
 import org.dongguk.jjoin.dto.page.NoticeWebPageDto;
 import org.dongguk.jjoin.dto.page.PageInfo;
 import org.dongguk.jjoin.dto.request.ApplicationQuestionDto;
@@ -97,7 +98,6 @@ public class ManagerService {
                 .build();
     }
 
-
     public Notice searchNotice(Long clubId, Long noticeId) {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("no match clubId"));
         Notice notice = club.getNotices().stream()
@@ -117,6 +117,7 @@ public class ManagerService {
                 .updatedDate(notice.getUpdatedDate()).build();
     }
 
+    // 동아리 게시글 수정
     public void updateNotice(Long clubId, Long noticeId, NoticeRequestDto noticeRequestDto) {
         Notice notice = searchNotice(clubId, noticeId);
 
@@ -286,16 +287,24 @@ public class ManagerService {
     }
 
     // 동아리 가입 신청 목록
-    public List<ApplicationDto> readApplicationList(Long clubId, Integer page, Integer size) {
+    public ApplicationPageDto readApplicationList(Long clubId, Integer page, Integer size) {
         clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
         PageRequest pageRequest = PageRequest.of(page, size);
-        List<ClubApplication> clubApplications = applicationRepository.findApplicationList(clubId, pageRequest);
+        Page<ClubApplication> clubApplications = applicationRepository.findApplicationList(clubId, pageRequest);
         List<ApplicationDto> applicationDtos = new ArrayList<>();
 
         for (ClubApplication clubApplication : clubApplications) {
             applicationDtos.add(makeApplicationDto(clubApplication));
         }
-        return applicationDtos;
+        return ApplicationPageDto.builder()
+                .data(applicationDtos)
+                .pageInfo(PageInfo.builder()
+                        .page(page)
+                        .size(size)
+                        .totalElements(clubApplications.getTotalElements())
+                        .totalPages(clubApplications.getTotalPages())
+                        .build())
+                .build();
     }
 
     // 동아리 가입 신청 상세보기

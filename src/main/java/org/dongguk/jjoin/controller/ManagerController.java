@@ -2,6 +2,7 @@ package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dongguk.jjoin.dto.page.ApplicationPageDto;
 import org.dongguk.jjoin.dto.page.NoticeWebPageDto;
 import org.dongguk.jjoin.dto.request.*;
 import org.dongguk.jjoin.dto.response.*;
@@ -46,12 +47,13 @@ public class ManagerController {
         return managerService.showNoticeList(clubId, page, size);
     }
 
-    // 동아리 게시글 상세보성
+    // 동아리 게시글 상세보기
     @GetMapping("/club/{clubId}/notice/{noticeId}")
     public NoticeDto readNotice(@PathVariable Long clubId, @PathVariable Long noticeId) {
         return managerService.readNotice(clubId, noticeId);
     }
 
+    // 동아리 게시글 수정
     @PutMapping("/club/{clubId}/notice/{noticeId}")
     public void updateNotice(@PathVariable Long clubId, @PathVariable Long noticeId, @RequestBody NoticeRequestDto noticeRequestDto) {
         managerService.updateNotice(clubId, noticeId, noticeRequestDto);
@@ -181,10 +183,8 @@ public class ManagerController {
 
     // 동아리 가입 신청 목록
     @GetMapping("/club/{clubId}/application")
-    public Map<String, Object> readApplicationList(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size){
-        Map<String, Object> result = new HashMap<>();
-        result.put("data", managerService.readApplicationList(clubId, page, size));
-        return result;
+    public ApplicationPageDto readApplicationList(@PathVariable Long clubId, @RequestParam("page") Integer page, @RequestParam("size") Integer size){
+        return managerService.readApplicationList(clubId, page, size);
     }
 
     // 동아리 가입 신청 상세보기
