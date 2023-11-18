@@ -1,6 +1,7 @@
 package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.dongguk.jjoin.dto.page.ClubSchedulePageDto;
 import org.dongguk.jjoin.dto.page.NoticeAppPageDto;
 import org.dongguk.jjoin.dto.request.ApplicationAnswerDto;
 import org.dongguk.jjoin.dto.response.*;
@@ -46,13 +47,11 @@ public class ClubController {
 
     // 특정 동아리의 일정 목록 조회 API
     @GetMapping("/{clubId}/schedules")
-    public Map<String, Object> readClubSchedules(@PathVariable Long clubId,
-                                                   @RequestParam("page") Long page,
-                                                   @RequestParam("size") Long size) {
+    public ClubSchedulePageDto readClubSchedules(@PathVariable Long clubId,
+                                                 @RequestParam("page") Long page,
+                                                 @RequestParam("size") Long size) {
         Long userId = 1L;
-        Map<String, Object> result = new HashMap<>();
-        result.put("data", scheduleService.readClubSchedules(userId, clubId, page, size));
-        return result;
+        return scheduleService.readClubSchedules(userId, clubId, page, size);
     }
 
     // 특정 동아리의 일정 상세 조회 API

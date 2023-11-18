@@ -2,6 +2,8 @@ package org.dongguk.jjoin.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dongguk.jjoin.dto.page.ClubDeletionPageDto;
+import org.dongguk.jjoin.dto.page.EnrollmentPageDto;
 import org.dongguk.jjoin.dto.request.ClubDeletionUpdateDto;
 import org.dongguk.jjoin.dto.request.EnrollmentUpdateDto;
 import org.dongguk.jjoin.dto.response.ClubDeletionDto;
@@ -26,10 +28,8 @@ public class AdminController {
 
     // 관리자가 동아리 개설 신청서를 읽어오는 API
     @GetMapping("/enrollment")
-    public Map<String, Object> readEnrollments(@RequestParam Long page, @RequestParam Long size) {
-        Map<String, Object> result = new HashMap<>();
-        result.put("data", enrollmentService.readEnrollments(page, size));
-        return result;
+    public EnrollmentPageDto readEnrollments(@RequestParam Long page, @RequestParam Long size) {
+        return enrollmentService.readEnrollments(page, size);
     }
 
     @GetMapping("/enrollment/{enrollmentId}")
@@ -51,10 +51,8 @@ public class AdminController {
 
     // 관리자가 동아리 삭제 신청 목록을 조회하는 API
     @GetMapping("/deletion")
-    public Map<String, Object> readClubDeletions(@RequestParam Long page, @RequestParam Long size) {
-        Map<String, Object> result = new HashMap<>();
-        result.put("data", clubDeletionService.readClubDeletions(page, size));
-        return result;
+    public ClubDeletionPageDto readClubDeletions(@RequestParam Long page, @RequestParam Long size) {
+        return clubDeletionService.readClubDeletions(page, size);
     }
 
     // 관리자가 동아리 삭제 신청을 승인하는 API

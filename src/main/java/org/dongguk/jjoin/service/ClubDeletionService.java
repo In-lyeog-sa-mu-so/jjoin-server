@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.domain.Club;
 import org.dongguk.jjoin.domain.ClubDeletion;
+import org.dongguk.jjoin.dto.page.ClubDeletionPageDto;
+import org.dongguk.jjoin.dto.page.PageInfo;
 import org.dongguk.jjoin.dto.request.ClubDeletionUpdateDto;
 import org.dongguk.jjoin.dto.response.ClubDeletionDto;
 import org.dongguk.jjoin.repository.ClubDeletionRepository;
@@ -25,7 +27,7 @@ public class ClubDeletionService {
     private final ClubDeletionRepository clubDeletionRepository;
 
     // 동아리 삭제 신청서 반환
-    public List<ClubDeletionDto> readClubDeletions(Long page, Long size) {
+    public ClubDeletionPageDto readClubDeletions(Long page, Long size) {
         PageRequest pageable = PageRequest.of(page.intValue(), size.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
         Page<ClubDeletion> clubDeletions = clubDeletionRepository.findAll(pageable);
         List<ClubDeletionDto> clubDeletionDtos = new ArrayList<>();
@@ -41,7 +43,16 @@ public class ClubDeletionService {
                     .createdDate(clubDeletion.getCreatedDate())
                     .build());
         }
-        return clubDeletionDtos;
+
+        return ClubDeletionPageDto.builder()
+                .data(clubDeletionDtos)
+                .pageInfo(PageInfo.builder()
+                        .page(page.intValue())
+                        .size(size.intValue())
+                        .totalElements(clubDeletions.getTotalElements())
+                        .totalPages(clubDeletions.getTotalPages())
+                        .build())
+                .build();
     }
 
     // 동아리 삭제 신청 승인
