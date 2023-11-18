@@ -13,14 +13,16 @@ public class ClubMemberDto {
     private String userName;
     private Long studentId;
     private MajorType major;
+    private String email;
     private Timestamp registerDate;
     private RankType position;
 
     @Builder
-    public ClubMemberDto(Long userId, String userName, MajorType major, Long studentId, Timestamp registerDate, RankType position) {
+    public ClubMemberDto(Long userId, String userName, MajorType major, String email, Long studentId, Timestamp registerDate, RankType position) {
         this.userId = userId;
         this.userName = userName;
         this.major = major;
+        this.email = email;
         this.studentId = studentId;
         this.registerDate = registerDate;
         this.position = position;
