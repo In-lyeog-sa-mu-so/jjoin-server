@@ -141,6 +141,7 @@ public class ManagerService {
                     .userId(user.getId())
                     .userName(user.getName())
                     .major(user.getMajor())
+                    .email(user.getEmail())
                     .studentId(user.getStudentId())
                     .registerDate(cm.getRegisterDate())
                     .position(cm.getRankType())
