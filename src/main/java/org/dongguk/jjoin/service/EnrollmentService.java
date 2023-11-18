@@ -5,6 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.dongguk.jjoin.domain.*;
 import org.dongguk.jjoin.domain.type.ImageType;
 import org.dongguk.jjoin.domain.type.RankType;
+import org.dongguk.jjoin.dto.page.ClubEnrollmentPageDto;
+import org.dongguk.jjoin.dto.page.EnrollmentPageDto;
+import org.dongguk.jjoin.dto.page.PageInfo;
 import org.dongguk.jjoin.dto.request.ClubEnrollmentRequestDto;
 import org.dongguk.jjoin.dto.request.EnrollmentUpdateDto;
 import org.dongguk.jjoin.dto.response.ClubEnrollmentDto;
@@ -40,7 +43,7 @@ public class EnrollmentService {
     private final FileUtil fileUtil;
 
     // 모든 개설 신청서 조회
-    public List<EnrollmentDto> readEnrollments(Long page, Long size) {
+    public EnrollmentPageDto readEnrollments(Long page, Long size) {
         PageRequest pageable = PageRequest.of(page.intValue(), size.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
         Page<Enrollment> enrollments = enrollmentRepository.findAll(pageable);
         List<EnrollmentDto> enrollmentDtos = new ArrayList<>();
@@ -58,7 +61,16 @@ public class EnrollmentService {
                     .createdDate(enrollment.getCreatedDate())
                     .build());
         }
-        return enrollmentDtos;
+
+        return EnrollmentPageDto.builder()
+                .data(enrollmentDtos)
+                .pageInfo(PageInfo.builder()
+                        .page(page.intValue())
+                        .size(size.intValue())
+                        .totalElements(enrollments.getTotalElements())
+                        .totalPages(enrollments.getTotalPages())
+                        .build())
+                .build();
     }
 
     // 동아리 개설 신청 승인
@@ -91,9 +103,10 @@ public class EnrollmentService {
     }
 
     // 동아리 개설 신청서 목록 반환
-    public List<ClubEnrollmentDto> readClubEnrollments(Long userId) {
+    public ClubEnrollmentPageDto readClubEnrollments(Long userId, Integer page, Integer size) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
-        List<Enrollment> enrollments = enrollmentRepository.findByUser(user);
+        PageRequest pageable = PageRequest.of(page.intValue(), size.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<Enrollment> enrollments = enrollmentRepository.findByUser(user, pageable);
         List<ClubEnrollmentDto> clubEnrollmentDtos = new ArrayList<>();
 
         for (Enrollment enrollment : enrollments) {
@@ -108,7 +121,15 @@ public class EnrollmentService {
                     .build());
         }
 
-        return clubEnrollmentDtos;
+        return ClubEnrollmentPageDto.builder()
+                .data(clubEnrollmentDtos)
+                .pageInfo(PageInfo.builder()
+                        .page(page.intValue())
+                        .size(size.intValue())
+                        .totalElements(enrollments.getTotalElements())
+                        .totalPages(enrollments.getTotalPages())
+                        .build())
+                .build();
     }
 
     // 동아리 개설 신청
