@@ -56,6 +56,11 @@ public class ManagerService {
             managingClubDtos.add(ManagingClubDto.builder()
                     .id(club.getId())
                     .name(club.getName())
+                    .introduction(club.getIntroduction())
+                    .leaderName(club.getLeader().getName())
+                    .numberOfMembers(clubMemberRepository.countAllByClub(club))
+                    .dependent(club.getDependent().getDescription())
+                    .profileImageUuid(club.getClubImage().getUuidName())
                     .build());
         }
         return managingClubDtos;
