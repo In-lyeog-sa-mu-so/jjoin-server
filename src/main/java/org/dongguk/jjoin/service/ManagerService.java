@@ -335,7 +335,7 @@ public class ManagerService {
 
         for (int i = 0; i < applicationQuestions.size(); i++) {
             Application_question applicationQuestion = applicationQuestions.get(i);
-            Application_answer applicationAnswer = answerRepository.findAllByApplicationQuestionId(applicationQuestion.getId());
+            Application_answer applicationAnswer = answerRepository.findAllByApplicationQuestionIdAndUserId(applicationQuestion.getId(), user.getId());
             applicationQAsetList.add(ApplicationQAset.builder()
                     .question(applicationQuestion.getContent())
                     .answer(applicationAnswer.getContent())
