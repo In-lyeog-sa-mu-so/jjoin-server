@@ -54,7 +54,7 @@ public class Recruited_period {
 
     public void checkFinished() {
         long now = Timestamp.valueOf(LocalDateTime.now()).getTime();
-        if (now > this.endDate.getTime() && now < this.startDate.getTime()) {
+        if (now > this.endDate.getTime() || now < this.startDate.getTime()) {
             this.isFinished = Boolean.TRUE;
         } else {
             this.isFinished = Boolean.FALSE;
