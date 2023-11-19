@@ -9,10 +9,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
     Notice findFirstByClubOrderByCreatedDateDesc(Club club);
 
     @Query("SELECT n FROM Notice AS n WHERE n.club = :club AND n.isDeleted = FALSE")
     Page<Notice> findAllByClubAndNotDeleted(@Param("club") Club club, Pageable pageable);
+
+    Optional<Notice> findById(Long noticeId);
 }
