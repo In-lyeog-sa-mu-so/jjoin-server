@@ -8,13 +8,15 @@ import java.sql.Timestamp;
 @Getter
 public class NoticeListDto {
     private Long id;
+    private Long noticeNumber;
     private String title;
-    private Timestamp updatedDate;
+    private Timestamp createdDate;
 
     @Builder
-    public NoticeListDto(Long id, String title, Timestamp updatedDate) {
+    public NoticeListDto(Long id, Long noticeNumber, String title, Timestamp createdDate) {
         this.id = id;
+        this.noticeNumber = noticeNumber;
         this.title = title;
-        this.updatedDate = updatedDate;
+        this.createdDate = createdDate;
     }
 }

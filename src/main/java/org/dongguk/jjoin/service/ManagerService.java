@@ -82,23 +82,27 @@ public class ManagerService {
     // 동아리 게시글 목록 조회
     public NoticeWebPageDto showNoticeList(Long clubId, Integer page, Integer size){
         Club club = clubRepository.findById(clubId).orElseThrow(()-> new RuntimeException("no match clubId"));
-        Pageable pageable = PageRequest.of(page, size, Sort.by("updatedDate").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
         Page<Notice> notices = noticeRepository.findAllByClubAndNotDeleted(club, pageable);
+        long totalElements = notices.getTotalElements();
+        int totalPages = notices.getTotalPages();
+        Long noticeNumber = totalElements - (page*size);
 
         List<NoticeListDto> noticeListDtos = new ArrayList<>();
-        for (Notice n : notices) {
+        for (Notice n : notices.getContent()) {
             noticeListDtos.add(NoticeListDto.builder()
                     .id(n.getId())
+                    .noticeNumber(noticeNumber--)
                     .title(n.getTitle())
-                    .updatedDate(n.getUpdatedDate()).build());
+                    .createdDate(n.getCreatedDate()).build());
         }
         return NoticeWebPageDto.builder()
                 .data(noticeListDtos)
                 .pageInfo(PageInfo.builder()
                         .page(page)
                         .size(size)
-                        .totalElements(notices.getTotalElements())
-                        .totalPages(notices.getTotalPages())
+                        .totalElements(totalElements)
+                        .totalPages(totalPages)
                         .build())
                 .build();
     }
