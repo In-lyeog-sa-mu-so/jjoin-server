@@ -67,9 +67,7 @@ public class ClubService {
     // 동아리 게시글 상세정보를 보여주는 API
     public NoticeDto readNotice(Long clubId, Long noticeId) {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("no match clubId"));
-        Notice notice = club.getNotices().stream()
-                .filter(n -> n.getId().equals(noticeId)).findAny()
-                .orElseThrow(() -> new RuntimeException("No match noticeId"));
+        Notice notice = noticeRepository.findById(noticeId).orElseThrow(() -> new RuntimeException("No match Notice"));
 
         return NoticeDto.builder()
                 .id(notice.getId())
@@ -147,9 +145,8 @@ public class ClubService {
     // 동아리 가입신청서 양식 가져오기
     public ApplicationFormDto readClubApplication(Long clubId) {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("No match Club"));
-        Optional<Recruited_period> recruitedPeriod = recruitedPeriodRepository.findByClub(club);
-        // 모집 기간을 한번도 설정하지 않은 동아리라면 null값으로 설정
-        Timestamp period[] = recruitedPeriod.map(rp -> rp.getPeriod()).orElse(new Timestamp[]{null, null});
+        Recruited_period recruitedPeriod = recruitedPeriodRepository.findByClub(club).orElseThrow(() -> new RuntimeException("No match Recruited Period"));
+        Timestamp period[] = recruitedPeriod.getPeriod();
         List<Application_question> applicationQuestions = questionRepository.findAllByClubId(clubId);
         if (applicationQuestions == null || applicationQuestions.isEmpty()) {
             throw new RuntimeException("A Club has No application");
@@ -173,7 +170,7 @@ public class ClubService {
     // 동아리 가입신청서 제출
     public void submitClubApplication(Long clubId, List<ApplicationAnswerDto> applicationAnswerDtos) {
         clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("No match Club"));
-        User user = new User(); //User.getUser() 이 부분 수정 필요!!! 현재는 작동 안됨.
+        User user = userRepository.findById(8L).get(); //User.getUser() 이 부분 수정 필요!!! 현재는 무조건 8번 id를 가진 유저가 신청한 걸로 설정함.
         List<Application_answer> applicationAnswers = new ArrayList<>();
 
         for (ApplicationAnswerDto applicationAnswerDto : applicationAnswerDtos) {
