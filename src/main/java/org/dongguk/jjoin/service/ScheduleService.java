@@ -125,7 +125,7 @@ public class ScheduleService {
     }
 
     // 특정 동아리의 일정 목록 반환
-    public ClubSchedulePageDto readClubSchedules(Long userId, Long clubId, Long page, Long size) {
+    public List<ClubScheduleDto> readClubSchedules(Long userId, Long clubId, Long page, Long size) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException()); // 예외처리 수정 예정
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("no match clubId"));
         PageRequest pageable = PageRequest.of(page.intValue(), size.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
@@ -143,15 +143,7 @@ public class ScheduleService {
                     .isAgreed(schedule.getIsAgreed())
                     .build());
         }
-        return ClubSchedulePageDto.builder()
-                .data(clubScheduleDtos)
-                .pageInfo(PageInfo.builder()
-                        .page(page.intValue())
-                        .size(size.intValue())
-                        .totalElements(plans.getTotalElements())
-                        .totalPages(plans.getTotalPages())
-                        .build())
-                .build();
+        return clubScheduleDtos;
     }
 
     // 일정 상세 조회

@@ -47,11 +47,13 @@ public class ClubController {
 
     // 특정 동아리의 일정 목록 조회 API
     @GetMapping("/{clubId}/schedules")
-    public ClubSchedulePageDto readClubSchedules(@PathVariable Long clubId,
+    public Map<String, Object> readClubSchedules(@PathVariable Long clubId,
                                                  @RequestParam("page") Long page,
                                                  @RequestParam("size") Long size) {
         Long userId = 1L;
-        return scheduleService.readClubSchedules(userId, clubId, page, size);
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", scheduleService.readClubSchedules(userId, clubId, page, size));
+        return result;
     }
 
     // 특정 동아리의 일정 상세 조회 API
