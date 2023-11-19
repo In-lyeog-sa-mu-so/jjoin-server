@@ -210,29 +210,37 @@ public class ManagerService {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("NO Club"));
         Optional<Recruited_period> recruitedPeriod = recruitedPeriodRepository.findByClub(club);
 
-        String clubImageOriginName = clubImageFile.getOriginalFilename();
-        String clubImageUuidName = fileUtil.storeFile(clubImageFile);
-        Image clubImage = imageRepository.save(Image.builder()
-                .user(club.getLeader())
-                .album(null)
-                .notice(null)
-                .originName(clubImageOriginName)
-                .uuidName(clubImageUuidName)
-                .type(ImageType.valueOf(fileUtil.getFileExtension(clubImageOriginName).toUpperCase())).build());
+        if (data.getIntroduction() != null && !data.getIntroduction().isEmpty())
+            club.modifyClubIntorudction(data.getIntroduction());
+        if (!clubImageFile.isEmpty()) {
+            String clubImageOriginName = clubImageFile.getOriginalFilename();
+            String clubImageUuidName = fileUtil.storeFile(clubImageFile);
+            Image clubImage = imageRepository.save(Image.builder()
+                    .user(club.getLeader())
+                    .album(null)
+                    .notice(null)
+                    .originName(clubImageOriginName)
+                    .uuidName(clubImageUuidName)
+                    .type(ImageType.valueOf(fileUtil.getFileExtension(clubImageOriginName).toUpperCase())).build());
+            club.modifyClubImage(clubImage);
+        }
 
-        String backgroundImageOriginName = backgroundImageFile.getOriginalFilename();
-        String backgroundImageUuidName = fileUtil.storeFile(backgroundImageFile);
-        Image backgroundImage = imageRepository.save(Image.builder()
-                .user(club.getLeader())
-                .album(null)
-                .notice(null)
-                .originName(backgroundImageOriginName)
-                .uuidName(backgroundImageUuidName)
-                .type(ImageType.valueOf(fileUtil.getFileExtension(backgroundImageOriginName).toUpperCase())).build());
+        if (!backgroundImageFile.isEmpty()) {
+            String backgroundImageOriginName = backgroundImageFile.getOriginalFilename();
+            String backgroundImageUuidName = fileUtil.storeFile(backgroundImageFile);
+            Image backgroundImage = imageRepository.save(Image.builder()
+                    .user(club.getLeader())
+                    .album(null)
+                    .notice(null)
+                    .originName(backgroundImageOriginName)
+                    .uuidName(backgroundImageUuidName)
+                    .type(ImageType.valueOf(fileUtil.getFileExtension(backgroundImageOriginName).toUpperCase())).build());
+            club.modifyBackgroundImage(backgroundImage);
+        }
 
-        club.modifyClubMain(data.getIntroduction(), clubImage, backgroundImage);
         // 모집 기간 설정을 한번이라도 한다면 해당 데이터를 수정, 없다면 새로 생성
         if (recruitedPeriod.isPresent()) {
+            if (data.getStartDate() != null && data.getEndDate() != null)
             recruitedPeriod.get().updatePeriod(data.getStartDate(), data.getEndDate());
         } else {
             recruitedPeriodRepository.save(Recruited_period.builder()

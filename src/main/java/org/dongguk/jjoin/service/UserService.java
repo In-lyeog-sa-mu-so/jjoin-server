@@ -66,17 +66,22 @@ public class UserService {
     public Boolean updateUserProfile(Long userId, UserProfileUpdateDto userProfileUpdateDto,
                                      MultipartFile userProfileImageFile) {
         User user = userRepository.findById(userId).get();
-        String userProfileImageOriginName = userProfileImageFile.getOriginalFilename();
-        String userProfileImageUuidName = fileUtil.storeFile(userProfileImageFile);
-        Image userProfileImage = imageRepository.save(Image.builder()
-                .user(user)
-                .album(null)
-                .notice(null)
-                .originName(userProfileImageOriginName)
-                .uuidName(userProfileImageUuidName)
-                .type(ImageType.valueOf(fileUtil.getFileExtension(userProfileImageOriginName).toUpperCase()))
-                .build());
-        user.updateUserProfile(userProfileUpdateDto.getIntroduction(), userProfileImage);
+        if (userProfileUpdateDto.getIntroduction() != null && !userProfileUpdateDto.getIntroduction().isEmpty()) {
+            user.updateUserIntroduction(userProfileUpdateDto.getIntroduction());
+        }
+        if (!userProfileImageFile.isEmpty()) {
+            String userProfileImageOriginName = userProfileImageFile.getOriginalFilename();
+            String userProfileImageUuidName = fileUtil.storeFile(userProfileImageFile);
+            Image userProfileImage = imageRepository.save(Image.builder()
+                    .user(user)
+                    .album(null)
+                    .notice(null)
+                    .originName(userProfileImageOriginName)
+                    .uuidName(userProfileImageUuidName)
+                    .type(ImageType.valueOf(fileUtil.getFileExtension(userProfileImageOriginName).toUpperCase()))
+                    .build());
+            user.updateUserProfileImage(userProfileImage);
+        }
 
         return Boolean.TRUE;
     }

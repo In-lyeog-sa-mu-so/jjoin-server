@@ -103,8 +103,11 @@ public class User {
         this.deviceToken = null;
     }
 
-    public void updateUserProfile(String introduction, Image profileImage) {
+    public void updateUserIntroduction(String introduction) {
         this.introduction = introduction;
+    }
+
+    public void updateUserProfileImage(Image profileImage) {
         this.profileImage = profileImage;
     }
 }

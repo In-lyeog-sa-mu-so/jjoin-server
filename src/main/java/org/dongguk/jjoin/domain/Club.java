@@ -90,9 +90,19 @@ public class Club {
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());
     }
 
-    public void modifyClubMain(String introduction, Image clubImage, Image backgroundImage) {
+    public void modifyClubText(String intorudction) {
         this.introduction = introduction;
+    }
+
+    public void modifyClubIntorudction(String introduction) {
+        this.introduction = introduction;
+    }
+
+    public void modifyClubImage(Image clubImage) {
         this.clubImage = clubImage;
+    }
+
+    public void modifyBackgroundImage(Image backgroundImage) {
         this.backgroundImage = backgroundImage;
     }
 
