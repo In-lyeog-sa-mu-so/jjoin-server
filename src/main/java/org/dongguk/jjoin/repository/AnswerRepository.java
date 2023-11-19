@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 public interface AnswerRepository extends JpaRepository<Application_answer, Long> {
-    Application_answer findAllByApplicationQuestionId(Long questionId);
+    Application_answer findAllByApplicationQuestionIdAndUserId(Long questionId, Long userId);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("DELETE FROM Application_answer AS ans WHERE ans.user.id = :userId AND ans.applicationQuestion IN :questions")
