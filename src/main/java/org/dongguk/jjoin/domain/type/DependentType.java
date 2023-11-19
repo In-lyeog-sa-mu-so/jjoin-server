@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum DependentType {
-    MAJOR("학과"), CENTER("중앙");
+    MAJOR("학과"), CENTER("중앙"), UNION("연합");
 
     private final String description;
 
